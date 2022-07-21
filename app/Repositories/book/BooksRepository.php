@@ -11,4 +11,28 @@ class BooksRepository implements BooksRepositoryInterface {
     $books = Book::all();
         return $books;
    }
+
+   function saveBook($book)
+   {
+    return Book::create($book);
+   }
+
+
+   function findBookById($id)
+   {
+    $book = Book::find($id);
+    return $book;
+   }
+
+   function update($newBook, $oldBook)
+   {
+    $oldBook->pages = $newBook['pages'];
+    $oldBook->book_name = $newBook['book_name'];
+    return $oldBook->save();
+   }
+
+   function deleteBook($book)
+   {
+    return $book->delete();
+   }
 }
