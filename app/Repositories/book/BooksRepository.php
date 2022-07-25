@@ -23,7 +23,7 @@ class BooksRepository implements BooksRepositoryInterface {
     $book = Book::find($id);
     return $book;
    }
-
+   
    function update($newBook, $oldBook)
    {
     $oldBook->pages = $newBook['pages'];
