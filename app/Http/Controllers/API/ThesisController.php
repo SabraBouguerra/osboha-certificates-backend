@@ -77,16 +77,15 @@ class ThesisController extends BaseController
 
     }
 
-    public function destroy(Request $request , $id ){
+    public function destroy($id){
 
-        $thesis = Thesis::find($id);
+        $result = Thesis::destroy($id);
 
-        if (is_null($thesis)) {
+        if ($result == 0) {
 
             return $this->sendError('thesis not found!' );
         }
-         $thesis->delete();
-        return $this->sendResponse($thesis, 'Thesis deleted Successfully!' );
+        return $this->sendResponse($result, 'Thesis deleted Successfully!' );
 
 
 
