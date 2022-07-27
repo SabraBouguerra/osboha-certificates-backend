@@ -51,7 +51,7 @@ class UserBookController extends BaseController
     }
 
 
-    public function update(Request $request, UserBook $userBook){
+    public function update(Request $request,$id){
         $input = $request->all();
         $validator = Validator::make($request->all(), [
             'book_id',
@@ -62,26 +62,33 @@ class UserBookController extends BaseController
         }
 
 
+        $userBook = UserBook::find($id);
 
-        $userBook->book_id = $input['book_id'];
-        $userBook->book_id = $input['user_id'];
+        $updateParam = [
+            "book_id" => $input['book_id'],
+            "user_id" => $input['user_id'],
+        ];
+      try{
+        $userBook->update($updateParam);
+      }catch(\Error $e){
+        return $this->sendError('Thesis not found');
+      }
+        return $this->sendResponse($userBook, 'Thesis updated Successfully!' );
 
-
-        try{
-            $userBook->save();
-        }catch(\Illuminate\Database\QueryException $e){
-            return $this->sendError('User or book does not exist');
-        }
 
 
 
     }
 
-    public function destroy(UserBook $userBook, Request $request){
+    public function destroy($id){
 
+        $result = UserBook::destroy($id);
 
-        $userBook->delete();
-        return $this->sendResponse($userBook, 'User Book deleted Successfully!' );
+        if ($result == 0) {
+
+            return $this->sendError('UserBook not found!');
+        }
+        return $this->sendResponse($result, 'UserBook deleted Successfully!' );
 
 
 

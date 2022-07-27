@@ -12,62 +12,76 @@ class BooksController extends BaseController
 {
 
     private BooksRepositoryInterface $bookService;
-    function __construct(BooksRepositoryInterface $bookService) {
-        $this->bookService = $bookService;
-      }
-
-    public function index(){
-
-        $books =$this->bookService->getAllBooks();
-        return $this->sendResponse($books,"Books");
-     }
 
 
-     public function store(Request $request){
-         $input = $request->all();
-         $validator = Validator::make($input,[
-             'pages'=>'required',
-             'book_name'=>'required'
-         ]);
-         if ($validator->fails()) {
-             return $this->sendError('Validate Error',$validator->errors() );
-         }
+    public function index()
+    {
 
-         $book = $this->bookService->saveBook($input);
-         return $this->sendResponse($book, 'Book added Successfully!' );
-     }
-
-     public function show($id){
+        $books = $this->bookService->getAllBooks();
+        return $this->sendResponse($books, "Books");
+    }
 
 
-         return $this->bookService->findBookById($id);
-     }
-
-
-     public function update(Request $request, Book $book){
-         $input = $request->all();
-         $validator = Validator::make($input,[
-            'pages'=>'required',
-            'book_name'=>'required'
+    public function store(Request $request)
+    {
+        $input = $request->all();
+        $validator = Validator::make($input, [
+            'pages' => 'required',
+            'book_name' => 'required'
         ]);
-         if ($validator->fails()) {
-             return $this->sendError('Validation error' , $validator->errors());
-         }
+        if ($validator->fails()) {
+            return $this->sendError('Validate Error', $validator->errors());
+        }
 
-         return $this->bookService->update($input,$book);
+        $book = $this->bookService->saveBook($input);
+        return $this->sendResponse($book, 'Book added Successfully!');
+    }
+
+    public function show($id)
+    {
+        $book = Book::find($id);
+
+        if (is_null($book)) {
+
+            return $this->sendError('Book not found!');
+        }
+        return $this->sendResponse($book, "Book");
+    }
 
 
+    public function update(Request $request, $id)
+    {
+        $input = $request->all();
+        $validator = Validator::make($input, [
+            'pages' => 'required',
+            'book_name' => 'required'
+        ]);
+        if ($validator->fails()) {
+            return $this->sendError('Validation error', $validator->errors());
+        }
 
-     }
+        $book = Book::find($id);
 
-     public function destroy(Book $book, Request $request){
+        $updateParam = [
+            "pages" => $input['pages'],
+            "book_name" => $input['book_name'],
+        ];
+        try {
+            $book->update($updateParam);
+        } catch (\Error $e) {
+            return $this->sendError('Book not found');
+        }
+        return $this->sendResponse($book, 'Book updated Successfully!');
+    }
 
+    public function destroy($id)
+    {
+        $result = Book::destroy($id);
 
+        if ($result == 0) {
 
-         $deleted = $this->bookService->deleteBook($book);
-         return $this->sendResponse($book, 'Book deleted Successfully!' );
-
-     }
-
-
+            return $this->sendError('Book not found!');
+        }
+        return $this->sendResponse($result, 'Book deleted Successfully!');
+    }
 }

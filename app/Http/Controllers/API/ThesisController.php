@@ -48,7 +48,7 @@ class ThesisController extends BaseController
 
             return $this->sendError('thesis not found!' );
         }
-        return $thesis;
+        return $this->sendResponse($thesis,"Thesis");
     }
 
 
@@ -64,11 +64,16 @@ class ThesisController extends BaseController
 
 
         $thesis = Thesis::find($id);
+
         $updateParam = [
             "thesis_text" => $input['thesis_text'],
             "pages" => $input['pages'],
         ];
+      try{
         $thesis->update($updateParam);
+      }catch(\Error $e){
+        return $this->sendError('Thesis not found');
+      }
         return $this->sendResponse($thesis, 'Thesis updated Successfully!' );
 
 

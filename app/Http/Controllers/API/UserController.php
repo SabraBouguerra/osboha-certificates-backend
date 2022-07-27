@@ -43,7 +43,7 @@ class UserContoller extends BaseController
     }
 
 
-    public function update(Request $request, User $user){
+    public function update(Request $request,  $id){
         $input = $request->all();
         $validator = Validator::make($input,[
             "name" => "required",
@@ -56,17 +56,31 @@ class UserContoller extends BaseController
         }
 
 
-        $user->name = $input['name'];
-        $user->email = $input['email'];
-        $user->password = $input['password'];
-        $user->role = $input['role'];
-        $user->save();
+        $user = User::find($id);
+        $input['password'] = Hash::make($request->password);
+        $updateParam = [
+            "name" => $input['name'],
+            "email" => $input['email'],
+            "password" => $input['password'],
+            "role" => $input['role'],
+        ];
+      try{
+        $user->update($updateParam);
+      }catch(\Error $e){
+        return $this->sendError('User not found');
+      }
+        return $this->sendResponse($user, 'User updated Successfully!' );
+
     }
 
-    public function destroy(User $user, Request $request){
+    public function destroy($id){
+        $result = User::destroy($id);
 
-        $user->delete();
-        return $this->sendResponse($user, 'User deleted Successfully!' );
+        if ($result == 0) {
+
+            return $this->sendError('User not found!' );
+        }
+        return $this->sendResponse($result, 'User deleted Successfully!' );
 
     }
 
