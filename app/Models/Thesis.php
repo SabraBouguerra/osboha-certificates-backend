@@ -5,9 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class thesis extends Model
+class Thesis extends Model
 {
     use HasFactory;
+
+    protected $table = 'thesis';
 
     protected $fillable = [
         'thesis_text',
