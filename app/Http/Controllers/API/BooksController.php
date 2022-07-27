@@ -19,7 +19,7 @@ class BooksController extends BaseController
     public function index(){
 
         $books =$this->bookService->getAllBooks();
-        return $this->sendResponse($books,"Tasks");
+        return $this->sendResponse($books,"Books");
      }
 
 
@@ -34,7 +34,7 @@ class BooksController extends BaseController
          }
 
          $book = $this->bookService->saveBook($input);
-         return $this->sendResponse($book, 'task added Successfully!' );
+         return $this->sendResponse($book, 'Book added Successfully!' );
      }
 
      public function show($id){
@@ -65,7 +65,7 @@ class BooksController extends BaseController
 
 
          $deleted = $this->bookService->deleteBook($book);
-         return $this->sendResponse($book, 'Task deleted Successfully!' );
+         return $this->sendResponse($book, 'Book deleted Successfully!' );
 
      }
 

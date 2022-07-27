@@ -10,10 +10,10 @@ class certificates extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_book_id'
+        'user_books_id'
     ];
 
     public function user_book(){
-        return $this->belongsTo(UserBook::class,'user_book_id');
+        return $this->belongsTo(UserBook::class,'user_books_id');
     }
 }

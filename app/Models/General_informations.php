@@ -12,10 +12,10 @@ class general_informations extends Model
     protected $fillable = [
         'general_question',
         'summary',
-        'user_book_id'
+        'user_books_id'
     ];
 
-    public function user_book(){
-        return $this->belongsTo(UserBook::class,'user_book_id');
+    public function user_books(){
+        return $this->belongsTo(UserBook::class,'user_books_id');
     }
 }

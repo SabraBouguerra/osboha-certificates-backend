@@ -17,8 +17,8 @@ return new class extends Migration
             $table->bigIncrements('id')->unsigned()->index();
             $table->text('general_question');
             $table->text('summary');
-            $table->bigInteger("user_book_id")->unsigned()->index();
-            $table->foreign("user_book_id")->references("id")->on("user_book");
+            $table->bigInteger("user_books_id")->unsigned()->index();
+            $table->foreign("user_books_id")->references("id")->on("user_books");
             $table->timestamps();
         });
     }

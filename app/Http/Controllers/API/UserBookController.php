@@ -1,85 +1,91 @@
 <?php
 
-namespace App\Http\Controllers;
-
-use App\Models\user_book;
+namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
+use App\Http\Controllers\API\BaseController as BaseController;
+use App\Models\UserBook;
+use Illuminate\Support\Facades\Validator;
 
-class UserBookController extends Controller
+
+
+class UserBookController extends BaseController
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
+    public function index(){
+
+        $userbook = UserBook::all();
+        return $this->sendResponse($userbook,"User Books");
+
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+
+    public function store(Request $request){
+        $validator = Validator::make($request->all(), [
+            'book_id' => 'required',
+            'user_id' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return $this->sendError($validator->errors());
+        }
+        $input = $request->all();
+
+        try{
+            $userBook = UserBook::create($input);
+        }catch(\Illuminate\Database\QueryException $e){
+            return $this->sendError('User or book does not exist');
+        }
+
+
+
+        return $this->sendResponse($userBook,"User book created");
+
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
+
+    public function show($id){
+        $userBook = UserBook::find($id);
+        if (is_null($userBook)) {
+            return $this->sendError('UserBook not found!' );
+        }
+        return $userBook;
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\user_book  $user_book
-     * @return \Illuminate\Http\Response
-     */
-    public function show(user_book $user_book)
-    {
-        //
+
+    public function update(Request $request, UserBook $userBook){
+        $input = $request->all();
+        $validator = Validator::make($request->all(), [
+            'book_id',
+            'user_id'
+        ]);
+        if ($validator->fails()) {
+            return $this->sendError('Validation error' , $validator->errors());
+        }
+
+
+
+        $userBook->book_id = $input['book_id'];
+        $userBook->book_id = $input['user_id'];
+
+
+        try{
+            $userBook->save();
+        }catch(\Illuminate\Database\QueryException $e){
+            return $this->sendError('User or book does not exist');
+        }
+
+
+
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\user_book  $user_book
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(user_book $user_book)
-    {
-        //
+    public function destroy(UserBook $userBook, Request $request){
+
+
+        $userBook->delete();
+        return $this->sendResponse($userBook, 'User Book deleted Successfully!' );
+
+
+
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\user_book  $user_book
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, user_book $user_book)
-    {
-        //
-    }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\user_book  $user_book
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(user_book $user_book)
-    {
-        //
-    }
 }
