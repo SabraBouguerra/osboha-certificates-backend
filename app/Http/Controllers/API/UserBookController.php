@@ -71,9 +71,9 @@ class UserBookController extends BaseController
       try{
         $userBook->update($updateParam);
       }catch(\Error $e){
-        return $this->sendError('Thesis not found');
+        return $this->sendError('UserBook not found');
       }
-        return $this->sendResponse($userBook, 'Thesis updated Successfully!' );
+        return $this->sendResponse($userBook, 'UserBook updated Successfully!' );
 
 
 

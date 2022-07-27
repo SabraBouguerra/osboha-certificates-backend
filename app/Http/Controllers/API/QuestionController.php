@@ -1,85 +1,97 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
-use App\Models\question;
 use Illuminate\Http\Request;
+use App\Http\Controllers\API\BaseController as BaseController;
+use App\Models\Question;
+use Illuminate\Support\Facades\Validator;
 
-class QuestionController extends Controller
+
+
+class QuestionController extends BaseController
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
-        //
+
+        $question = Question::all();
+        return $this->sendResponse($question, "Questions");
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'question' => 'required',
+            'pages' => 'required',
+            'quotation' => 'required',
+            'user_books_id' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return $this->sendError($validator->errors());
+        }
+        $input = $request->all();
+
+        try {
+            $question = Question::create($input);
+        } catch (\Illuminate\Database\QueryException $e) {
+            return $this->sendError('Question does not exist');
+        }
+
+        return $this->sendResponse($question, "Question created");
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\question  $question
-     * @return \Illuminate\Http\Response
-     */
-    public function show(question $question)
+
+    public function show($id)
     {
-        //
+        $question = Question::find($id);
+
+        if (is_null($question)) {
+
+            return $this->sendError('Question not found!');
+        }
+        return $this->sendResponse($question, "Question");
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\question  $question
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(question $question)
+
+    public function update(Request $request,  $id)
     {
-        //
+        $input = $request->all();
+        $validator = Validator::make($request->all(), [
+            'question' => 'required',
+            'pages' => 'required',
+            'quotation' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return $this->sendError('Validation error', $validator->errors());
+        }
+
+
+        $question = Question::find($id);
+
+        $updateParam = [
+            "question" => $input['question'],
+            "pages" => $input['pages'],
+            'quotation' =>$input['quotation'],
+        ];
+        try {
+            $question->update($updateParam);
+        } catch (\Error $e) {
+            return $this->sendError('Question not found');
+        }
+        return $this->sendResponse($question, 'Question updated Successfully!');
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\question  $question
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, question $question)
+    public function destroy($id)
     {
-        //
-    }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\question  $question
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(question $question)
-    {
-        //
+        $result = Question::destroy($id);
+
+        if ($result == 0) {
+
+            return $this->sendError('Question not found!');
+        }
+        return $this->sendResponse($result, 'Question deleted Successfully!');
     }
 }

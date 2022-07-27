@@ -33,7 +33,7 @@ class ThesisController extends BaseController
         try{
             $thesis = Thesis::create($input);
         }catch(\Illuminate\Database\QueryException $e){
-            return $this->sendError('UserBook does not exist');
+            return $this->sendError('Thesis does not exist');
         }
 
         return $this->sendResponse($thesis,"Thesis created");
