@@ -94,4 +94,44 @@ class QuestionController extends BaseController
         }
         return $this->sendResponse($result, 'Question deleted Successfully');
     }
+
+
+
+    public function addDegree(Request $request,  $id)
+    {
+        $input = $request->all();
+        $validator = Validator::make($request->all(), [
+            'reviews' => 'required',
+            'degree' => 'required',
+            'reviewer_id' => 'required'
+        ]);
+        if ($validator->fails()) {
+            return $this->sendError('Validation error', $validator->errors());
+        }
+
+
+        $general_informations = Question::find($id);
+
+        $updateParam = [
+            "reviews" => $input['reviews'],
+            "degree" => $input['degree'],
+            "reviewer_id" => $input['reviewer_id'],
+        ];
+        try {
+            $general_informations->update($updateParam);
+        } catch (\Error $e) {
+            return $this->sendError('General Informations does not exist');
+        }
+        return $this->sendResponse($general_informations, 'Degree added Successfully!');
+    }
+
+
+
+
+    public function finalDegree($user_books_id){
+        $degrees = Question::where("user_books_id",$user_books_id)->avg('degree');
+        return $this->sendResponse($degrees, 'Final Degree!');
+    }
+
+
 }

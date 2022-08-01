@@ -12,6 +12,9 @@ class Thesis extends Model
     protected $table = 'thesis';
 
     protected $fillable = [
+        'reviews',
+        'degree',
+        'reviewer_id',
         'thesis_text',
         'pages',
         'user_books_id'

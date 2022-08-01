@@ -97,4 +97,41 @@ class ThesisController extends BaseController
     }
 
 
+
+    public function addDegree(Request $request,  $id)
+    {
+        $input = $request->all();
+        $validator = Validator::make($request->all(), [
+            'reviews' => 'required',
+            'degree' => 'required',
+            'reviewer_id' => 'required'
+        ]);
+        if ($validator->fails()) {
+            return $this->sendError('Validation error', $validator->errors());
+        }
+
+
+        $general_informations = Thesis::find($id);
+
+        $updateParam = [
+            "reviews" => $input['reviews'],
+            "degree" => $input['degree'],
+            "reviewer_id" => $input['reviewer_id'],
+        ];
+        try {
+            $general_informations->update($updateParam);
+        } catch (\Error $e) {
+            return $this->sendError('Thesis does not exist');
+        }
+        return $this->sendResponse($general_informations, 'Degree added Successfully!');
+    }
+
+
+
+
+    public function finalDegree($user_books_id){
+        $degrees = Thesis::where("user_books_id",$user_books_id)->avg('degree');
+        return $this->sendResponse($degrees, 'Final Degree!');
+    }
+
 }

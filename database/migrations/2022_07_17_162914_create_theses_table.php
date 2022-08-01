@@ -17,6 +17,9 @@ return new class extends Migration
             $table->bigIncrements('id')->unsigned()->index();
             $table->text('thesis_text');
             $table->text('pages');
+            $table->text("reviews")->nullable();
+            $table->integer('degree')->nullable();
+            $table->bigInteger('reviewer_id')->unsigned()->nullable();
             $table->bigInteger("user_books_id")->unsigned()->index();
             $table->foreign("user_books_id")->references("id")->on("user_books");
             $table->timestamps();

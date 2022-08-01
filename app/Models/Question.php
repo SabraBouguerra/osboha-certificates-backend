@@ -10,6 +10,9 @@ class Question extends Model
     use HasFactory;
 
     protected $fillable = [
+        'reviews',
+        'degree',
+        'reviewer_id',
         'question',
         'pages',
         'quotation',

@@ -10,6 +10,9 @@ class GeneralInformations extends Model
     use HasFactory;
 
     protected $fillable = [
+        'reviews',
+        'degree',
+        'reviewer_id',
         'general_question',
         'summary',
         'user_books_id'

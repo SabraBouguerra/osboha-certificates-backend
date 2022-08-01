@@ -18,6 +18,9 @@ return new class extends Migration
             $table->text('question');
             $table->text('pages');
             $table->text('quotation');
+            $table->text("reviews")->nullable();
+            $table->integer('degree')->nullable();
+            $table->bigInteger('reviewer_id')->unsigned()->nullable();
             $table->bigInteger("user_books_id")->unsigned()->index();
             $table->foreign("user_books_id")->references("id")->on("user_books");
             $table->timestamps();

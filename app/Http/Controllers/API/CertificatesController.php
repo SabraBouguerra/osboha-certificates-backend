@@ -5,8 +5,10 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController as BaseController;
 use App\Models\Certificates;
+use App\Models\Thesis;
+use App\Models\UserBook;
 use Illuminate\Support\Facades\Validator;
-
+use Illuminate\Support\Facades\DB;
 
 
 class CertificatesController extends BaseController
@@ -31,9 +33,27 @@ class CertificatesController extends BaseController
         }
         $input = $request->all();
 
+        $all_avareges = UserBook::
+        join('general_informations', 'user_books.id', '=', 'general_informations.user_books_id')
+        ->join('questions', 'user_books.id', '=', 'questions.user_books_id')
+        ->join('thesis', 'user_books.id', '=', 'thesis.user_books_id')
+        ->select(\DB::raw('avg(general_informations.degree) as general_informations_degree,avg(questions.degree) as questions_degree,avg(thesis.degree) as thesises_degree'))
+        ->where('user_books.id', $input['user_books_id'])
+        ->get(1);
+        $thesisDegree = $all_avareges[0]['thesises_degree'];
+        $generalInformationsDegree = $all_avareges[0]['general_informations_degree'];
+        $questionsDegree = $all_avareges[0]['questions_degree'];
+        $finalDegree = ($questionsDegree+$generalInformationsDegree+$thesisDegree) /3 ;
+        $certificate = new Certificates();
+        $certificate->user_books_id = $input['user_books_id'];
+        $certificate->thesis_grade = $questionsDegree;
+        $certificate->check_reading_grade = $questionsDegree;
+        $certificate->general_summary_grade = $generalInformationsDegree;
+        $certificate->final_grade = $finalDegree;
         try {
-            $certificate = Certificates::create($input);
+            $certificate->save();
         } catch (\Illuminate\Database\QueryException $e) {
+            echo($e);
             return $this->sendError('User Book does not exist');
         }
 
@@ -56,9 +76,7 @@ class CertificatesController extends BaseController
     public function update(Request $request,  $id)
     {
         $input = $request->all();
-        $validator = Validator::make($request->all(), [
-
-        ]);
+        $validator = Validator::make($request->all(), []);
         if ($validator->fails()) {
             return $this->sendError('Validation error', $validator->errors());
         }
@@ -66,9 +84,7 @@ class CertificatesController extends BaseController
 
         $certificate = Certificates::find($id);
 
-        $updateParam = [
-
-        ];
+        $updateParam = [];
         try {
             $certificate->update($updateParam);
         } catch (\Error $e) {

@@ -23,7 +23,6 @@ class UserContoller extends BaseController
             "name" => "required",
             "email" => "required|email",
             "password" => 'required',
-            "role" => "required"
         ]);
 
         if ($validator->fails()) {

@@ -10,7 +10,11 @@ class Certificates extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_books_id'
+        'user_books_id',
+        "final_grade",
+        'general_summary_grade',
+        "thesis_grade",
+        "check_reading_grade",
     ];
 
     public function user_book(){
