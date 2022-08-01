@@ -5,9 +5,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\BooksController;
+use App\Http\Controllers\API\CertificatesController;
 use App\Http\Controllers\API\QuestionController;
 use App\Http\Controllers\API\ThesisController;
 use App\Http\Controllers\API\UserContoller;
+use App\Models\User;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,6 +35,6 @@ Route::resource('userbook', UserBookController::class);
 Route::resource('users', UserContoller::class);
 Route::resource('thesises', ThesisController::class);
 Route::resource('questions', QuestionController::class);
-
+Route::resource('certificates', CertificatesController::class);
 
 

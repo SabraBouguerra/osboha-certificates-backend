@@ -49,7 +49,7 @@ class QuestionController extends BaseController
 
         if (is_null($question)) {
 
-            return $this->sendError('Question not found!');
+            return $this->sendError('Question does not exist');
         }
         return $this->sendResponse($question, "Question");
     }

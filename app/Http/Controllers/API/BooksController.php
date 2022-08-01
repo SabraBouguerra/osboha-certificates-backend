@@ -6,18 +6,13 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController;
 use App\Models\Book;
-use App\Repositories\book\interfaces\BooksRepositoryInterface;
 
 class BooksController extends BaseController
 {
 
-    private BooksRepositoryInterface $bookService;
-
-
     public function index()
     {
-
-        $books = $this->bookService->getAllBooks();
+        $books = Book::all();
         return $this->sendResponse($books, "Books");
     }
 
@@ -33,7 +28,7 @@ class BooksController extends BaseController
             return $this->sendError('Validate Error', $validator->errors());
         }
 
-        $book = $this->bookService->saveBook($input);
+        $book = Book::create($input);
         return $this->sendResponse($book, 'Book added Successfully!');
     }
 
@@ -42,8 +37,7 @@ class BooksController extends BaseController
         $book = Book::find($id);
 
         if (is_null($book)) {
-
-            return $this->sendError('Book not found!');
+            return $this->sendError('Book does not exist');
         }
         return $this->sendResponse($book, "Book");
     }
@@ -67,9 +61,9 @@ class BooksController extends BaseController
             "book_name" => $input['book_name'],
         ];
         try {
-            $book->update($updateParam);
+            $book->update($updateParam)->where;
         } catch (\Error $e) {
-            return $this->sendError('Book not found');
+            return $this->sendError('Book does not exist');
         }
         return $this->sendResponse($book, 'Book updated Successfully!');
     }
@@ -80,7 +74,7 @@ class BooksController extends BaseController
 
         if ($result == 0) {
 
-            return $this->sendError('Book not found!');
+            return $this->sendError('Book does not exist');
         }
         return $this->sendResponse($result, 'Book deleted Successfully!');
     }

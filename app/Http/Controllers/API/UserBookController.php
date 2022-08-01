@@ -45,7 +45,7 @@ class UserBookController extends BaseController
     public function show($id){
         $userBook = UserBook::find($id);
         if (is_null($userBook)) {
-            return $this->sendError('UserBook not found!' );
+            return $this->sendError('UserBook does not exist' );
         }
         return $userBook;
     }
@@ -71,7 +71,7 @@ class UserBookController extends BaseController
       try{
         $userBook->update($updateParam);
       }catch(\Error $e){
-        return $this->sendError('UserBook not found');
+        return $this->sendError('UserBook does not exist');
       }
         return $this->sendResponse($userBook, 'UserBook updated Successfully!' );
 
@@ -86,7 +86,7 @@ class UserBookController extends BaseController
 
         if ($result == 0) {
 
-            return $this->sendError('UserBook not found!');
+            return $this->sendError('UserBook does not exist');
         }
         return $this->sendResponse($result, 'UserBook deleted Successfully!' );
 

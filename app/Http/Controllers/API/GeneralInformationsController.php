@@ -76,7 +76,7 @@ class GeneralInfromationsController extends BaseController
         try {
             $general_informations->update($updateParam);
         } catch (\Error $e) {
-            return $this->sendError('General Informations not found');
+            return $this->sendError('General Informations does not exist');
         }
         return $this->sendResponse($general_informations, 'General Informations updated Successfully!');
     }
@@ -88,7 +88,7 @@ class GeneralInfromationsController extends BaseController
 
         if ($result == 0) {
 
-            return $this->sendError('General Informations not found!');
+            return $this->sendError('General Informations does not exist');
         }
         return $this->sendResponse($result, 'General Informations deleted Successfully!');
     }
