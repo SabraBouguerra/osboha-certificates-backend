@@ -1,85 +1,95 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
-use App\Models\certificates;
 use Illuminate\Http\Request;
+use App\Http\Controllers\API\BaseController as BaseController;
+use App\Models\Certificates;
+use Illuminate\Support\Facades\Validator;
 
-class CertificatesController extends Controller
+
+
+class GeneralInfromationsController extends BaseController
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
-        //
+
+        $certificate = Certificates::all();
+        return $this->sendResponse($certificate, "Certificate");
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'general_question' => 'required',
+            'summary' => 'required',
+            'user_books_id' => 'required',
+
+        ]);
+
+        if ($validator->fails()) {
+            return $this->sendError($validator->errors());
+        }
+        $input = $request->all();
+
+        try {
+            $certificate = Certificates::create($input);
+        } catch (\Illuminate\Database\QueryException $e) {
+            return $this->sendError('User Book does not exist');
+        }
+
+        return $this->sendResponse($certificate, "Certificate created");
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\certificates  $certificates
-     * @return \Illuminate\Http\Response
-     */
-    public function show(certificates $certificates)
+
+    public function show($id)
     {
-        //
+        $certificate = Certificates::find($id);
+
+        if (is_null($certificate)) {
+
+            return $this->sendError('Certificate does not exist');
+        }
+        return $this->sendResponse($certificate, "Certificates");
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\certificates  $certificates
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(certificates $certificates)
+
+    public function update(Request $request,  $id)
     {
-        //
+        $input = $request->all();
+        $validator = Validator::make($request->all(), [
+            'general_question' => 'required',
+            'summary' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return $this->sendError('Validation error', $validator->errors());
+        }
+
+
+        $certificate = Certificates::find($id);
+
+        $updateParam = [
+            "general_question" => $input['general_question'],
+            "summary" => $input['summary'],
+        ];
+        try {
+            $certificate->update($updateParam);
+        } catch (\Error $e) {
+            return $this->sendError('Certificate not found');
+        }
+        return $this->sendResponse($certificate, 'Certificate updated Successfully!');
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\certificates  $certificates
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, certificates $certificates)
+    public function destroy($id)
     {
-        //
-    }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\certificates  $certificates
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(certificates $certificates)
-    {
-        //
+        $result = Certificates::destroy($id);
+
+        if ($result == 0) {
+
+            return $this->sendError('Certificate not found!');
+        }
+        return $this->sendResponse($result, 'Certificate deleted Successfully!');
     }
 }

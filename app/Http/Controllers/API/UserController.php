@@ -67,7 +67,7 @@ class UserContoller extends BaseController
       try{
         $user->update($updateParam);
       }catch(\Error $e){
-        return $this->sendError('User not found');
+        return $this->sendError('User does not exist');
       }
         return $this->sendResponse($user, 'User updated Successfully!' );
 
@@ -78,7 +78,7 @@ class UserContoller extends BaseController
 
         if ($result == 0) {
 
-            return $this->sendError('User not found!' );
+            return $this->sendError('User does not exist' );
         }
         return $this->sendResponse($result, 'User deleted Successfully!' );
 

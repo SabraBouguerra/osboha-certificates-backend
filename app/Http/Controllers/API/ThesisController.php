@@ -33,7 +33,7 @@ class ThesisController extends BaseController
         try{
             $thesis = Thesis::create($input);
         }catch(\Illuminate\Database\QueryException $e){
-            return $this->sendError('Thesis does not exist');
+            return $this->sendError('User Book does not exist');
         }
 
         return $this->sendResponse($thesis,"Thesis created");
@@ -46,7 +46,7 @@ class ThesisController extends BaseController
 
         if (is_null($thesis)) {
 
-            return $this->sendError('thesis not found!' );
+            return $this->sendError('Thesis does not exist' );
         }
         return $this->sendResponse($thesis,"Thesis");
     }
@@ -72,7 +72,7 @@ class ThesisController extends BaseController
       try{
         $thesis->update($updateParam);
       }catch(\Error $e){
-        return $this->sendError('Thesis not found');
+        return $this->sendError('Thesis does not exist');
       }
         return $this->sendResponse($thesis, 'Thesis updated Successfully!' );
 

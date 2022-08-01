@@ -36,7 +36,7 @@ class GeneralInfromationsController extends BaseController
         try {
             $general_informations = GeneralInformations::create($input);
         } catch (\Illuminate\Database\QueryException $e) {
-            return $this->sendError('general_informations does not exist');
+            return $this->sendError('User Book does not exist');
         }
 
         return $this->sendResponse($general_informations, "General Informations created");
@@ -49,7 +49,7 @@ class GeneralInfromationsController extends BaseController
 
         if (is_null($general_informations)) {
 
-            return $this->sendError('General Informations not found!');
+            return $this->sendError('General Informations does not exist');
         }
         return $this->sendResponse($general_informations, "General Informations");
     }

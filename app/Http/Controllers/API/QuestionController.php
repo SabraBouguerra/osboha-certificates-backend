@@ -78,7 +78,7 @@ class QuestionController extends BaseController
         try {
             $question->update($updateParam);
         } catch (\Error $e) {
-            return $this->sendError('Question not found');
+            return $this->sendError('User Book does not exist');
         }
         return $this->sendResponse($question, 'Question updated Successfully!');
     }
@@ -90,8 +90,8 @@ class QuestionController extends BaseController
 
         if ($result == 0) {
 
-            return $this->sendError('Question not found!');
+            return $this->sendError('Question does not exist');
         }
-        return $this->sendResponse($result, 'Question deleted Successfully!');
+        return $this->sendResponse($result, 'Question deleted Successfully');
     }
 }
