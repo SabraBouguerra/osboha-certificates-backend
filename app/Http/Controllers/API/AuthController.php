@@ -32,7 +32,9 @@ class AuthController extends BaseController
 
 
     public function register(Request $request)
+
     {
+        echo('s');
         $validator = Validator::make($request->all(), [
             "name" => "required",
             "email" => "required|email",
@@ -40,7 +42,7 @@ class AuthController extends BaseController
             "c_password" => 'required|same:password',
 
         ]);
-
+        echo('s');
 
         if ($validator->fails()) {
             return $this->sendError($validator->errors());
