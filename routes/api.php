@@ -54,7 +54,7 @@ Route::group(['prefix' => 'books'], function () {
 //Users routes
 
 Route::group(['prefix' => 'users'], function () {
-    Route::get('/', [UserController::class, 'index']);
+    Route::get('/', [UserController::class, 'index'])->middleware(['auth:api','role:admin']);
     Route::post('/', [UserController::class, 'store'])->middleware(['auth:api','role:user|admin']);
     Route::get('/{id}', [UserController::class, 'show'])->middleware(['auth:api']);
     Route::patch('/', [UserController::class, 'update'])->middleware(['auth:api','role:user|admin']);
