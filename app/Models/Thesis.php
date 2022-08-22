@@ -20,7 +20,13 @@ class Thesis extends Model
         'user_books_id'
     ];
 
+    protected $with = array('photos');
+
     public function user_books(){
         return $this->belongsTo(UserBook::class,'user_books_id');
+    }
+
+    public function photos(){
+        return $this->hasMany(Photos::class);
     }
 }

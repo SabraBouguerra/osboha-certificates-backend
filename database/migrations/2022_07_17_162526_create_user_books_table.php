@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('user_books', function (Blueprint $table) {
             $table->bigIncrements('id')->unsigned()->index();
+            $table->enum('status', ['open', 'requested', 'finished']);
             $table->bigInteger("user_id")->unsigned()->index();
             $table->foreign("user_id")->references("id")->on("users");
             $table->bigInteger("book_id")->unsigned()->index();

@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 
-class UserContoller extends BaseController
+class UserController extends BaseController
 {
     public function index(){
 

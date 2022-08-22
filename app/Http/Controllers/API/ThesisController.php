@@ -5,11 +5,15 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController as BaseController;
 use App\Models\Thesis;
 use Illuminate\Support\Facades\Validator;
+use App\Traits\MediaTraits;
 
 
 
 class ThesisController extends BaseController
 {
+
+    use MediaTraits;
+
     public function index(){
 
         $thesis = Thesis::all();
@@ -133,5 +137,28 @@ class ThesisController extends BaseController
         $degrees = Thesis::where("user_books_id",$user_books_id)->avg('degree');
         return $this->sendResponse($degrees, 'Final Degree!');
     }
+
+    public function uploadPhoto(Request $request,$id){
+        $validator = Validator::make($request->all(), [
+            "images"    => "required|array|min:1|max:2",
+            "images.*"  => 'required|image|mimes:png,jpg,jpeg,gif,svg|max:2048',
+         ]);
+
+         if ($validator->fails()) {
+             return $this->sendError($validator->errors());
+         }
+         $thesis = Thesis::find($id);
+         if (is_null($thesis)) {
+            return $this->sendError('Thesis does not exist' );
+        }
+         foreach ($request->file('images') as $imagefile) {
+            $this->createMedia($imagefile, $thesis->id);
+         }
+         return $this->sendResponse($thesis, 'Photo uploaded Successfully!');
+    }
+
+
+
+
 
 }

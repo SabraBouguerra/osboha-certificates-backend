@@ -5,7 +5,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController as BaseController;
 use App\Models\UserBook;
 use Illuminate\Support\Facades\Validator;
-
+use Illuminate\Support\Facades\Auth;
 
 
 class UserBookController extends BaseController
@@ -20,25 +20,23 @@ class UserBookController extends BaseController
 
     public function store(Request $request){
         $validator = Validator::make($request->all(), [
-            'book_id' => 'required',
-            'user_id' => 'required'
+            'book_id' => 'required'
         ]);
+
+
 
         if ($validator->fails()) {
             return $this->sendError($validator->errors());
         }
         $input = $request->all();
-
+        $input['status'] = 'open';
+        $input['user_id'] = Auth::id();
         try{
             $userBook = UserBook::create($input);
         }catch(\Illuminate\Database\QueryException $e){
             return $this->sendError('User or book does not exist');
         }
-
-
-
         return $this->sendResponse($userBook,"User book created");
-
     }
 
 
