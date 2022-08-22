@@ -9,7 +9,7 @@ use App\Http\Controllers\API\FQAController;
 use App\Http\Controllers\API\GeneralInformationsController;
 use App\Http\Controllers\API\QuestionController;
 use App\Http\Controllers\API\ThesisController;
-use App\Http\Controllers\API\UserContoller;
+use App\Http\Controllers\API\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -54,11 +54,11 @@ Route::group(['prefix' => 'books'], function () {
 //Users routes
 
 Route::group(['prefix' => 'users'], function () {
-    Route::get('/', [UserContoller::class, 'index'])->middleware(['auth:api','role:reviewer|admin']);
-    Route::post('/', [UserContoller::class, 'store'])->middleware(['auth:api','role:user|admin']);
-    Route::get('/{id}', [UserContUserContolleroller::class, 'show'])->middleware(['auth:api']);
-    Route::patch('/', [UserContoller::class, 'update'])->middleware(['auth:api','role:user|admin']);
-    Route::delete('/', [UserContoller::class, 'delete'])->middleware(['auth:api' ,'role:user|admin']);
+    Route::get('/', [UserController::class, 'index']);
+    Route::post('/', [UserController::class, 'store'])->middleware(['auth:api','role:user|admin']);
+    Route::get('/{id}', [UserController::class, 'show'])->middleware(['auth:api']);
+    Route::patch('/', [UserController::class, 'update'])->middleware(['auth:api','role:user|admin']);
+    Route::delete('/', [UserController::class, 'delete'])->middleware(['auth:api' ,'role:user|admin']);
 });
 
 
