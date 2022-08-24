@@ -17,7 +17,7 @@ class SuperAdminSeeder extends Seeder
      */
     public function run()
     {
-        $password = Hash::make('admin');
+        $password = Hash::make('adminadminadmin');
        $role =  Role:: findByName('admin', 'api');
         echo($role);
         $user = User::create([

@@ -22,13 +22,25 @@ class BooksController extends BaseController
         $input = $request->all();
         $validator = Validator::make($input, [
             'pages' => 'required',
-            'book_name' => 'required'
+            'book_name' => 'required',
+            'type_id' => 'required',
+            "category_id" => 'required'
         ]);
         if ($validator->fails()) {
             return $this->sendError('Validate Error', $validator->errors());
         }
 
-        $book = Book::create($input);
+        try{
+            $book = Book::create($input);
+          }catch (\Illuminate\Database\QueryException $e){
+            $errorCode = $e->errorInfo[1];
+            if($errorCode == 1062){
+                return $this->sendError('Book already exist');
+            }else{
+                return $this->sendError('Type or Category does not exist');
+            }
+        }
+
         return $this->sendResponse($book, 'Book added Successfully!');
     }
 
@@ -48,7 +60,8 @@ class BooksController extends BaseController
         $input = $request->all();
         $validator = Validator::make($input, [
             'pages' => 'required',
-            'book_name' => 'required'
+            'book_name' => 'required',
+
         ]);
         if ($validator->fails()) {
             return $this->sendError('Validation error', $validator->errors());

@@ -36,7 +36,7 @@ class QuestionController extends BaseController
         try {
             $question = Question::create($input);
         } catch (\Illuminate\Database\QueryException $e) {
-            return $this->sendError('Question does not exist');
+            return $this->sendError('User Book does not exist');
         }
 
         return $this->sendResponse($question, "Question created");

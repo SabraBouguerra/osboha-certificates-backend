@@ -22,6 +22,7 @@ class Thesis extends Model
 
     protected $with = array('photos');
 
+
     public function user_books(){
         return $this->belongsTo(UserBook::class,'user_books_id');
     }

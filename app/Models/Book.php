@@ -11,11 +11,23 @@ class Book extends Model
 
     protected $fillable = [
         'book_name',
-        'pages'
+        'pages',
+        'type_id',
+        'category_id'
     ];
 
     public function users(){
         return $this->belongsToMany(User::class,'user_books');
     }
 
+
+    protected $with = array('type','category');
+
+    public function type(){
+        return $this->belongsTo(BookType::class,'type_id');
+    }
+
+    public function category(){
+        return $this->belongsTo(BookCategory::class,'category_id');
+    }
 }
