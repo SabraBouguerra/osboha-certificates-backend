@@ -93,4 +93,33 @@ class UserBookController extends BaseController
     }
 
 
+    public function changeStatus(Request $request,$id){
+        $input = $request->all();
+        $validator = Validator::make($request->all(), [
+            'status' => 'required'
+        ]);
+        if ($validator->fails()) {
+            return $this->sendError('Validation error' , $validator->errors());
+        }
+
+
+        $userBook = UserBook::find($id);
+
+        $updateParam = [
+            'status' => $input['status']
+        ];
+      try{
+        $userBook->update($updateParam);
+      }catch(\Error $e){
+        return $this->sendError('UserBook does not exist');
+      }
+        return $this->sendResponse($userBook, 'UserBook updated Successfully!' );
+
+
+
+
+    }
+
+
+
 }

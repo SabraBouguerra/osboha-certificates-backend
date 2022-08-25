@@ -6,6 +6,9 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController;
 use App\Models\Book;
+use App\Models\UserBook;
+use Illuminate\Support\Facades\Auth;
+
 
 class BooksController extends BaseController
 {
@@ -90,5 +93,26 @@ class BooksController extends BaseController
             return $this->sendError('Book does not exist');
         }
         return $this->sendResponse($result, 'Book deleted Successfully!');
+    }
+
+    public function getBooksForUser(){
+        $id = Auth::id();
+        $hasBook = UserBook::where('status','open')->where('user_id',$id)->get();
+        if(count($hasBook) == 0){
+            $books = Book::select([
+                'books.*',
+                'has_certificate' => UserBook::join('users', 'user_books.user_id', '=', 'users.id')
+                ->selectRaw('count(status)')
+                        ->whereColumn('books.id', 'user_books.book_id')
+                        ->where('user_books.user_id',$id)
+                        ->where('user_books.status',"finished"),
+                'certificates_count' => UserBook::selectRaw('count(status)')
+                ->whereColumn('books.id', 'user_books.book_id')
+                ->where('user_books.status',"finished"),
+            ])->get();
+            return $this->sendResponse($books,'Books');
+        }
+
+        return  $this->sendResponse($hasBook,'Book');
     }
 }

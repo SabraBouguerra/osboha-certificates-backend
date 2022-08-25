@@ -12,7 +12,7 @@ use App\Http\Controllers\API\ThesisController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\BookCategoryController;
 use App\Http\Controllers\API\BookTypeController;
-
+use App\Http\Controllers\API\EmailVerificationController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -59,6 +59,7 @@ Route::group(['prefix' => 'type'], function () {
 Route::group(['prefix' => 'books'], function () {
     Route::get('/', [BooksController::class, 'index'])->middleware(['auth:api']);
     Route::post('/', [BooksController::class, 'store'])->middleware(['auth:api', 'role:admin']);
+    Route::get('/user',[BooksController::class ,'getBooksForUser'])->middleware(['auth:api']);
     Route::get('/{id}', [BooksController::class, 'show'])->middleware(['auth:api']);
     Route::patch('/{id}', [BooksController::class, 'update'])->middleware(['auth:api','role:admin']);
     Route::delete('/{id}', [BooksController::class, 'destroy'])->middleware(['auth:api','role:admin']);
@@ -132,3 +133,8 @@ Route::group(['prefix' => 'fqa'], function () {
     Route::patch('/{id}', [FQAController::class, 'update'])->middleware(['auth:api','role:admin']);
     Route::delete('/{id}', [FQAController::class, 'destroy'])->middleware(['auth:api','role:admin']);
 });
+
+
+
+Route::post('email/verification-notification', [EmailVerificationController::class, 'sendVerificationEmail'])->middleware('auth:api');
+Route::get('verify-email/{id}/{hash}', [EmailVerificationController::class, 'verify'])->name('verification.verify')->middleware('auth:api');

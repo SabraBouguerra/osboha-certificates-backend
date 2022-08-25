@@ -37,7 +37,7 @@ class CertificatesController extends BaseController
         join('general_informations', 'user_books.id', '=', 'general_informations.user_books_id')
         ->join('questions', 'user_books.id', '=', 'questions.user_books_id')
         ->join('thesis', 'user_books.id', '=', 'thesis.user_books_id')
-        ->select(\DB::raw('avg(general_informations.degree) as general_informations_degree,avg(questionسs.degree) as questions_degree,avg(thesis.degree) as thesises_degree'))
+        ->select(\DB::raw('avg(general_informations.degree) as general_informations_degree,avg(questions.degree) as questions_degree,avg(thesis.degree) as thesises_degree'))
         ->where('user_books.id', $input['user_books_id'])
         ->get();
         $thesisDegree = $all_avareges[0]['thesises_degree'];
