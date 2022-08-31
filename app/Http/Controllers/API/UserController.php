@@ -3,6 +3,8 @@
 
 namespace App\Http\Controllers\API;
 
+
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController as BaseController;
 use App\Models\User;
@@ -115,21 +117,30 @@ class UserController extends BaseController
 
 
 
-    public function uploadPdf(Request $request,$id){
+    public function uploadPdf(Request $request){
         $validator = Validator::make($request->all(), [
-            'pdf' => "required|mimetypes:application/pdf|max:10000"
+            'pdf' => "required|mimetypes:application/pdf"
          ]);
 
          if ($validator->fails()) {
              return $this->sendError($validator->errors());
          }
-         $user = User::find($id);
-         if (is_null($user)) {
-            return $this->sendError('User does not exist' );
-        }
-
+         $user = Auth::user();
         $this->createUserPdf($request->file('pdf'), $user);
          return $this->sendResponse($user, 'Pdf uploaded Successfully!');
+    }
+
+
+    public function activeUser(Request $request,$id){
+        $user = User::find($id);
+        $this->deletePdf($user->pdf);
+      try{
+        $user->update(['is_active' => true,'pdf' => null]);
+      }catch(\Error $e){
+        return $this->sendError('User does not exist');
+      }
+
+        return $this->sendResponse($user, 'Pdf uploaded Successfully!');
     }
 
 }

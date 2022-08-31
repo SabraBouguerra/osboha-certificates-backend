@@ -14,7 +14,8 @@ class Book extends Model
         'pages',
         'type_id',
         'category_id',
-        'status'
+        'status',
+
     ];
 
     public function users(){

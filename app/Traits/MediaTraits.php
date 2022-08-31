@@ -18,7 +18,8 @@ Trait MediaTraits{
         return $media;
     }
 
-    function createPdfMedia($media, $user){
+    function createUserPdf($media, $user){
+
         $pdfName = time().'.'. $media->extension();
         $media->move(public_path('assets/images'), $pdfName);
         $user->pdf = $pdfName;
@@ -46,8 +47,14 @@ Trait MediaTraits{
     function deleteMedia($media_id){
         $currentMedia= Photos::find($media_id);
          //delete current media
-        File::delete(public_path('assets/images/'.$currentMedia->media));
+        File::delete(public_path('assets/images/'.$currentMedia->path));
         $currentMedia->delete();
+    }
+
+    function deletePdf($path){
+
+        File::delete(public_path('assets/images/'.$path));
+
     }
 
 

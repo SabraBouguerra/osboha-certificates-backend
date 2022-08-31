@@ -74,8 +74,10 @@ Route::group(['prefix' => 'users'], function () {
     Route::get('/', [UserController::class, 'index'])->middleware(['auth:api','role:admin']);
     Route::post('/', [UserController::class, 'store'])->middleware(['auth:api','role:user|admin']);
     Route::get('/{id}', [UserController::class, 'show'])->middleware(['auth:api']);
+    Route::patch('/activate/{id}',[UserController::class, 'activeUser'])->middleware(['auth:api','role:admin|reviewer']);
     Route::patch('/{id}', [UserController::class, 'update'])->middleware(['auth:api','role:user|admin']);
     Route::delete('/{id}', [UserController::class, 'destroy'])->middleware(['auth:api' ,'role:user|admin']);
+    Route::post('/upload-pdf',[UserController::class, 'uploadPdf'])->middleware((['auth:api']));
 });
 
 
