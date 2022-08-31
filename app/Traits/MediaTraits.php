@@ -7,15 +7,24 @@ use Illuminate\Support\Facades\File;
 
 Trait MediaTraits{
 
-    function createMedia($media, $id){
+    function createThesisMedia($media, $id){
         $imageName = time().'.'. $media->extension();
         $media->move(public_path('assets/images'), $imageName);
-        // link media with comment
+
         $media = new Photos();
         $media->path = $imageName;
         $media->thesis_id = $id;
         $media->save();
         return $media;
+    }
+
+    function createPdfMedia($media, $user){
+        $pdfName = time().'.'. $media->extension();
+        $media->move(public_path('assets/images'), $pdfName);
+        $user->pdf = $pdfName;
+        $user->save();
+        return $user;
+
     }
 
     function updateMedia($media, $media_id){

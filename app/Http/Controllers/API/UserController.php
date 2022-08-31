@@ -9,9 +9,12 @@ use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
+use App\Traits\MediaTraits;
 
 class UserController extends BaseController
 {
+
+    use MediaTraits;
     public function index(){
 
        $users = User::all();
@@ -110,5 +113,23 @@ class UserController extends BaseController
 
     }
 
+
+
+    public function uploadPdf(Request $request,$id){
+        $validator = Validator::make($request->all(), [
+            'pdf' => "required|mimetypes:application/pdf|max:10000"
+         ]);
+
+         if ($validator->fails()) {
+             return $this->sendError($validator->errors());
+         }
+         $user = User::find($id);
+         if (is_null($user)) {
+            return $this->sendError('User does not exist' );
+        }
+
+        $this->createUserPdf($request->file('pdf'), $user);
+         return $this->sendResponse($user, 'Pdf uploaded Successfully!');
+    }
 
 }

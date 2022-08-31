@@ -5,12 +5,13 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController as BaseController;
 use App\Models\Question;
+use App\Models\Quotation;
 use Illuminate\Support\Facades\Validator;
 
 
 
 class QuestionController extends BaseController
-{
+ {
     public function index()
     {
 
@@ -23,19 +24,24 @@ class QuestionController extends BaseController
     {
         $validator = Validator::make($request->all(), [
             'question' => 'required',
-            'pages' => 'required',
-            'quotation' => 'required',
-            'user_books_id' => 'required'
+            'quotation' => 'required|array',
+            'quotation.text' => 'required',
+            'user_book_id' => 'required',
+            "starting_page"=> 'required',
+            "ending_page"=> 'required'
         ]);
 
         if ($validator->fails()) {
             return $this->sendError($validator->errors());
         }
         $input = $request->all();
+        $quotationInput = $input['quotation'];
+
 
         try {
-            $question = Question::create($input);
+            $question = Question::create($input)->quotation()->create($quotationInput);
         } catch (\Illuminate\Database\QueryException $e) {
+            echo($e);
             return $this->sendError('User Book does not exist');
         }
 
@@ -72,8 +78,8 @@ class QuestionController extends BaseController
 
         $updateParam = [
             "question" => $input['question'],
-            "pages" => $input['pages'],
-            'quotation' =>$input['quotation'],
+            "starting_page"=> 'required',
+            "ending_page"=> 'required',
         ];
         try {
             $question->update($updateParam);
@@ -128,10 +134,22 @@ class QuestionController extends BaseController
 
 
 
-    public function finalDegree($user_books_id){
-        $degrees = Question::where("user_books_id",$user_books_id)->avg('degree');
+    public function finalDegree($user_book_id){
+        $degrees = Question::where("user_book_id",$user_book_id)->avg('degree');
         return $this->sendResponse($degrees, 'Final Degree!');
     }
 
 
 }
+
+// $post = Post::find(1);
+
+
+
+// $comment = new Comment;
+
+// $comment->comment = "Hi ItSolutionStuff.com";
+
+
+
+// $post = $post->comments()->save($comment);

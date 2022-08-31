@@ -31,9 +31,11 @@ class UserBookController extends BaseController
         $input = $request->all();
         $input['status'] = 'open';
         $input['user_id'] = Auth::id();
+
         try{
             $userBook = UserBook::create($input);
         }catch(\Illuminate\Database\QueryException $e){
+            echo($e);
             return $this->sendError('User or book does not exist');
         }
         return $this->sendResponse($userBook,"User book created");

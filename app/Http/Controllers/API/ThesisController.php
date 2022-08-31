@@ -26,7 +26,7 @@ class ThesisController extends BaseController
         $validator = Validator::make($request->all(), [
            "thesis_text" => "required",
            "pages" => 'required',
-           "user_books_id" => 'required'
+           "user_book_id" => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -133,8 +133,8 @@ class ThesisController extends BaseController
 
 
 
-    public function finalDegree($user_books_id){
-        $degrees = Thesis::where("user_books_id",$user_books_id)->avg('degree');
+    public function finalDegree($user_book_id){
+        $degrees = Thesis::where("user_book_id",$user_book_id)->avg('degree');
         return $this->sendResponse($degrees, 'Final Degree!');
     }
 
@@ -152,7 +152,7 @@ class ThesisController extends BaseController
             return $this->sendError('Thesis does not exist' );
         }
          foreach ($request->file('images') as $imagefile) {
-            $this->createMedia($imagefile, $thesis->id);
+            $this->createThesisMedia($imagefile, $thesis->id);
          }
          return $this->sendResponse($thesis, 'Photo uploaded Successfully!');
     }

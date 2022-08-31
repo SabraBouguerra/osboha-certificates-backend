@@ -17,14 +17,14 @@ class Thesis extends Model
         'reviewer_id',
         'thesis_text',
         'pages',
-        'user_books_id'
+        'user_book_id'
     ];
 
     protected $with = array('photos');
 
 
-    public function user_books(){
-        return $this->belongsTo(UserBook::class,'user_books_id');
+    public function user_book(){
+        return $this->belongsTo(UserBook::class,'user_book_id');
     }
 
     public function photos(){

@@ -15,10 +15,10 @@ class GeneralInformations extends Model
         'reviewer_id',
         'general_question',
         'summary',
-        'user_books_id'
+        'user_book_id'
     ];
 
-    public function user_books(){
-        return $this->belongsTo(UserBook::class,'user_books_id');
+    public function user_book(){
+        return $this->belongsTo(UserBook::class,'user_book_id');
     }
 }

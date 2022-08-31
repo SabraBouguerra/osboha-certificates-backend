@@ -13,11 +13,12 @@ class Book extends Model
         'book_name',
         'pages',
         'type_id',
-        'category_id'
+        'category_id',
+        'status'
     ];
 
     public function users(){
-        return $this->belongsToMany(User::class,'user_books');
+        return $this->belongsToMany(User::class,'user_book');
     }
 
 
@@ -29,6 +30,10 @@ class Book extends Model
 
     public function category(){
         return $this->belongsTo(BookCategory::class,'category_id');
+    }
+
+    public function userBook(){
+        return $this->hasMany(UserBook::class);
     }
 
 

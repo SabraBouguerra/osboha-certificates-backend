@@ -29,7 +29,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
 
     public function books(){
-        return $this->belongsToMany(Book::class,'user_books');
+        return $this->belongsToMany(Book::class,'user_book');
     }
 
 
@@ -52,4 +52,8 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+
+
+
 }

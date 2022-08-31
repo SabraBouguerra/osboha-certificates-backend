@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('user_books', function (Blueprint $table) {
+        Schema::create('user_book', function (Blueprint $table) {
             $table->bigIncrements('id')->unsigned()->index();
             $table->enum('status', ['open', 'requested', 'finished']);
             $table->bigInteger("user_id")->unsigned()->index();
@@ -31,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('user_books');
+        Schema::dropIfExists('user_book');
     }
 };

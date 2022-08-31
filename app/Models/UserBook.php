@@ -15,6 +15,10 @@ class UserBook extends Model
     ];
 
 
+    protected $table = 'user_book';
+
+    protected $with = array('thesises');
+
 
     public function user(){
         return $this->belongsTo(User::class,'user_id');
@@ -27,4 +31,13 @@ class UserBook extends Model
     public function certificates(){
         return $this->hasMany(certificates::class);
     }
+
+    public function thesises(){
+        return $this->hasMany(Thesis::class);
+    }
+
+    public function questions(){
+        return $this->hasMany(Question::class);
+    }
 }
+

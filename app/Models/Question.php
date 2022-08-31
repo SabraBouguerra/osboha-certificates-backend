@@ -14,13 +14,20 @@ class Question extends Model
         'degree',
         'reviewer_id',
         'question',
-        'pages',
-        'quotation',
-        'user_books_id'
+        'user_book_id',
+        "starting_page",
+        "ending_page"
     ];
 
 
-    public function user_books(){
-        return $this->belongsTo(UserBook::class,'user_books_id');
+    protected $with = array('quotation');
+
+    public function user_book(){
+        return $this->belongsTo(UserBook::class,'user_book_id');
+    }
+
+
+    public function quotation(){
+        return $this->hasMany(Quotation::class);
     }
 }

@@ -23,7 +23,7 @@ class GeneralInformationsController extends BaseController
         $validator = Validator::make($request->all(), [
             'general_question' => 'required',
             'summary' => 'required',
-            'user_books_id' => 'required',
+            'user_book_id' => 'required',
 
         ]);
 
@@ -124,9 +124,9 @@ class GeneralInformationsController extends BaseController
 
 
 
-    public function finalDegree($user_books_id){
+    public function finalDegree($user_book_id){
 
-        $degrees = GeneralInformations::where("user_books_id",$user_books_id)->avg('degree');
+        $degrees = GeneralInformations::where("user_book_id",$user_book_id)->avg('degree');
         return $this->sendResponse($degrees, 'Final Degree!');
     }
 

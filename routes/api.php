@@ -60,6 +60,7 @@ Route::group(['prefix' => 'books'], function () {
     Route::get('/', [BooksController::class, 'index'])->middleware(['auth:api']);
     Route::post('/', [BooksController::class, 'store'])->middleware(['auth:api', 'role:admin']);
     Route::get('/user',[BooksController::class ,'getBooksForUser'])->middleware(['auth:api']);
+    Route::get('/user/{id}',[BooksController::class ,'getOpenBook'])->middleware(['auth:api']);
     Route::get('/{id}', [BooksController::class, 'show'])->middleware(['auth:api']);
     Route::patch('/{id}', [BooksController::class, 'update'])->middleware(['auth:api','role:admin']);
     Route::delete('/{id}', [BooksController::class, 'destroy'])->middleware(['auth:api','role:admin']);
@@ -93,8 +94,8 @@ Route::group(['prefix' => 'thesises'], function () {
 
 //questions routes
 Route::group(['prefix' => 'questions'], function () {
-    Route::get('/', [QuestionController::class, 'index'])->middleware(['auth:api','role:reviewer|admin']);
-    Route::post('/', [QuestionController::class, 'store'])->middleware(['auth:api','role:user|admin']);
+    Route::get('/', [QuestionController::class, 'index']);
+    Route::post('/', [QuestionController::class, 'store']);
     Route::get('/{id}', [QuestionController::class, 'show'])->middleware(['auth:api']);
     Route::patch('/{id}', [QuestionController::class, 'update'])->middleware(['auth:api', 'role:user|admin']);
     Route::delete('/{id}', [QuestionController::class, 'destroy'])->middleware(['auth:api','role:user|admin']);

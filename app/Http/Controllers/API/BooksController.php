@@ -9,6 +9,7 @@ use App\Models\Book;
 use App\Models\UserBook;
 use Illuminate\Support\Facades\Auth;
 
+use function PHPUnit\Framework\isNull;
 
 class BooksController extends BaseController
 {
@@ -33,13 +34,13 @@ class BooksController extends BaseController
             return $this->sendError('Validate Error', $validator->errors());
         }
 
-        try{
+        try {
             $book = Book::create($input);
-          }catch (\Illuminate\Database\QueryException $e){
+        } catch (\Illuminate\Database\QueryException $e) {
             $errorCode = $e->errorInfo[1];
-            if($errorCode == 1062){
+            if ($errorCode == 1062) {
                 return $this->sendError('Book already exist');
-            }else{
+            } else {
                 return $this->sendError('Type or Category does not exist');
             }
         }
@@ -95,24 +96,37 @@ class BooksController extends BaseController
         return $this->sendResponse($result, 'Book deleted Successfully!');
     }
 
-    public function getBooksForUser(){
+    public function getBooksForUser()
+    {
         $id = Auth::id();
-        $hasBook = UserBook::where('status','open')->where('user_id',$id)->get();
-        if(count($hasBook) == 0){
-            $books = Book::select([
-                'books.*',
-                'has_certificate' => UserBook::join('users', 'user_books.user_id', '=', 'users.id')
+        $current_book = Book::select('books.*','user_book.status')->join('user_book','books.id','=','user_book.book_id')->where('user_id',$id)->where('status','open')->get();
+        $books = Book::select([
+            'books.*',
+            'has_certificate' => UserBook::join('users', 'user_book.user_id', '=', 'users.id')
                 ->selectRaw('count(status)')
-                        ->whereColumn('books.id', 'user_books.book_id')
-                        ->where('user_books.user_id',$id)
-                        ->where('user_books.status',"finished"),
-                'certificates_count' => UserBook::selectRaw('count(status)')
-                ->whereColumn('books.id', 'user_books.book_id')
-                ->where('user_books.status',"finished"),
-            ])->get();
-            return $this->sendResponse($books,'Books');
-        }
+                ->whereColumn('books.id', 'user_book.book_id')
+                ->where('user_book.user_id', $id)
+                ->where('user_book.status', "finished"),
+            'certificates_count' => UserBook::selectRaw('count(status)')
+                ->whereColumn('books.id', 'user_book.book_id')
+                ->where('user_book.status', "finished"),
+        ])->get();
+        $res = [ 'open_book' => $current_book,'books' =>$books];
+        return $this->sendResponse($res, 'Books');
+    }
 
-        return  $this->sendResponse($hasBook,'Book');
+
+    public function getOpenBook($id)
+    {
+
+        $userId = Auth::id();
+        try{
+        $book = Book::find($id)->load(['userBook' => function ($query)  use ($userId) {
+            $query->where('user_id',$userId);
+        }]);}
+        catch (\Error $e) {
+            return $this->sendError('Book does not exist');
+        }
+        return $this->sendResponse($book, 'Books');
     }
 }

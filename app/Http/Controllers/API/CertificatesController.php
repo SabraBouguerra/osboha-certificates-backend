@@ -24,7 +24,7 @@ class CertificatesController extends BaseController
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'user_books_id' => 'required',
+            'user_book_id' => 'required',
 
         ]);
 
@@ -34,18 +34,18 @@ class CertificatesController extends BaseController
         $input = $request->all();
 
         $all_avareges = UserBook::
-        join('general_informations', 'user_books.id', '=', 'general_informations.user_books_id')
-        ->join('questions', 'user_books.id', '=', 'questions.user_books_id')
-        ->join('thesis', 'user_books.id', '=', 'thesis.user_books_id')
+        join('general_informations', 'user_book.id', '=', 'general_informations.user_book_id')
+        ->join('questions', 'user_book.id', '=', 'questions.user_book_id')
+        ->join('thesis', 'user_book.id', '=', 'thesis.user_book_id')
         ->select(\DB::raw('avg(general_informations.degree) as general_informations_degree,avg(questions.degree) as questions_degree,avg(thesis.degree) as thesises_degree'))
-        ->where('user_books.id', $input['user_books_id'])
+        ->where('user_book.id', $input['user_book_id'])
         ->get();
         $thesisDegree = $all_avareges[0]['thesises_degree'];
         $generalInformationsDegree = $all_avareges[0]['general_informations_degree'];
         $questionsDegree = $all_avareges[0]['questions_degree'];
         $finalDegree = ($questionsDegree+$generalInformationsDegree+$thesisDegree) /3 ;
         $certificate = new Certificates();
-        $certificate->user_books_id = $input['user_books_id'];
+        $certificate->user_book_id = $input['user_book_id'];
         $certificate->thesis_grade = $questionsDegree;
         $certificate->check_reading_grade = $questionsDegree;
         $certificate->general_summary_grade = $generalInformationsDegree;
