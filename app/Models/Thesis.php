@@ -16,7 +16,8 @@ class Thesis extends Model
         'degree',
         'reviewer_id',
         'thesis_text',
-        'pages',
+        'starting_page',
+        'ending_page',
         'user_book_id'
     ];
 

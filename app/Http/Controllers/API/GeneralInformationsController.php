@@ -130,4 +130,9 @@ class GeneralInformationsController extends BaseController
         return $this->sendResponse($degrees, 'Final Degree!');
     }
 
+    public Function getByUserBookId($user_book_id){
+
+        $general_informations = GeneralInformations::get();
+        return $this->sendResponse($general_informations, 'General Informations!');
+    }
 }

@@ -25,8 +25,10 @@ class ThesisController extends BaseController
     public function store(Request $request){
         $validator = Validator::make($request->all(), [
            "thesis_text" => "required",
-           "pages" => 'required',
-           "user_book_id" => 'required'
+           "ending_page" => 'required',
+           "starting_page" => 'required',
+           "user_book_id" => 'required',
+        //    "image" => "required|image|mimes:png,jpg,jpeg,gif,svg|max:2048",
         ]);
 
         if ($validator->fails()) {
@@ -36,8 +38,9 @@ class ThesisController extends BaseController
 
         try{
             $thesis = Thesis::create($input);
+            $this->createThesisMedia($request->file('image'), $thesis);
         }catch(\Illuminate\Database\QueryException $e){
-            return $this->sendError('User Book does not exist');
+            return $this->sendResponse($e,'User Book does not exist');
         }
 
         return $this->sendResponse($thesis,"Thesis created");

@@ -16,7 +16,8 @@ return new class extends Migration
         Schema::create('thesis', function (Blueprint $table) {
             $table->bigIncrements('id')->unsigned()->index();
             $table->text('thesis_text');
-            $table->text('pages');
+            $table->text('starting_page');
+            $table->text('ending_page');
             $table->text("reviews")->nullable();
             $table->integer('degree')->nullable();
             $table->bigInteger('reviewer_id')->unsigned()->nullable();
