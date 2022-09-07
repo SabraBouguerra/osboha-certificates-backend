@@ -19,6 +19,7 @@ return new class extends Migration
             $table->text('starting_page');
             $table->text('ending_page');
             $table->text("reviews")->nullable();
+            $table->enum('status', ['audit', 'review', 'reviewed'])->nullable();
             $table->integer('degree')->nullable();
             $table->bigInteger('reviewer_id')->unsigned()->nullable();
             $table->bigInteger("user_book_id")->unsigned()->index();

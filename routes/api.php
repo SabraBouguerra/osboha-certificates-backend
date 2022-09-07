@@ -50,6 +50,7 @@ Route::group(['prefix' => 'type'], function () {
     Route::group(['prefix' => 'userbook'], function () {
         Route::get('/', [UserBookController::class, 'index'])->middleware(['auth:api','role:admin|reviewer']);
         Route::post('/', [UserBookController::class, 'store'])->middleware(['auth:api','userBook']);
+        Route::get('/count',[UserBookController::class,"checkOpenBook"])->middleware(['auth:api']);
         Route::get('/{id}', [UserBookController::class, 'show'])->middleware(['auth:api']);
         Route::patch('/{id}', [UserBookController::class, 'update'])->middleware(['auth:api','role:admin|reviewer']);
         Route::delete('/{id}', [UserBookController::class, 'destroy'])->middleware(['auth:api','role:admin|reviewer']);
@@ -120,6 +121,8 @@ Route::group(['prefix' => 'certificates'], function () {
 Route::group(['prefix' => 'general-informations'], function () {
     Route::get('/', [GeneralInformationsController::class, 'index'])->middleware(['auth:api','role:reviewer|admin']);
     Route::post('/', [GeneralInformationsController::class, 'store'])->middleware(['auth:api','role:user|admin']);
+
+
     Route::get('/user_book_id/{user_book_id}', [GeneralInformationsController::class, 'GetByUserBookId'])->middleware(['auth:api']);
     Route::get('/{id}', [GeneralInformationsController::class, 'show'])->middleware(['auth:api']);
     Route::patch('/{id}', [GeneralInformationsController::class, 'update'])->middleware(['auth:api', 'role:user|admin']);
