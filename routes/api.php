@@ -13,6 +13,8 @@ use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\BookCategoryController;
 use App\Http\Controllers\API\BookTypeController;
 use App\Http\Controllers\API\EmailVerificationController;
+use App\Models\Question;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -51,6 +53,7 @@ Route::group(['prefix' => 'type'], function () {
         Route::get('/', [UserBookController::class, 'index'])->middleware(['auth:api','role:admin|reviewer']);
         Route::post('/', [UserBookController::class, 'store'])->middleware(['auth:api','userBook']);
         Route::get('/count',[UserBookController::class,"checkOpenBook"])->middleware(['auth:api']);
+        Route::get('/stage-status/{id}',[UserBookController::class,"getStageStatus"])->middleware(['auth:api']);
         Route::get('/{id}', [UserBookController::class, 'show'])->middleware(['auth:api']);
         Route::patch('/{id}', [UserBookController::class, 'update'])->middleware(['auth:api','role:admin|reviewer']);
         Route::delete('/{id}', [UserBookController::class, 'destroy'])->middleware(['auth:api','role:admin|reviewer']);
@@ -86,19 +89,23 @@ Route::group(['prefix' => 'users'], function () {
 Route::group(['prefix' => 'thesises'], function () {
     Route::get('/', [ThesisController::class, 'index']);
     Route::post('/', [ThesisController::class, 'store'])->middleware(['auth:api','role:user|admin']);
+    Route::get('final-degree/{id}',[ThesisController::class,"finalDegree"])->middleware(['auth:api']);
+    Route::get('status/{status}',[ThesisController::class,"getByStatus"])->middleware(['auth:api']);
     Route::get('/{id}', [ThesisController::class, 'show'])->middleware(['auth:api']);
+    Route::patch('update-photo/{id}',[ThesisController::class,"updatePhoto"]);
+    Route::patch('audit-thesis/{id}',[ThesisController::class,"auditThesis"]);
     Route::patch('/{id}', [ThesisController::class, 'update'])->middleware(['auth:api', 'role:user|admin']);
     Route::delete('/{id}', [ThesisController::class, 'destroy'])->middleware(['auth:api','role:user|admin']);
     Route::patch('add-degree/{id}',[ThesisController::class,"addDegree"])->middleware(['auth:api','role:admin|reviewer']);
-    Route::get('final-degree/{id}',[ThesisController::class,"finalDegree"])->middleware(['auth:api']);
     Route::post('upload/{id}',[ThesisController::class,"uploadPhoto"])->middleware(['auth:api']);
-    Route::patch('update-photo/{id}',[ThesisController::class,"updatePhoto"]);
+
 });
 
 //questions routes
 Route::group(['prefix' => 'questions'], function () {
     Route::get('/', [QuestionController::class, 'index']);
     Route::post('/', [QuestionController::class, 'store']);
+    Route::get('status/{status}',[Question::class,"getByStatus"])->middleware(['auth:api']);
     Route::get('/{id}', [QuestionController::class, 'show'])->middleware(['auth:api']);
     Route::patch('/{id}', [QuestionController::class, 'update'])->middleware(['auth:api', 'role:user|admin']);
     Route::delete('/{id}', [QuestionController::class, 'destroy'])->middleware(['auth:api','role:user|admin']);

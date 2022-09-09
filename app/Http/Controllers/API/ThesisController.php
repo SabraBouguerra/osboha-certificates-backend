@@ -38,7 +38,7 @@ class ThesisController extends BaseController
 
         try{
             $thesis = Thesis::create($input);
-            $this->createThesisMedia($request->file('image'), $thesis);
+            // $this->createThesisMedia($request->file('image'), $thesis);
         }catch(\Illuminate\Database\QueryException $e){
             return $this->sendResponse($e,'User Book does not exist');
         }
@@ -161,7 +161,22 @@ class ThesisController extends BaseController
     }
 
 
+    public function auditThesis($id){
+        try{
+            $thesis = Thesis::where('user_book_id',$id)->update(['status' => 'audit']);
+          }catch(\Error $e){
+            return $this->sendError('Thesis does not exist');
+          }
 
 
+
+    }
+
+
+
+    public function getByStatus($status){
+        $thesises =  Thesis::where('status',$status)->get();
+        return $this->sendResponse($thesises, 'Thesises');
+    }
 
 }

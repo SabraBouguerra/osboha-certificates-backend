@@ -138,18 +138,10 @@ class QuestionController extends BaseController
         $degrees = Question::where("user_book_id",$user_book_id)->avg('degree');
         return $this->sendResponse($degrees, 'Final Degree!');
     }
-
+    public function getByStatus($status){
+        $questions =  Question::where('status',$status)->get();
+        return $this->sendResponse($questions, 'Thesises');
+    }
 
 }
 
-// $post = Post::find(1);
-
-
-
-// $comment = new Comment;
-
-// $comment->comment = "Hi ItSolutionStuff.com";
-
-
-
-// $post = $post->comments()->save($comment);
