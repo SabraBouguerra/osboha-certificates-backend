@@ -3,10 +3,14 @@
 namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController as BaseController;
+use App\Models\GeneralInformations;
+use App\Models\Question;
+use App\Models\Thesis;
 use App\Models\UserBook;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 
+use Illuminate\Support\Facades\DB;
 
 class UserBookController extends BaseController
 {
@@ -116,6 +120,26 @@ class UserBookController extends BaseController
         return $this->sendError('UserBook does not exist');
       }
         return $this->sendResponse($userBook, 'UserBook updated Successfully!' );
+
+    }
+
+    public function checkOpenBook(){
+        $id = Auth::id();
+        $open_book = UserBook::where('user_id',$id)->where('status','open')->count();
+
+        return $this->sendResponse($open_book , 'Open Book' );
+
+    }
+
+
+    public function getStageStatus($id){
+
+        $thesis = Thesis::where('user_book_id',$id)->where('status','audit')->exists();
+        $question = Question::where('user_book_id',$id)->where('status','audit')->exists();
+        $status = $thesis + $question ;
+
+
+        return $this->sendResponse($status , 'Status' );
 
     }
 
