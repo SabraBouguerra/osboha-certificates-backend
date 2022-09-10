@@ -100,6 +100,8 @@ Route::group(['prefix' => 'thesises'], function () {
     Route::delete('/{id}', [ThesisController::class, 'destroy'])->middleware(['auth:api','role:user|admin']);
     Route::patch('add-degree/{id}',[ThesisController::class,"addDegree"])->middleware(['auth:api','role:admin|reviewer']);
     Route::post('upload/{id}',[ThesisController::class,"uploadPhoto"])->middleware(['auth:api']);
+    Route::get('user_book_id/{user_book_id}',[ThesisController::class,"getByUserBook"])->middleware(['auth:api']);
+    Route::post('/audit',[ThesisController::class,"audit"])->middleware(['auth:api']);
 
 });
 

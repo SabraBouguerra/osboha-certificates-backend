@@ -21,7 +21,7 @@ class AuthController extends BaseController
             $user = Auth::user();
             $success['token'] = $user->createToken('random key')->accessToken;
             $success['name'] = $user->name;
-            $success['role'] = $user->role;
+            $success['role'] = $user->getRoleNames();
             $success['id'] = $user->id;
             return $this->sendResponse($success, 'User Login Successfully!' );
         }

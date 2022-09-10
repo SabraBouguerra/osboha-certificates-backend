@@ -56,6 +56,12 @@ class User extends Authenticatable implements MustVerifyEmail
     ];
 
 
+    public function reviewes(){
+        return $this->hasMany(Thesis::class,'reviewer_id');
+    }
+    public function audites(){
+        return $this->hasMany(Thesis::class,'auditor_id');
+    }
 
 
 }

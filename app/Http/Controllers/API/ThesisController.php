@@ -107,7 +107,6 @@ class ThesisController extends BaseController
 
     public function addDegree(Request $request,  $id)
     {
-        $input = $request->all();
         $validator = Validator::make($request->all(), [
             'reviews' => 'required',
             'degree' => 'required',
@@ -118,19 +117,18 @@ class ThesisController extends BaseController
         }
 
 
-        $general_informations = Thesis::find($id);
-
-        $updateParam = [
-            "reviews" => $input['reviews'],
-            "degree" => $input['degree'],
-            "reviewer_id" => $input['reviewer_id'],
-        ];
+        $thesis = Thesis::find($id);
+        $thesis->reviews = $request->reviews;
+        $thesis->degree=$request->degree;
+        $thesis->reviewer_id = $request->reviewer_id;
+        $thesis->status='reviewed';
+        
         try {
-            $general_informations->update($updateParam);
+            $thesis->save();
         } catch (\Error $e) {
             return $this->sendError('Thesis does not exist');
         }
-        return $this->sendResponse($general_informations, 'Degree added Successfully!');
+        return $this->sendResponse($thesis, 'Degree added Successfully!');
     }
 
 
@@ -160,10 +158,39 @@ class ThesisController extends BaseController
          return $this->sendResponse($thesis, 'Photo uploaded Successfully!');
     }
 
-
+    //ready to review
     public function auditThesis($id){
         try{
             $thesis = Thesis::where('user_book_id',$id)->update(['status' => 'audit']);
+          }catch(\Error $e){
+            return $this->sendError('Thesis does not exist');
+          }
+    }
+
+    public function audit(Request $request){
+        $validator = Validator::make($request->all(), [
+            'id'=>'required',
+            'status' => 'required',
+            'auditor_id'=>'required',
+            'reviews'=>'required_if:status,rejected'
+        ]);
+
+        if ($validator->fails()) {
+            return $this->sendError($validator->errors());
+        }
+
+        try{
+            $thesis = Thesis::find($request->id);
+            $thesis->status=$request->status;
+            $thesis->auditor_id=$request->auditor_id;
+            if ($request->has('reviews')) {
+                $thesis->reviews=$request->reviews;
+            }
+
+            $thesis->save();
+
+
+
           }catch(\Error $e){
             return $this->sendError('Thesis does not exist');
           }
@@ -174,8 +201,15 @@ class ThesisController extends BaseController
 
 
 
+
     public function getByStatus($status){
-        $thesises =  Thesis::where('status',$status)->get();
+        $thesises =  Thesis::with("user_book.user")->with("user_book.book")->where('status',$status)->groupBy('user_book_id')->get();
+        return $this->sendResponse($thesises, 'Thesises');
+    }
+
+    public function getByUserBook($user_book_id){
+
+        $thesises =  Thesis::with("user_book.user")->with("user_book.book")->with("photos")->where('user_book_id',$user_book_id)->get();
         return $this->sendResponse($thesises, 'Thesises');
     }
 
