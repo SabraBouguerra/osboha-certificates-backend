@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController as BaseController;
+use App\Models\Certificates;
 use App\Models\GeneralInformations;
 use App\Models\Question;
 use App\Models\Thesis;
@@ -11,6 +12,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Support\Facades\DB;
+use phpseclib3\File\ASN1\Maps\Certificate;
 
 class UserBookController extends BaseController
 {
@@ -143,6 +145,27 @@ class UserBookController extends BaseController
 
     }
 
+    public function checkCertificate($id){
+        $status = Certificates::where('user_book_id',$id)->exists();
+        return $this->sendResponse($status , 'Status' );
+    }
+
+
+
+    public function getStatistics($id){
+        $thesisFinalDegree = Thesis::where("user_book_id",$id)->avg('degree');
+        $questionFinalDegree = Thesis::where("user_book_id",$id)->avg('degree');
+        $generalInformationsFinalDegree = Thesis::where("user_book_id",$id)->avg('degree');
+        $finalDegree = ($thesisFinalDegree + $questionFinalDegree + $generalInformationsFinalDegree) / 3;
+        $response = [
+            "thesises" => $thesisFinalDegree,
+            "questions" => $questionFinalDegree,
+            "general_informations" => $generalInformationsFinalDegree,
+            "final" => $finalDegree,
+        ];
+        return $this->sendResponse($response , 'Statistics');
+
+    }
 
 
 }

@@ -5,16 +5,21 @@ use App\Models\Photos;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 
+use Illuminate\Support\Facades\Storage;
 Trait MediaTraits{
 
     function createThesisMedia($media, $id){
-        $imageName = time().'.'. $media->extension();
-        $media->move(public_path('assets/images'), $imageName);
 
-        $media = new Photos();
-        $media->path = $imageName;
-        $media->thesis_id = $id;
-        $media->save();
+        $path = Storage::putFile('image', $media);
+
+        try{
+            $media = Photos::create(['path' => $path,"thesis_id" => $id]);
+
+        }catch(\Illuminate\Database\QueryException $e){
+          echo($e);
+        }
+
+
         return $media;
     }
 

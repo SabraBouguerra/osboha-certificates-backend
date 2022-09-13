@@ -24,8 +24,8 @@ class QuestionController extends BaseController
     {
         $validator = Validator::make($request->all(), [
             'question' => 'required',
-            'quotation' => 'required|array',
-            'quotation.text' => 'required',
+            'quotes' => 'required|array',
+            'quotes.*.text' => 'required',
             'user_book_id' => 'required',
             "starting_page"=> 'required',
             "ending_page"=> 'required'
@@ -35,14 +35,23 @@ class QuestionController extends BaseController
             return $this->sendError($validator->errors());
         }
         $input = $request->all();
-        $quotationInput = $input['quotation'];
+        $quotationInput = $input['quotes'];
+        $qoutes =[];
+
+        foreach ($quotationInput as $value) {
+
+            $qoute = Quotation::create( $value);
+            array_push($qoutes,$qoute);
+          }
+
 
 
         try {
-            $question = Question::create($input)->quotation()->create($quotationInput);
+            $question = Question::create($input);
+            $question->quotation()->saveMany($qoutes);
         } catch (\Illuminate\Database\QueryException $e) {
             echo($e);
-            return $this->sendError('User Book does not exist');
+            return $this->sendError('User Book does not exist.');
         }
 
         return $this->sendResponse($question, "Question created");
@@ -140,8 +149,16 @@ class QuestionController extends BaseController
     }
     public function getByStatus($status){
         $questions =  Question::where('status',$status)->get();
-        return $this->sendResponse($questions, 'Thesises');
+        return $this->sendResponse($questions, 'Questions');
+    }
+
+
+    public function getUserBookQuestions($id){
+        $questions = Question::where('user_book_id',$id)->get();
+        return $this->sendResponse($questions,'Questions');
+
     }
 
 }
+
 

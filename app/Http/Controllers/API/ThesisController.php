@@ -7,6 +7,8 @@ use App\Models\Thesis;
 use Illuminate\Support\Facades\Validator;
 use App\Traits\MediaTraits;
 
+use Illuminate\Support\Facades\Storage;
+
 
 
 class ThesisController extends BaseController
@@ -38,7 +40,7 @@ class ThesisController extends BaseController
 
         try{
             $thesis = Thesis::create($input);
-            // $this->createThesisMedia($request->file('image'), $thesis);
+            $this->createThesisMedia($request->file('image'), $thesis->id);
         }catch(\Illuminate\Database\QueryException $e){
             return $this->sendResponse($e,'User Book does not exist');
         }
@@ -168,7 +170,7 @@ class ThesisController extends BaseController
             return $this->sendError('Thesis does not exist');
           }
 
-
+          return $this->sendResponse($thesis, 'Thesis updated Successfully!');
 
     }
 
@@ -177,6 +179,24 @@ class ThesisController extends BaseController
     public function getByStatus($status){
         $thesises =  Thesis::where('status',$status)->get();
         return $this->sendResponse($thesises, 'Thesises');
+    }
+
+
+    public function image(Request $request){
+        $path = $request->query('path','not found');
+        if($path === 'not found'){
+            return $this->sendError('Path nout found');
+        }
+        $image = Storage::get($path);
+        $exp = "/[.][a-z][a-z][a-z]/";
+        if(is_null($image)){
+            return $this->sendError('Image not found');
+        }
+
+        preg_match($exp, $path,$matches);
+        $extention = ltrim($matches[0],'.');
+
+        return response($image, 200)->header('Content-Type', "image/$extention");
     }
 
 }
