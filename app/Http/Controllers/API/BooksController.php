@@ -129,4 +129,17 @@ class BooksController extends BaseController
         }
         return $this->sendResponse($book, 'Books');
     }
+
+    public function getUserBook($id)
+    {
+
+        $userId = Auth::id();
+        try {
+           $userBook['book'] =Book::with('type', 'category')->where('id', $id)->first();
+            $userBook['user_book'] = UserBook::with('thesises', 'questions','questions.quotation', 'certificates')->where('user_id', $userId)->where('book_id', $id)->first();
+            return $this->sendResponse($userBook, 'userBook');
+        } catch (\Error $e) {
+            return $this->sendError('Book does not exist');
+        }
+    }
 }
