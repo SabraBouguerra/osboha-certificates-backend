@@ -129,9 +129,10 @@ class GeneralInformationsController extends BaseController
         return $this->sendResponse($degrees, 'Final Degree!');
     }
 
+    // DUPLICATED
     public function getByUserBookId($user_book_id){
 
-        $general_informations = GeneralInformations::get();
+        $general_informations = GeneralInformations::where('user_book_id',$user_book_id)->first();
         return $this->sendResponse($general_informations, 'General Informations!');
     }
 

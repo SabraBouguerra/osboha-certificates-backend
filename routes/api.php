@@ -68,6 +68,8 @@ Route::group(['prefix' => 'books'], function () {
     Route::get('/{id}', [BooksController::class, 'show'])->middleware(['auth:api']);
     Route::patch('/{id}', [BooksController::class, 'update'])->middleware(['auth:api','role:admin']);
     Route::delete('/{id}', [BooksController::class, 'destroy'])->middleware(['auth:api','role:admin']);
+    Route::get('/user-book/{id}',[BooksController::class ,'getUserBook'])->middleware(['auth:api']);
+
 
 });
 
