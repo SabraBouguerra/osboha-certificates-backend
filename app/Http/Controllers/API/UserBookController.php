@@ -127,7 +127,7 @@ class UserBookController extends BaseController
 
     public function checkOpenBook(){
         $id = Auth::id();
-        $open_book = UserBook::where('user_id',$id)->where('status','open')->count();
+        $open_book = UserBook::where('user_id',$id)->where('status','stage_one')->orWhere('status','stage_two')->count();
 
         return $this->sendResponse($open_book , 'Open Book' );
 

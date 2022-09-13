@@ -15,6 +15,7 @@ class Thesis extends Model
         'reviews',
         'degree',
         'reviewer_id',
+        'auditor_id',
         'thesis_text',
         'starting_page',
         'ending_page',
@@ -30,5 +31,11 @@ class Thesis extends Model
 
     public function photos(){
         return $this->hasMany(Photos::class);
+    }
+    public function reviewer(){
+        return $this->belongsTo(User::class);
+    }
+    public function auditor(){
+        return $this->belongsTo(User::class);
     }
 }

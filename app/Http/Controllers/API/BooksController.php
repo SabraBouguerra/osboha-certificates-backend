@@ -99,7 +99,7 @@ class BooksController extends BaseController
     public function getBooksForUser()
     {
         $id = Auth::id();
-        $current_book = Book::select('books.*','user_book.status')->join('user_book','books.id','=','user_book.book_id')->where('user_id',$id)->where('status','open')->get();
+        $current_book = Book::select('books.*', 'user_book.status')->join('user_book', 'books.id', '=', 'user_book.book_id')->where('user_id', $id)->where('status', 'open')->get();
         $books = Book::select([
             'books.*',
             'has_certificate' => UserBook::join('users', 'user_book.user_id', '=', 'users.id')
@@ -111,7 +111,7 @@ class BooksController extends BaseController
                 ->whereColumn('books.id', 'user_book.book_id')
                 ->where('user_book.status', "finished"),
         ])->get();
-        $res = [ 'open_book' => $current_book,'books' =>$books];
+        $res = ['open_book' => $current_book, 'books' => $books];
         return $this->sendResponse($res, 'Books');
     }
 
@@ -120,11 +120,11 @@ class BooksController extends BaseController
     {
 
         $userId = Auth::id();
-        try{
-        $book = Book::find($id)->load(['userBook' => function ($query)  use ($userId) {
-            $query->where('user_id',$userId);
-        }]);}
-        catch (\Error $e) {
+        try {
+            $book = Book::find($id)->load(['userBook' => function ($query)  use ($userId) {
+                $query->where('user_id', $userId);
+            }]);
+        } catch (\Error $e) {
             return $this->sendError('Book does not exist');
         }
         return $this->sendResponse($book, 'Books');
@@ -135,8 +135,8 @@ class BooksController extends BaseController
 
         $userId = Auth::id();
         try {
-           $userBook['book'] =Book::with('type', 'category')->where('id', $id)->first();
-            $userBook['user_book'] = UserBook::with('thesises', 'questions','questions.quotation', 'certificates')->where('user_id', $userId)->where('book_id', $id)->first();
+            $userBook['book'] = Book::with('type', 'category')->where('id', $id)->first();
+            $userBook['user_book'] = UserBook::with('thesises', 'questions', 'questions.quotation', 'certificates')->where('user_id', $userId)->where('book_id', $id)->first();
             return $this->sendResponse($userBook, 'userBook');
         } catch (\Error $e) {
             return $this->sendError('Book does not exist');
