@@ -29,7 +29,7 @@ class UserBook extends Model
     }
 
     public function certificates(){
-        return $this->hasMany(certificates::class);
+        return $this->hasMany(Certificates::class);
     }
 
     public function thesises(){
