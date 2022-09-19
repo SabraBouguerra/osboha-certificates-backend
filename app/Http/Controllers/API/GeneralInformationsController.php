@@ -68,12 +68,12 @@ class GeneralInformationsController extends BaseController
 
         $general_informations = GeneralInformations::find($id);
 
-        $updateParam = [
-            "general_question" => $input['general_question'],
-            "summary" => $input['summary'],
-        ];
+        $general_informations->reviews = $request->reviews;
+        $general_informations->degree=$request->degree;
+        $general_informations->reviewer_id = $request->reviewer_id;
+        $general_informations->status='reviewed';
         try {
-            $general_informations->update($updateParam);
+            $general_informations->save();
         } catch (\Error $e) {
             return $this->sendError('General Informations does not exist');
         }
@@ -93,7 +93,32 @@ class GeneralInformationsController extends BaseController
     }
 
 
+    public function audit(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'id' => 'required',
+            'status' => 'required',
+            'auditor_id' => 'required',
+            'reviews' => 'required_if:status,rejected'
+        ]);
 
+        if ($validator->fails()) {
+            return $this->sendError($validator->errors());
+        }
+
+        try {
+            $info = GeneralInformations::find($request->id);
+            $info->status = $request->status;
+            $info->auditor_id = $request->auditor_id;
+            if ($request->has('reviews')) {
+                $info->reviews = $request->reviews;
+            }
+
+            $info->save();
+        } catch (\Error $e) {
+            return $this->sendError('Question does not exist');
+        }
+    }
     public function addDegree(Request $request,  $id)
     {
         $input = $request->all();
@@ -109,11 +134,12 @@ class GeneralInformationsController extends BaseController
 
         $general_informations = GeneralInformations::find($id);
         $general_informations->reviews = $request->reviews;
-        $general_informations->degree=$request->degree;
+ 
+        $general_informations->degree = $request->degree;
         $general_informations->reviewer_id = $request->reviewer_id;
-        $general_informations->status='reviewed';
-       
-        try {
+        $general_informations->status = 'reviewed';
+    try {
+ 
             $general_informations->save();
         } catch (\Error $e) {
             return $this->sendError('General Informations does not exist');
@@ -129,8 +155,9 @@ class GeneralInformationsController extends BaseController
         return $this->sendResponse($degrees, 'Final Degree!');
     }
 
-    // DUPLICATED
+ 
     public function getByUserBookId($user_book_id){
+ 
 
         $general_informations = GeneralInformations::where('user_book_id',$user_book_id)->first();
         return $this->sendResponse($general_informations, 'General Informations!');
@@ -145,7 +172,5 @@ class GeneralInformationsController extends BaseController
         $general_informations =  GeneralInformations::with("user_book.user")->with("user_book.book")->where('user_book_id',$user_book_id)->first();
         return $this->sendResponse($general_informations, 'General Informations');
     }
-
-
-
+ 
 }

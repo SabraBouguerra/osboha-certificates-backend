@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController as BaseController;
+use App\Models\Certificates;
 use App\Models\GeneralInformations;
 use App\Models\Question;
 use App\Models\Thesis;
@@ -12,6 +13,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Support\Facades\DB;
+use phpseclib3\File\ASN1\Maps\Certificate;
 
 class UserBookController extends BaseController
 {
@@ -35,7 +37,6 @@ class UserBookController extends BaseController
             return $this->sendError($validator->errors());
         }
         $input = $request->all();
-        $input['status'] = 'open';
         $input['user_id'] = Auth::id();
 
         try {
@@ -124,7 +125,9 @@ class UserBookController extends BaseController
     public function checkOpenBook()
     {
         $id = Auth::id();
-        $open_book = UserBook::where('user_id', $id)->where('status', 'open')->count();
+ 
+        $open_book = UserBook::where('user_id',$id)->where('status','stage_one')->orWhere('status','stage_two')->count();
+ 
 
         return $this->sendResponse($open_book, 'Open Book');
     }
@@ -141,4 +144,28 @@ class UserBookController extends BaseController
         return $this->sendResponse($status, 'Status');
     }
 
+ 
+    public function checkCertificate($id){
+        $status = Certificates::where('user_book_id',$id)->exists();
+        return $this->sendResponse($status , 'Status' );
+    }
+
+
+
+    public function getStatistics($id){
+        $thesisFinalDegree = Thesis::where("user_book_id",$id)->avg('degree');
+        $questionFinalDegree = Thesis::where("user_book_id",$id)->avg('degree');
+        $generalInformationsFinalDegree = Thesis::where("user_book_id",$id)->avg('degree');
+        $finalDegree = ($thesisFinalDegree + $questionFinalDegree + $generalInformationsFinalDegree) / 3;
+        $response = [
+            "thesises" => $thesisFinalDegree,
+            "questions" => $questionFinalDegree,
+            "general_informations" => $generalInformationsFinalDegree,
+            "final" => $finalDegree,
+        ];
+        return $this->sendResponse($response , 'Statistics');
+
+    }
+
+ 
 }

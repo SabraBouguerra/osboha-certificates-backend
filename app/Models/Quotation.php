@@ -10,7 +10,7 @@ class Quotation extends Model
     use HasFactory;
 
     protected $fillable = [
-        'page',
+
         'text',
         "question_id"
     ];

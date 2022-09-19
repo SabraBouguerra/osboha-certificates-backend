@@ -33,6 +33,13 @@ class User extends Authenticatable implements MustVerifyEmail
     public function books(){
         return $this->belongsToMany(Book::class,'user_book');
     }
+    public function reviewes(){
+        return $this->hasMany(Thesis::class,'reviewer_id');
+    }
+    public function audites(){
+        return $this->hasMany(Thesis::class,'auditor_id');
+    }
+
 
 
 

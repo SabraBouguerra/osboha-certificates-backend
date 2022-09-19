@@ -32,8 +32,8 @@ class Thesis extends Model
     public function photos(){
         return $this->hasMany(Photos::class);
     }
-
-        public function reviewer(){
+  function reviewer(){
+ 
         return $this->belongsTo(User::class);
     }
     public function auditor(){
