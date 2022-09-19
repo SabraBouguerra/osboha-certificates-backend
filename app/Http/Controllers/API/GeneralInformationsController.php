@@ -134,10 +134,12 @@ class GeneralInformationsController extends BaseController
 
         $general_informations = GeneralInformations::find($id);
         $general_informations->reviews = $request->reviews;
+ 
         $general_informations->degree = $request->degree;
         $general_informations->reviewer_id = $request->reviewer_id;
         $general_informations->status = 'reviewed';
     try {
+ 
             $general_informations->save();
         } catch (\Error $e) {
             return $this->sendError('General Informations does not exist');
@@ -153,8 +155,9 @@ class GeneralInformationsController extends BaseController
         return $this->sendResponse($degrees, 'Final Degree!');
     }
 
-    // DUPLICATED
-    public Function getByUserBookId($user_book_id){
+ 
+    public function getByUserBookId($user_book_id){
+ 
 
         $general_informations = GeneralInformations::where('user_book_id',$user_book_id)->first();
         return $this->sendResponse($general_informations, 'General Informations!');
@@ -169,5 +172,5 @@ class GeneralInformationsController extends BaseController
         $general_informations =  GeneralInformations::with("user_book.user")->with("user_book.book")->where('user_book_id',$user_book_id)->first();
         return $this->sendResponse($general_informations, 'General Informations');
     }
-
+ 
 }

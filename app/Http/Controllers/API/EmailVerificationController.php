@@ -28,7 +28,7 @@ class EmailVerificationController extends Controller
     {
         $user = User::find($id);
 
-        echo($user);
+
         if (! hash_equals((string) $hash,
                           sha1($user->getEmailForVerification()))) {
             return false;
