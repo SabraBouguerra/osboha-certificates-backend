@@ -93,7 +93,32 @@ class GeneralInformationsController extends BaseController
     }
 
 
+    public function audit(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'id' => 'required',
+            'status' => 'required',
+            'auditor_id' => 'required',
+            'reviews' => 'required_if:status,rejected'
+        ]);
 
+        if ($validator->fails()) {
+            return $this->sendError($validator->errors());
+        }
+
+        try {
+            $info = GeneralInformations::find($request->id);
+            $info->status = $request->status;
+            $info->auditor_id = $request->auditor_id;
+            if ($request->has('reviews')) {
+                $info->reviews = $request->reviews;
+            }
+
+            $info->save();
+        } catch (\Error $e) {
+            return $this->sendError('Question does not exist');
+        }
+    }
     public function addDegree(Request $request,  $id)
     {
         $input = $request->all();
