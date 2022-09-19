@@ -13,6 +13,7 @@ class GeneralInformations extends Model
         'reviews',
         'degree',
         'reviewer_id',
+        'auditor_id',
         'general_question',
         'summary',
         'user_book_id'
