@@ -28,8 +28,6 @@ class User extends Authenticatable implements MustVerifyEmail
         'is_active'
     ];
 
-
-
     public function books(){
         return $this->belongsToMany(Book::class,'user_book');
     }
@@ -39,9 +37,6 @@ class User extends Authenticatable implements MustVerifyEmail
     public function audites(){
         return $this->hasMany(Thesis::class,'auditor_id');
     }
-
-
-
 
     /**
      * The attributes that should be hidden for serialization.
@@ -61,14 +56,5 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-
-
-    public function reviewes(){
-        return $this->hasMany(Thesis::class,'reviewer_id');
-    }
-    public function audites(){
-        return $this->hasMany(Thesis::class,'auditor_id');
-    }
-
 
 }
