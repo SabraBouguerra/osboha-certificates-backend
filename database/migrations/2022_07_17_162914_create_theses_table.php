@@ -22,6 +22,7 @@ return new class extends Migration
             $table->enum('status', ['audit', 'review', 'reviewed','rejected'])->default('audit');
             $table->integer('degree')->nullable();
             $table->bigInteger('reviewer_id')->unsigned()->nullable();
+            $table->bigInteger('auditor_id')->unsigned()->nullable();
             $table->bigInteger("user_book_id")->unsigned()->index();
             $table->foreign("user_book_id")->references("id")->on("user_book");
             $table->timestamps();
