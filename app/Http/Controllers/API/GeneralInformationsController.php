@@ -108,14 +108,12 @@ class GeneralInformationsController extends BaseController
 
 
         $general_informations = GeneralInformations::find($id);
-
-        $updateParam = [
-            "reviews" => $input['reviews'],
-            "degree" => $input['degree'],
-            "reviewer_id" => $input['reviewer_id'],
-        ];
-        try {
-            $general_informations->update($updateParam);
+        $general_informations->reviews = $request->reviews;
+        $general_informations->degree = $request->degree;
+        $general_informations->reviewer_id = $request->reviewer_id;
+        $general_informations->status = 'reviewed';
+    try {
+            $general_informations->save();
         } catch (\Error $e) {
             return $this->sendError('General Informations does not exist');
         }

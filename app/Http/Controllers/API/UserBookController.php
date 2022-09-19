@@ -35,7 +35,6 @@ class UserBookController extends BaseController
             return $this->sendError($validator->errors());
         }
         $input = $request->all();
-        $input['status'] = 'open';
         $input['user_id'] = Auth::id();
 
         try{

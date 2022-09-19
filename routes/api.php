@@ -123,6 +123,10 @@ Route::group(['prefix' => 'questions'], function () {
     Route::delete('/{id}', [QuestionController::class, 'destroy'])->middleware(['auth:api','role:user|admin']);
     Route::patch('add-degree/{id}',[QuestionController::class,"addDegree"])->middleware(['auth:api','role:admin|reviewer']);
     Route::get('final-degree/{id}',[QuestionController::class,"finalDegree"])->middleware(['auth:api']);
+    Route::get('user_book_id/{user_book_id}',[QuestionController::class,"getByUserBook"])->middleware(['auth:api']);
+    Route::get('status/{status}',[QuestionController::class,"getByStatus"])->middleware(['auth:api']);
+    Route::post('/audit',[QuestionController::class,"audit"])->middleware(['auth:api']);
+
 });
 
 //certificates routes
