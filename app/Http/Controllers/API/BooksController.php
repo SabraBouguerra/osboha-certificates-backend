@@ -99,7 +99,7 @@ class BooksController extends BaseController
     public function getBooksForUser()
     {
         $id = Auth::id();
-        $current_book = Book::select('books.*', 'user_book.status')->join('user_book', 'books.id', '=', 'user_book.book_id')->where('user_id', $id)->where('status', 'open')->get();
+        $current_book = Book::select('books.*', 'user_book.status')->join('user_book', 'books.id', '=', 'user_book.book_id')->where('user_id', $id)->where('status', "!=",'finished')->get();
         $books = Book::select([
             'books.*',
             'has_certificate' => UserBook::join('users', 'user_book.user_id', '=', 'users.id')
@@ -110,7 +110,7 @@ class BooksController extends BaseController
             'certificates_count' => UserBook::selectRaw('count(status)')
                 ->whereColumn('books.id', 'user_book.book_id')
                 ->where('user_book.status', "finished"),
-        ])->get();
+        ])->where('books.id',"!=",$current_book[0]->id)->get();
         $res = ['open_book' => $current_book, 'books' => $books];
         return $this->sendResponse($res, 'Books');
     }
