@@ -9,7 +9,6 @@ use App\Models\Book;
 use App\Models\UserBook;
 use Illuminate\Support\Facades\Auth;
 
-use function PHPUnit\Framework\isNull;
 
 class BooksController extends BaseController
 {
@@ -120,6 +119,7 @@ class BooksController extends BaseController
     {
 
         $userId = Auth::id();
+
         try {
             $book = Book::find($id)->load(['userBook' => function ($query)  use ($userId) {
                 $query->where('user_id', $userId);
@@ -130,13 +130,17 @@ class BooksController extends BaseController
         return $this->sendResponse($book, 'Books');
     }
 
-    public function getUserBook($id)
+        public function getUserBook($id)
+
     {
 
         $userId = Auth::id();
+
         try {
-            $userBook['book'] = Book::with('type', 'category')->where('id', $id)->first();
-            $userBook['user_book'] = UserBook::with('thesises', 'questions', 'questions.quotation', 'certificates')->where('user_id', $userId)->where('book_id', $id)->first();
+
+           $userBook['book'] =Book::with('type', 'category')->where('id', $id)->first();
+            $userBook['user_book'] = UserBook::with('thesises', 'questions','questions.quotation', 'certificates')->where('user_id', $userId)->where('book_id', $id)->first();
+
             return $this->sendResponse($userBook, 'userBook');
         } catch (\Error $e) {
             return $this->sendError('Book does not exist');

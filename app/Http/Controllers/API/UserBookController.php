@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\API;
+
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController as BaseController;
 use App\Models\Certificates;
@@ -16,15 +17,16 @@ use phpseclib3\File\ASN1\Maps\Certificate;
 
 class UserBookController extends BaseController
 {
-    public function index(){
+    public function index()
+    {
 
         $userbook = UserBook::all();
-        return $this->sendResponse($userbook,"User Books");
-
+        return $this->sendResponse($userbook, "User Books");
     }
 
 
-    public function store(Request $request){
+    public function store(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'book_id' => 'required'
         ]);
@@ -40,36 +42,37 @@ class UserBookController extends BaseController
             return $this->sendError('You have an open book');
         }
         $input = $request->all();
-        $input['status'] = 'open';
         $input['user_id'] = Auth::id();
 
-        try{
+        try {
             $userBook = UserBook::create($input);
-        }catch(\Illuminate\Database\QueryException $e){
-            echo($e);
+        } catch (\Illuminate\Database\QueryException $e) {
+            echo ($e);
             return $this->sendError('User or book does not exist');
         }
-        return $this->sendResponse($userBook,"User book created");
+        return $this->sendResponse($userBook, "User book created");
     }
 
 
-    public function show($id){
+    public function show($id)
+    {
         $userBook = UserBook::find($id);
         if (is_null($userBook)) {
-            return $this->sendError('UserBook does not exist' );
+            return $this->sendError('UserBook does not exist');
         }
         return $userBook;
     }
 
 
-    public function update(Request $request,$id){
+    public function update(Request $request, $id)
+    {
         $input = $request->all();
         $validator = Validator::make($request->all(), [
             'book_id',
             'user_id'
         ]);
         if ($validator->fails()) {
-            return $this->sendError('Validation error' , $validator->errors());
+            return $this->sendError('Validation error', $validator->errors());
         }
 
 
@@ -79,19 +82,16 @@ class UserBookController extends BaseController
             "book_id" => $input['book_id'],
             "user_id" => $input['user_id'],
         ];
-      try{
-        $userBook->update($updateParam);
-      }catch(\Error $e){
-        return $this->sendError('UserBook does not exist');
-      }
-        return $this->sendResponse($userBook, 'UserBook updated Successfully!' );
-
-
-
-
+        try {
+            $userBook->update($updateParam);
+        } catch (\Error $e) {
+            return $this->sendError('UserBook does not exist');
+        }
+        return $this->sendResponse($userBook, 'UserBook updated Successfully!');
     }
 
-    public function destroy($id){
+    public function destroy($id)
+    {
 
         $result = UserBook::destroy($id);
 
@@ -99,20 +99,18 @@ class UserBookController extends BaseController
 
             return $this->sendError('UserBook does not exist');
         }
-        return $this->sendResponse($result, 'UserBook deleted Successfully!' );
-
-
-
+        return $this->sendResponse($result, 'UserBook deleted Successfully!');
     }
 
 
-    public function changeStatus(Request $request,$id){
+    public function changeStatus(Request $request, $id)
+    {
         $input = $request->all();
         $validator = Validator::make($request->all(), [
             'status' => 'required'
         ]);
         if ($validator->fails()) {
-            return $this->sendError('Validation error' , $validator->errors());
+            return $this->sendError('Validation error', $validator->errors());
         }
 
 
@@ -121,35 +119,37 @@ class UserBookController extends BaseController
         $updateParam = [
             'status' => $input['status']
         ];
-      try{
-        $userBook->update($updateParam);
-      }catch(\Error $e){
-        return $this->sendError('UserBook does not exist');
-      }
-        return $this->sendResponse($userBook, 'UserBook updated Successfully!' );
-
+        try {
+            $userBook->update($updateParam);
+        } catch (\Error $e) {
+            return $this->sendError('UserBook does not exist');
+        }
+        return $this->sendResponse($userBook, 'UserBook updated Successfully!');
     }
 
-    public function checkOpenBook(){
+    public function checkOpenBook()
+    {
         $id = Auth::id();
+ 
         $open_book = UserBook::where('user_id',$id)->where('status','stage_one')->orWhere('status','stage_two')->count();
+ 
 
-        return $this->sendResponse($open_book , 'Open Book' );
-
+        return $this->sendResponse($open_book, 'Open Book');
     }
 
 
-    public function getStageStatus($id){
+    public function getStageStatus($id)
+    {
 
-        $thesis = Thesis::where('user_book_id',$id)->where('status','audit')->exists();
-        $question = Question::where('user_book_id',$id)->where('status','audit')->exists();
-        $status = $thesis + $question ;
+        $thesis = Thesis::where('user_book_id', $id)->where('status', 'audit')->exists();
+        $question = Question::where('user_book_id', $id)->where('status', 'audit')->exists();
+        $status = $thesis + $question;
 
 
-        return $this->sendResponse($status , 'Status' );
-
+        return $this->sendResponse($status, 'Status');
     }
 
+ 
     public function checkCertificate($id){
         $status = Certificates::where('user_book_id',$id)->exists();
         return $this->sendResponse($status , 'Status' );
@@ -172,5 +172,5 @@ class UserBookController extends BaseController
 
     }
 
-
+ 
 }

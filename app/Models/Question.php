@@ -13,6 +13,7 @@ class Question extends Model
         'reviews',
         'degree',
         'reviewer_id',
+        'auditor_id',
         'question',
         'user_book_id',
         "starting_page",

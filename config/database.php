@@ -57,6 +57,7 @@ return [
             'prefix' => '',
             'prefix_indexes' => true,
             'strict' => true,
+ 
             'modes' => [
                 //'ONLY_FULL_GROUP_BY', // Disable this to allow grouping by one column
                 'STRICT_TRANS_TABLES',
@@ -66,6 +67,7 @@ return [
                 'NO_AUTO_CREATE_USER',
                 'NO_ENGINE_SUBSTITUTION'
             ],
+ 
 
             'engine' => 'InnoDB ROW_FORMAT=DYNAMIC',
             'options' => extension_loaded('pdo_mysql') ? array_filter([

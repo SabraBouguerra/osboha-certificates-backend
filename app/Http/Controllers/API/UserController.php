@@ -131,6 +131,30 @@ class UserController extends BaseController
     }
 
 
+    public function listUnactiveUser(){
+      try{
+        $users = User::where('is_active',0)->get();
+        return $this->sendResponse($users, 'All Un Accepted Users!');
+      }catch(\Error $e){
+        return $this->sendError('All Users Have Been Accepted');
+      }
+
+    }
+
+    public function listUnactiveReviwers(){
+      try{
+        $users = User::with('roles')->where('is_active',0)->whereHas(
+            'roles', function($q){
+            $q->where('name', 'reviewer')->orWhere('name','auditor');
+        })->get();
+
+        return $this->sendResponse($users, 'All Un Accepted Reviewers And Auditors!');
+      }catch(\Error $e){
+        return $this->sendError('All Reviewers And Auditors Have Been Accepted');
+      }
+
+    }
+
     public function activeUser(Request $request,$id){
         $user = User::find($id);
         $this->deletePdf($user->pdf);
@@ -142,30 +166,6 @@ class UserController extends BaseController
 
         return $this->sendResponse($user, 'Pdf uploaded Successfully!');
     }
-
-    public function listUnactiveUser(){
-        try{
-          $users = User::where('is_active',0)->get();
-          return $this->sendResponse($users, 'All Un Accepted Users!');
-        }catch(\Error $e){
-          return $this->sendError('All Users Have Been Accepted');
-        }
-  
-      }
-  
-      public function listUnactiveReviwers(){
-        try{
-          $users = User::with('roles')->where('is_active',0)->whereHas(
-              'roles', function($q){
-              $q->where('name', 'reviewer')->orWhere('name','auditor');
-          })->get();
-  
-          return $this->sendResponse($users, 'All Un Accepted Reviewers And Auditors!');
-        }catch(\Error $e){
-          return $this->sendError('All Reviewers And Auditors Have Been Accepted');
-        }
-  
-      }
   
   
 

@@ -6,12 +6,13 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
-
+use App\Models\User;
 class EmailVerificationController extends Controller
 {
 
     public function sendVerificationEmail(Request $request)
     {
+
         if ($request->user()->hasVerifiedEmail()) {
             return [
                 'message' => 'Already Verified'
@@ -23,15 +24,23 @@ class EmailVerificationController extends Controller
         return ['status' => 'verification-link-sent'];
     }
 
-    public function verify(EmailVerificationRequest $request)
+    public function verify(EmailVerificationRequest $request,$id,$hash)
     {
-        if ($request->user()->hasVerifiedEmail()) {
+        $user = User::find($id);
+
+
+        if (! hash_equals((string) $hash,
+                          sha1($user->getEmailForVerification()))) {
+            return false;
+        }
+
+        if ($user->hasVerifiedEmail()) {
             return [
                 'message' => 'Email already verified'
             ];
         }
 
-        if ($request->user()->markEmailAsVerified()) {
+        if ($user->markEmailAsVerified()) {
             event(new Verified($request->user()));
         }
 
