@@ -51,23 +51,23 @@ Route::group(['prefix' => 'type'], function () {
  //users routes
     Route::group(['prefix' => 'userbook'], function () {
         Route::get('/', [UserBookController::class, 'index'])->middleware(['auth:api','role:admin|reviewer']);
-        Route::post('/', [UserBookController::class, 'store'])->middleware(['auth:api','userBook']);
-        Route::get('/count',[UserBookController::class,"checkOpenBook"])->middleware(['auth:api']);
-        Route::get('/certificate/{id}',[UserBookController::class,"checkCertificate"])->middleware(['auth:api']);
-        Route::get('/statistics/{id}',[UserBookController::class,"getStatistics"])->middleware(['auth:api']);
-        Route::get('/stage-status/{id}',[UserBookController::class,"getStageStatus"])->middleware(['auth:api']);
-        Route::get('/{id}', [UserBookController::class, 'show'])->middleware(['auth:api']);
+        Route::post('/', [UserBookController::class, 'store'])->middleware(['auth:api','role:admin|reviewer']);
+        Route::get('/count',[UserBookController::class,"checkOpenBook"])->middleware(['auth:api','verified']);
+        Route::get('/certificate/{id}',[UserBookController::class,"checkCertificate"])->middleware(['auth:api','verified']);
+        Route::get('/statistics/{id}',[UserBookController::class,"getStatistics"])->middleware(['auth:api','verified']);
+        Route::get('/stage-status/{id}',[UserBookController::class,"getStageStatus"])->middleware(['auth:api','verified']);
+        Route::get('/{id}', [UserBookController::class, 'show'])->middleware(['auth:api','verified']);
         Route::patch('/{id}', [UserBookController::class, 'update'])->middleware(['auth:api','role:admin|reviewer']);
         Route::delete('/{id}', [UserBookController::class, 'destroy'])->middleware(['auth:api','role:admin|reviewer']);
     });
 
 // Books routes
 Route::group(['prefix' => 'books'], function () {
-    Route::get('/', [BooksController::class, 'index'])->middleware(['auth:api']);
+    Route::get('/', [BooksController::class, 'index'])->middleware(['auth:api','verified']);
     Route::post('/', [BooksController::class, 'store'])->middleware(['auth:api', 'role:admin']);
-    Route::get('/user',[BooksController::class ,'getBooksForUser'])->middleware(['auth:api']);
-    Route::get('/user/{id}',[BooksController::class ,'getOpenBook'])->middleware(['auth:api']);
-    Route::get('/{id}', [BooksController::class, 'show'])->middleware(['auth:api']);
+    Route::get('/user',[BooksController::class ,'getBooksForUser'])->middleware(['auth:api','verified']);
+    Route::get('/user/{id}',[BooksController::class ,'getOpenBook'])->middleware(['auth:api','verified']);
+    Route::get('/{id}', [BooksController::class, 'show'])->middleware(['auth:api','verified']);
     Route::patch('/{id}', [BooksController::class, 'update'])->middleware(['auth:api','role:admin']);
     Route::delete('/{id}', [BooksController::class, 'destroy'])->middleware(['auth:api','role:admin']);
     Route::get('/user-book/{id}',[BooksController::class ,'getUserBook'])->middleware(['auth:api',
@@ -81,15 +81,16 @@ Route::group(['prefix' => 'books'], function () {
 
 Route::group(['prefix' => 'users'], function () {
     Route::get('/', [UserController::class, 'index'])->middleware(['auth:api','role:admin']);
-    Route::post('/', [UserController::class, 'store'])->middleware(['auth:api','role:user|admin']);
-    Route::get('/{id}', [UserController::class, 'show'])->middleware(['auth:api']);
+    Route::post('/', [UserController::class, 'store'])->middleware(['auth:api','role:user|admin','verified']);
+    Route::get('/{id}', [UserController::class, 'show'])->middleware(['auth:api','verified']);
     Route::patch('/activate/{id}',[UserController::class, 'activeUser'])->middleware(['auth:api','role:admin|reviewer']);
+ 
     Route::patch('/{id}', [UserController::class, 'update'])->middleware(['auth:api','role:user|admin']);
     Route::delete('/{id}', [UserController::class, 'destroy'])->middleware(['auth:api' ,'role:user|admin']);
-    Route::post('/upload-pdf',[UserController::class, 'uploadPdf'])->middleware((['auth:api']));
     Route::get('/list/un-active', [UserController::class, 'listUnactiveUser'])->middleware(['auth:api' ,'role:user|admin']);
     Route::get('/list/un-active-reviwers-auditors', [UserController::class, 'listUnactiveReviwers'])->middleware(['auth:api' ,'role:user|admin']);
-
+    Route::post('/upload-pdf',[UserController::class, 'uploadPdf'])->middleware((['auth:api']));
+ 
 });
 
 
@@ -97,19 +98,21 @@ Route::group(['prefix' => 'users'], function () {
 Route::group(['prefix' => 'thesises'], function () {
     Route::get('/image', [ThesisController::class, 'image']);
     Route::get('/', [ThesisController::class, 'index']);
-    Route::post('/', [ThesisController::class, 'store'])->middleware(['auth:api','role:user|admin']);
-    Route::get('final-degree/{id}',[ThesisController::class,"finalDegree"])->middleware(['auth:api']);
-    Route::get('status/{status}',[ThesisController::class,"getByStatus"])->middleware(['auth:api']);
+    Route::post('/', [ThesisController::class, 'store'])->middleware(['auth:api','role:user|admin','verified']);
+    Route::get('final-degree/{id}',[ThesisController::class,"finalDegree"])->middleware(['auth:api','verified']);
+    Route::get('status/{status}',[ThesisController::class,"getByStatus"])->middleware(['auth:api','verified']);
 
-    Route::get('/{id}', [ThesisController::class, 'show'])->middleware(['auth:api']);
-    Route::patch('update-photo/{id}',[ThesisController::class,"updatePhoto"]);
-    Route::patch('audit-thesis/{id}',[ThesisController::class,"auditThesis"]);
-    Route::patch('/{id}', [ThesisController::class, 'update'])->middleware(['auth:api', 'role:user|admin']);
-    Route::delete('/{id}', [ThesisController::class, 'destroy'])->middleware(['auth:api','role:user|admin']);
+    Route::get('/{id}', [ThesisController::class, 'show'])->middleware(['auth:api','verified']);
+    Route::patch('update-photo/{id}',[ThesisController::class,"updatePhoto"])->middleware(['auth:api','verified']);
+    Route::patch('audit-thesis/{id}',[ThesisController::class,"auditThesis"])->middleware(['auth:api','verified']);
+    Route::patch('/{id}', [ThesisController::class, 'update'])->middleware(['auth:api', 'role:user|admin','verified']);
+    Route::delete('/{id}', [ThesisController::class, 'destroy'])->middleware(['auth:api','role:user|admin','verified']);
     Route::patch('add-degree/{id}',[ThesisController::class,"addDegree"])->middleware(['auth:api','role:admin|reviewer']);
-    Route::post('upload/{id}',[ThesisController::class,"uploadPhoto"])->middleware(['auth:api']);
-    Route::get('user_book_id/{user_book_id}',[ThesisController::class,"getByUserBook"])->middleware(['auth:api']);
-    Route::post('/audit',[ThesisController::class,"audit"])->middleware(['auth:api']);
+ 
+    Route::post('upload/{id}',[ThesisController::class,"uploadPhoto"])->middleware(['auth:api','verified']);
+    Route::get('user_book_id/{user_book_id}',[ThesisController::class,"getByUserBook"])->middleware(['auth:api','verified']);
+    Route::post('/audit',[ThesisController::class,"audit"])->middleware(['auth:api','verified']);
+ 
 
 });
 
@@ -117,20 +120,25 @@ Route::group(['prefix' => 'thesises'], function () {
 Route::group(['prefix' => 'questions'], function () {
     Route::get('/', [QuestionController::class, 'index'])->middleware(['auth:api']);
     Route::post('/', [QuestionController::class, 'store'])->middleware(['auth:api']);
-    Route::get('status/{status}',[QuestionController::class,"getByStatus"])->middleware(['auth:api']);
-    Route::get('user-book/{id}',[QuestionController::class,"getUserBookQuestions"])->middleware(['auth:api']);
+    Route::get('status/{status}',[QuestionController::class,"getByStatus"])->middleware(['auth:api','verified']);
+    Route::get('user-book/{id}',[QuestionController::class,"getUserBookQuestions"])->middleware(['auth:api','verified']);
     Route::get('/{id}', [QuestionController::class, 'show'])->middleware(['auth:api']);
-    Route::patch('/{id}', [QuestionController::class, 'update'])->middleware(['auth:api', 'role:user|admin']);
-    Route::delete('/{id}', [QuestionController::class, 'destroy'])->middleware(['auth:api','role:user|admin']);
+    Route::patch('/{id}', [QuestionController::class, 'update'])->middleware(['auth:api', 'role:user|admin','verified']);
+    Route::delete('/{id}', [QuestionController::class, 'destroy'])->middleware(['auth:api','role:user|admin','verified']);
     Route::patch('add-degree/{id}',[QuestionController::class,"addDegree"])->middleware(['auth:api','role:admin|reviewer']);
+ 
     Route::get('final-degree/{id}',[QuestionController::class,"finalDegree"])->middleware(['auth:api']);
+    Route::get('user_book_id/{user_book_id}',[QuestionController::class,"getByUserBook"])->middleware(['auth:api']);
+    Route::get('status/{status}',[QuestionController::class,"getByStatus"])->middleware(['auth:api']);
+    Route::post('/audit',[QuestionController::class,"audit"])->middleware(['auth:api']);
+ 
 });
 
 //certificates routes
 Route::group(['prefix' => 'certificates'], function () {
     Route::get('/', [CertificatesController::class, 'index'])->middleware(['auth:api','role:reviewer|admin']);
     Route::post('/', [CertificatesController::class, 'store'])->middleware(['auth:api','role:admin|reviewer']);
-    Route::get('/{id}', [CertificatesController::class, 'show'])->middleware(['auth:api']);
+    Route::get('/{id}', [CertificatesController::class, 'show'])->middleware(['auth:api','verified']);
     Route::patch('/{id}', [CertificatesController::class, 'update'])->middleware(['auth:api','role:admin|reviewer']);
     Route::delete('/{id}', [CertificatesController::class, 'destroy'])->middleware(['auth:api','role:admin']);
 
@@ -146,17 +154,22 @@ Route::group(['prefix' => 'general-informations'], function () {
     Route::patch('/{id}', [GeneralInformationsController::class, 'update'])->middleware(['auth:api', 'role:user|admin']);
     Route::delete('/{id}', [GeneralInformationsController::class, 'destroy'])->middleware(['auth:api','role:user|admin']);
     Route::patch('add-degree/{id}',[GeneralInformationsController::class,"addDegree"])->middleware(['auth:api','role:admin|reviewer']);
+ 
     Route::get('final-degree/{id}',[GeneralInformationsController::class,"finalDegree"])->middleware(['auth:api']);
-    Route::get('status/{status}',[GeneralInformationsController::class,"getByStatus"])->middleware(['auth:api']);
+    Route::get('user_book_id/{user_book_id}',[GeneralInformationsController::class,"getByUserBook"])->middleware(['auth:api']);
+     Route::get('status/{status}',[GeneralInformationsController::class,"getByStatus"])->middleware(['auth:api']);
+    Route::post('/audit',[GeneralInformationsController::class,"audit"])->middleware(['auth:api']);
+ 
+ 
 
 });
 
 
 // fqa routes
 Route::group(['prefix' => 'fqa'], function () {
-    Route::get('/', [FQAController::class, 'index'])->middleware(['auth:api']);
+    Route::get('/', [FQAController::class, 'index']);
     Route::post('/', [FQAController::class, 'store'])->middleware(['auth:api','role:admin']);
-    Route::get('/{id}', [FQAController::class, 'show'])->middleware(['auth:api']);
+    Route::get('/{id}', [FQAController::class, 'show']);
     Route::patch('/{id}', [FQAController::class, 'update'])->middleware(['auth:api','role:admin']);
     Route::delete('/{id}', [FQAController::class, 'destroy'])->middleware(['auth:api','role:admin']);
 });
@@ -164,5 +177,5 @@ Route::group(['prefix' => 'fqa'], function () {
 
 
 Route::post('email/verification-notification', [EmailVerificationController::class, 'sendVerificationEmail'])->middleware('auth:api');
-Route::get('verify-email/{id}/{hash}', [EmailVerificationController::class, 'verify'])->name('verification.verify')->middleware('auth:api');
+Route::get('verify-email/{id}/{hash}', [EmailVerificationController::class, 'verify'])->name('verification.verify');
 
