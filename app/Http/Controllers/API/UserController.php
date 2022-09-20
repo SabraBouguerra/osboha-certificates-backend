@@ -166,7 +166,7 @@ class UserController extends BaseController
 
         return $this->sendResponse($user, 'Pdf uploaded Successfully!');
     }
-  
-  
+
+
 
 }
