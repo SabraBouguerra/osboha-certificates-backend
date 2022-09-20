@@ -40,7 +40,6 @@ class AuthController extends BaseController
             "name" => "required",
             "email" => "required|email",
             "password" => 'required',
-            "c_password" => 'required|same:password',
 
         ]);
 
@@ -55,6 +54,7 @@ class AuthController extends BaseController
             $user = User::create($input);
             $role =$role = Role::where('name', 'user')->first();
             $user->assignRole($role);
+
         }catch (\Illuminate\Database\QueryException $e){
          $errorCode = $e->errorInfo[1];
          if($errorCode == 1062){
@@ -63,7 +63,7 @@ class AuthController extends BaseController
      }
         $success['token'] = $user->createToken('random key')->accessToken;
         $success['name'] = $user->name;
-        $success['role'] = $user->role;
+        $success['role'] = $user->getRoleNames();;
         $success['id'] = $user->id;
         return $this->sendResponse($success,"test");
     }

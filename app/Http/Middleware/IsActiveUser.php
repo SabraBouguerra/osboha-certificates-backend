@@ -7,7 +7,7 @@ use App\Models\UserBook;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-class NewCertificateRequest
+class IsActiveUser
 {
     /**
      * Handle an incoming request.
@@ -19,13 +19,12 @@ class NewCertificateRequest
     public function handle(Request $request, Closure $next)
     {
         $user = $request->user('api');
-        $status = UserBook::where("user_id",$user->id)->where('status','open')->count();
 
 
-        if($status > 1){
+        if(!$user->is_active ){
             $response  = [
                 'success' => false,
-                'data' => 'Finish the current book first'
+                'data' => 'Please wait until getting active'
             ];
             return response()->json($response,400);
         }
