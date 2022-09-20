@@ -155,11 +155,10 @@ class GeneralInformationsController extends BaseController
         return $this->sendResponse($degrees, 'Final Degree!');
     }
 
+    // DUPLICATED
  
     public function getByUserBookId($user_book_id){
- 
-
-        $general_informations = GeneralInformations::where('user_book_id',$user_book_id)->first();
+         $general_informations = GeneralInformations::where('user_book_id',$user_book_id)->first();
         return $this->sendResponse($general_informations, 'General Informations!');
     }
 
@@ -167,6 +166,7 @@ class GeneralInformationsController extends BaseController
         $general_informations =  GeneralInformations::with("user_book.user")->with("user_book.book")->where('status',$status)->groupBy('user_book_id')->get();
         return $this->sendResponse($general_informations, 'General Informations');
     }
+
 
     public function getByUserBook($user_book_id){
         $general_informations =  GeneralInformations::with("user_book.user")->with("user_book.book")->where('user_book_id',$user_book_id)->first();
