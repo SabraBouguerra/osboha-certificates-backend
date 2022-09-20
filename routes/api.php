@@ -70,7 +70,8 @@ Route::group(['prefix' => 'books'], function () {
     Route::get('/{id}', [BooksController::class, 'show'])->middleware(['auth:api']);
     Route::patch('/{id}', [BooksController::class, 'update'])->middleware(['auth:api','role:admin']);
     Route::delete('/{id}', [BooksController::class, 'destroy'])->middleware(['auth:api','role:admin']);
-    Route::get('/user-book/{id}',[BooksController::class ,'getUserBook'])->middleware(['auth:api']);
+    Route::get('/user-book/{id}',[BooksController::class ,'getUserBook'])->middleware(['auth:api',
+]);
 
 
 });
@@ -140,13 +141,12 @@ Route::group(['prefix' => 'certificates'], function () {
 Route::group(['prefix' => 'general-informations'], function () {
     Route::get('/', [GeneralInformationsController::class, 'index'])->middleware(['auth:api','role:reviewer|admin']);
     Route::post('/', [GeneralInformationsController::class, 'store'])->middleware(['auth:api','role:user|admin']);
-    Route::get('/user_book_id/{user_book_id}', [GeneralInformationsController::class, 'GetByUserBookId'])->middleware(['auth:api']);
+    Route::get('/user_book_id/{user_book_id}', [GeneralInformationsController::class, 'getByUserBookId'])->middleware(['auth:api']);
     Route::get('/{id}', [GeneralInformationsController::class, 'show'])->middleware(['auth:api']);
     Route::patch('/{id}', [GeneralInformationsController::class, 'update'])->middleware(['auth:api', 'role:user|admin']);
     Route::delete('/{id}', [GeneralInformationsController::class, 'destroy'])->middleware(['auth:api','role:user|admin']);
     Route::patch('add-degree/{id}',[GeneralInformationsController::class,"addDegree"])->middleware(['auth:api','role:admin|reviewer']);
     Route::get('final-degree/{id}',[GeneralInformationsController::class,"finalDegree"])->middleware(['auth:api']);
-    Route::get('user_book_id/{user_book_id}',[GeneralInformationsController::class,"getByUserBook"])->middleware(['auth:api']);
     Route::get('status/{status}',[GeneralInformationsController::class,"getByStatus"])->middleware(['auth:api']);
 
 });
