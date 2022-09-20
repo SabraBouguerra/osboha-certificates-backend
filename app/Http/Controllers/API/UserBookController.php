@@ -36,6 +36,11 @@ class UserBookController extends BaseController
         if ($validator->fails()) {
             return $this->sendError($validator->errors());
         }
+
+        $count = UserBook::where('status','!=','finished')->count();
+        if($count > 0 ){
+            return $this->sendError('You have an open book');
+        }
         $input = $request->all();
         $input['user_id'] = Auth::id();
 
