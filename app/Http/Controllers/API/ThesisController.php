@@ -198,7 +198,7 @@ class ThesisController extends BaseController
 
  
 
-
+        }
 
     public function getByStatus($status){
         $thesises =  Thesis::with("user_book.user")->with("user_book.book")->where('status',$status)->groupBy('user_book_id')->get();
