@@ -130,6 +130,7 @@ Route::group(['prefix' => 'questions'], function () {
     Route::get('user_book_id/{user_book_id}',[QuestionController::class,"getByUserBook"])->middleware(['auth:api']);
     Route::get('status/{status}',[QuestionController::class,"getByStatus"])->middleware(['auth:api']);
     Route::post('/audit',[QuestionController::class,"audit"])->middleware(['auth:api']);
+    Route::patch('audit-question/{id}',[QuestionController::class,"auditQuestion"])->middleware(['auth:api','verified','isActive']);
 
 });
 
