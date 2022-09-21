@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController as BaseController;
 use App\Models\GeneralInformations;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
+
 
 
 class GeneralInformationsController extends BaseController
@@ -65,15 +67,21 @@ class GeneralInformationsController extends BaseController
             return $this->sendError('Validation error', $validator->errors());
         }
 
-
-        $general_informations = GeneralInformations::find($id);
-
-        $general_informations->reviews = $request->reviews;
-        $general_informations->degree=$request->degree;
-        $general_informations->reviewer_id = $request->reviewer_id;
-        $general_informations->status='reviewed';
         try {
-            $general_informations->save();
+            $general_informations = GeneralInformations::find($id);
+            if (Auth::id() == $general_informations->user_book->user_id) {
+    
+                $general_informations->update($request->all());
+            }
+            else{
+                $general_informations->reviews = $request->reviews;
+                $general_informations->degree=$request->degree;
+                $general_informations->reviewer_id = $request->reviewer_id;
+                $general_informations->status='reviewed';
+                $general_informations->save();
+
+            }
+    
         } catch (\Error $e) {
             return $this->sendError('General Informations does not exist');
         }

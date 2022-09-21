@@ -8,6 +8,7 @@ use App\Models\Question;
 use App\Models\Quotation;
 use App\Models\UserBook;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 
 
@@ -73,27 +74,25 @@ class QuestionController extends BaseController
 
     public function update(Request $request,  $id)
     {
-        
-        $input = $request->all();
         $validator = Validator::make($request->all(), [
             'question' => 'required',
-            'pages' => 'required',
-            'quotation' => 'required',
+            'quotes' => 'required',
+            'quotes.*.text' => 'required',
+            "starting_page"=> 'required',
+            "ending_page"=> 'required'
         ]);
         if ($validator->fails()) {
             return $this->sendError('Validation error', $validator->errors());
         }
 
 
-        $question = Question::find($id);
-
-        $updateParam = [
-            "question" => $input['question'],
-            "starting_page"=> 'required',
-            "ending_page"=> 'required',
-        ];
         try {
-            $question->update($updateParam);
+            $question = Question::find($id);
+            if (Auth::id() == $question->user_book->user_id) {
+
+                $question->update($request->all());
+            }
+
         } catch (\Error $e) {
             return $this->sendError('User Book does not exist');
         }
@@ -113,8 +112,6 @@ class QuestionController extends BaseController
         }
         return $this->sendResponse($result, 'Question deleted Successfully');
     }
-
-
 
     public function addDegree(Request $request,  $id)
     {
