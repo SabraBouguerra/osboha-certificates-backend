@@ -48,13 +48,13 @@ class QuestionController extends BaseController
 
 
         try {
-            $question = Question::create($input);
-            $question->quotation()->saveMany($qoutes);
+            $newQuestion = Question::create($input);
+            $newQuestion->quotation()->saveMany($qoutes);
         } catch (\Illuminate\Database\QueryException $e) {
             echo($e);
             return $this->sendError('User Book does not exist.');
         }
-
+        $question=Question::find($newQuestion->id);
         return $this->sendResponse($question, "Question created");
     }
 
@@ -73,6 +73,7 @@ class QuestionController extends BaseController
 
     public function update(Request $request,  $id)
     {
+        
         $input = $request->all();
         $validator = Validator::make($request->all(), [
             'question' => 'required',
@@ -102,7 +103,9 @@ class QuestionController extends BaseController
     public function destroy($id)
     {
 
+        Quotation::where('question_id', $id)->delete();
         $result = Question::destroy($id);
+        
 
         if ($result == 0) {
 
@@ -135,7 +138,7 @@ class QuestionController extends BaseController
 
         try {
             $question->save();
-            dd(Question::where('user_book_id', $question->user_book_id)->where('status', 'audit')->orWhere('status', 'review')->count());
+            // dd(Question::where('user_book_id', $question->user_book_id)->where('status', 'audit')->orWhere('status', 'review')->count());
             if( Question::where('user_book_id', $question->user_book_id)->where('status', 'audit')->orWhere('status', 'review')->count() == 0){
                 UserBook::where('id',$question->user_book_id)->update('status','finished');
             }
