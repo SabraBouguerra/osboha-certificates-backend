@@ -41,11 +41,18 @@ class ThesisController extends BaseController
         $input = $request->all();
 
         try {
-            $thesis = Thesis::create($input);
-            $this->createThesisMedia($request->file('image'), $thesis->id);
+            $newthesis = Thesis::create($input);
+            $this->createThesisMedia($request->file('image'), $newthesis->id);
+            // if ($request->has('image')) {
+            //     foreach ($request->image as $image) {
+            //         $this->createThesisMedia($image, $newthesis->id);
+            //     }
+            // }
+
         } catch (\Illuminate\Database\QueryException $e) {
             return $this->sendResponse($e, 'User Book does not exist');
         }
+        $thesis=Thesis::find($newthesis->id);
 
         return $this->sendResponse($thesis, "Thesis created");
     }
