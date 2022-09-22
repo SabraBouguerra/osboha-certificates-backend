@@ -13,7 +13,7 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasApiTokens, HasFactory, Notifiable,HasRoles;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -27,17 +27,6 @@ class User extends Authenticatable implements MustVerifyEmail
         'pdf',
         'is_active'
     ];
-
-    public function books(){
-        return $this->belongsToMany(Book::class,'user_book');
-    }
-    public function reviewes(){
-        return $this->hasMany(Thesis::class,'reviewer_id');
-    }
-    public function audites(){
-        return $this->hasMany(Thesis::class,'auditor_id');
-    }
-
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -56,5 +45,23 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+    public function books()
+    {
+        return $this->belongsToMany(Book::class, 'user_book');
+    }
+    public function reviewes()
+    {
+        return $this->hasMany(Thesis::class, 'reviewer_id');
+    }
+    public function audites()
+    {
+        return $this->hasMany(Thesis::class, 'auditor_id');
+    }
+
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new \App\Notifications\MailResetPasswordNotification($token));
+    }
+    
 
 }

@@ -30,7 +30,8 @@ use App\Models\Question;
 
 Route::post("register", [AuthController::class, "register"]);
 Route::post("login", [AuthController::class, "login"]);
-
+Route::post('password/forgot-password', [AuthController::class, 'sendResetLinkResponse'])->name('passwords.sent');
+Route::post('password/reset', [AuthController::class, 'sendResetResponse'])->name('passwords.reset');
 
 //category routes
 Route::group(['prefix' => 'category'], function () {
