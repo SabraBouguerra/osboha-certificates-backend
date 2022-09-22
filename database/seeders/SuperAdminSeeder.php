@@ -19,7 +19,7 @@ class SuperAdminSeeder extends Seeder
     {
         $password = Hash::make('adminadminadmin');
        $role =  Role:: findByName('admin', 'api');
-        echo($role);
+    
         $user = User::create([
             "name" => "admin",
             "email" => "admin@gmail.com",

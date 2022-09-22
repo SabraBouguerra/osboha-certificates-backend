@@ -51,10 +51,11 @@ Route::group(['prefix' => 'type'], function () {
  //users routes
     Route::group(['prefix' => 'userbook'], function () {
         Route::get('/', [UserBookController::class, 'index'])->middleware(['auth:api','role:admin|reviewer']);
-        Route::post('/', [UserBookController::class, 'store'])->middleware(['auth:api','role:admin|reviewer']);
+        Route::post('/', [UserBookController::class, 'store'])->middleware(['auth:api']);
         Route::get('/count',[UserBookController::class,"checkOpenBook"])->middleware(['auth:api','verified','isActive']);
         Route::get('/certificate/{id}',[UserBookController::class,"checkCertificate"])->middleware(['auth:api','verified','isActive']);
         Route::get('/statistics/{id}',[UserBookController::class,"getStatistics"])->middleware(['auth:api','verified','isActive']);
+        Route::get('/general-statistics/',[UserBookController::class,"getGeneralstatistics"]);
         Route::get('/stage-status/{id}',[UserBookController::class,"getStageStatus"])->middleware(['auth:api','verified','isActive']);
         Route::get('/{id}', [UserBookController::class, 'show'])->middleware(['auth:api','verified','isActive']);
         Route::patch('/{id}', [UserBookController::class, 'update'])->middleware(['auth:api','role:admin|reviewer']);
