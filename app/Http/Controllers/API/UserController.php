@@ -3,6 +3,7 @@
 
 namespace App\Http\Controllers\API;
 
+use Illuminate\Support\Facades\Storage;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -156,6 +157,52 @@ class UserController extends BaseController
         return $this->sendResponse($user, 'user activated!');
     }
 
+    public function image(Request $request)
+    {
+        $path = $request->query('path', 'not found');
+        if ($path === 'not found') {
+            return $this->sendError('Path nout found');
+        }
+        $image = Storage::get($path);
+        $exp = "/[.][a-z][a-z][a-z]/";
+        if (is_null($image)) {
+            return $this->sendError('Image not found');
+        }
 
+        preg_match($exp, $path, $matches);
+        $extention = ltrim($matches[0], '.');
+
+        return response($image, 200)->header('Content-Type', "image/$extention");
+    }
+
+
+    public function registerAdmin(Request $request){
+
+        $validator = Validator::make($request->all(), [
+            "name" => "required",
+            "email" => "required|email",
+            "password" => 'required',
+            'role' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->sendError($validator->errors());
+        }
+        $input = $request->all();
+        $role = $this->GetRole($input['role']);
+
+      try{
+
+        $user = User::create($input);
+        $user->assignRole($role);
+        $this->createUserPhoto($request->file('image'), $user);
+      }catch (\Illuminate\Database\QueryException $e){
+        $errorCode = $e->errorInfo[1];
+        if($errorCode == 1062){
+            return $this->sendError('User already exist');
+        }
+    }
+        return $this->sendResponse($user,"User created");
+    }
 
 }
