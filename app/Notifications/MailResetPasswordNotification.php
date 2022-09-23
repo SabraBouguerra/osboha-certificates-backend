@@ -16,6 +16,7 @@ class MailResetPasswordNotification extends Notification
     use Queueable;
     protected $pageUrl;
     public $token;
+    public $timer;
 
     /**
      * Create a new notification instance.
@@ -26,6 +27,7 @@ class MailResetPasswordNotification extends Notification
     {
         $this->token=$token;
         $this->pageUrl = 'http://127.0.0.1:8080/auth/reset-password/';
+        $this->timer=config('auth.passwords.users.expire');
     }
 
     /**
@@ -50,10 +52,12 @@ class MailResetPasswordNotification extends Notification
         return (new MailMessage)
         ->from('example@example.com', 'Example')
         ->subject('أصبوحة || تغيير كلمة المرور')
-        ->line('You are receiving this email because we received a password reset request for your account.')
-        ->action('Reset Password', $this->pageUrl.$this->token)
-        ->line('This password reset link will expire in :count minutes.', ['count' => config('auth.passwords.users.expire')])
-        ->line('If you did not request a password reset, no further action is required.');
+        ->line('من المهم أن تحفظ كلمة المرور الخاصة بك، لأنها سبيل الوصول إلى وثائقك.')
+        ->line('لقد استلمنا طلب تغيير كلمة السر على الموقع.')
+        ->action('اضغط هنا لتغير كلمة السر', $this->pageUrl.$this->token)
+        ->line('ستنتهي صلاحية رابط إعادة تعيين كلمة المرور بعد' , $this->timer)
+        ->line('إذا لم تطلب إعادة تعيين كلمة المرور ، فلا يلزم اتخاذ أي إجراء آخر')
+        ->line('همسة، حاول الاحتفاظ بكلمة السر الجديدة في مكان يسهل عليك الوصول اليه');
 }
 
     /**
