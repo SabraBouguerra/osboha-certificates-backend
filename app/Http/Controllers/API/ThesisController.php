@@ -234,4 +234,24 @@ class ThesisController extends BaseController
 
         return response($image, 200)->header('Content-Type', "image/$extention");
     }
+
+    public static function thesisStatistics(){
+        $thesisCount = Thesis::count();
+        $very_excellent =  Thesis::where('degree' ,'>=',95)->where('degree','<',100)->count();
+        $excellent = Thesis::where('degree' ,'>',94.9)->where('degree','<',95)->count();
+        $veryGood =  Thesis::where('degree' ,'>',89.9)->where('degree','<',85)->count();
+        $good = Thesis::where('degree' ,'>',84.9)->where('degree','<',80)->count();
+        $accebtable = Thesis::where('degree' ,'>',79.9)->where('degree','<',70)->count();
+        $rejected = Thesis::where('status','rejected')->count();
+        return [
+            "total" => $thesisCount,
+            "very_excellent" =>( $very_excellent / $thesisCount) * 100,
+            "excellent" =>( $excellent / $thesisCount) * 100,
+            "very_good" =>( $veryGood / $thesisCount) * 100,
+            "good" =>( $good / $thesisCount) * 100,
+            "accebtable" =>( $accebtable / $thesisCount) * 100,
+            "rejected" =>( $rejected / $thesisCount) * 100,
+        ];
+
+    }
 }

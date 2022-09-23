@@ -23,11 +23,11 @@ Trait MediaTraits{
         return $media;
     }
 
-    function createUserPdf($media, $user){
+    function createUserPhoto($media, $user){
 
-        $pdfName = time().'.'. $media->extension();
-        $media->move(public_path('assets/images'), $pdfName);
-        $user->pdf = $pdfName;
+
+        $path = Storage::putFile('image', $media);
+        $user->photo = $path;
         $user->save();
         return $user;
 
@@ -56,11 +56,6 @@ Trait MediaTraits{
         $currentMedia->delete();
     }
 
-    function deletePdf($path){
-
-        File::delete(public_path('assets/images/'.$path));
-
-    }
 
 
 }

@@ -30,7 +30,8 @@ class UserController extends BaseController
             "name" => "required",
             "email" => "required|email",
             "password" => 'required',
-            'role' => 'required'
+            'role' => 'required',
+            "image" => "required|image|mimes:png,jpg,jpeg,gif,svg|max:2048",
         ]);
 
         if ($validator->fails()) {
@@ -43,7 +44,7 @@ class UserController extends BaseController
 
         $user = User::create($input);
         $user->assignRole($role);
-
+        $this->createUserPhoto($request->file('image'), $user);
       }catch (\Illuminate\Database\QueryException $e){
         $errorCode = $e->errorInfo[1];
         if($errorCode == 1062){
@@ -117,18 +118,6 @@ class UserController extends BaseController
 
 
 
-    public function uploadPdf(Request $request){
-        $validator = Validator::make($request->all(), [
-            'pdf' => "required|mimetypes:application/pdf"
-         ]);
-
-         if ($validator->fails()) {
-             return $this->sendError($validator->errors());
-         }
-         $user = Auth::user();
-        $this->createUserPdf($request->file('pdf'), $user);
-         return $this->sendResponse($user, 'Pdf uploaded Successfully!');
-    }
 
 
     public function listUnactiveUser(){
@@ -157,14 +146,14 @@ class UserController extends BaseController
 
     public function activeUser(Request $request,$id){
         $user = User::find($id);
-        $this->deletePdf($user->pdf);
+        $this->deletePhoto($user->picture);
       try{
-        $user->update(['is_active' => true,'pdf' => null]);
+        $user->update(['is_active' => true,'picture' => null]);
       }catch(\Error $e){
         return $this->sendError('User does not exist');
       }
 
-        return $this->sendResponse($user, 'Pdf uploaded Successfully!');
+        return $this->sendResponse($user, 'user activated!');
     }
 
 

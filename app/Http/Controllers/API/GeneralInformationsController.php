@@ -70,7 +70,7 @@ class GeneralInformationsController extends BaseController
         try {
             $general_informations = GeneralInformations::find($id);
             if (Auth::id() == $general_informations->user_book->user_id) {
-    
+
                 $general_informations->update($request->all());
             }
             else{
@@ -81,7 +81,7 @@ class GeneralInformationsController extends BaseController
                 $general_informations->save();
 
             }
-    
+
         } catch (\Error $e) {
             return $this->sendError('General Informations does not exist');
         }
@@ -142,12 +142,12 @@ class GeneralInformationsController extends BaseController
 
         $general_informations = GeneralInformations::find($id);
         $general_informations->reviews = $request->reviews;
- 
+
         $general_informations->degree = $request->degree;
         $general_informations->reviewer_id = $request->reviewer_id;
         $general_informations->status = 'reviewed';
     try {
- 
+
             $general_informations->save();
         } catch (\Error $e) {
             return $this->sendError('General Informations does not exist');
@@ -164,7 +164,7 @@ class GeneralInformationsController extends BaseController
     }
 
     // DUPLICATED
- 
+
     public function getByUserBookId($user_book_id){
          $general_informations = GeneralInformations::where('user_book_id',$user_book_id)->first();
         return $this->sendResponse($general_informations, 'General Informations!');
@@ -180,5 +180,26 @@ class GeneralInformationsController extends BaseController
         $general_informations =  GeneralInformations::with("user_book.user")->with("user_book.book")->where('user_book_id',$user_book_id)->first();
         return $this->sendResponse($general_informations, 'General Informations');
     }
- 
+
+
+
+    public static function generalInformationsStatistics(){
+        $thesisCount = GeneralInformations::count();
+        $very_excellent =  GeneralInformations::where('degree' ,'>=',95)->where('degree','<',100)->count();
+        $excellent = GeneralInformations::where('degree' ,'>',94.9)->where('degree','<',95)->count();
+        $veryGood =  GeneralInformations::where('degree' ,'>',89.9)->where('degree','<',85)->count();
+        $good = GeneralInformations::where('degree' ,'>',84.9)->where('degree','<',80)->count();
+        $accebtable = GeneralInformations::where('degree' ,'>',79.9)->where('degree','<',70)->count();
+        $rejected = GeneralInformations::where('status','rejected')->count();
+        return [
+            "total" => $thesisCount,
+            "very_excellent" =>( $very_excellent / $thesisCount) * 100,
+            "excellent" =>( $excellent / $thesisCount) * 100,
+            "very_good" =>( $veryGood / $thesisCount) * 100,
+            "good" =>( $good / $thesisCount) * 100,
+            "accebtable" =>( $accebtable / $thesisCount) * 100,
+            "rejected" =>( $rejected / $thesisCount) * 100,
+        ];
+
+    }
 }

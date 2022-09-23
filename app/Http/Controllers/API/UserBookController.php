@@ -4,19 +4,20 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController as BaseController;
+use App\Models\Book;
 use App\Models\Certificates;
 use App\Models\GeneralInformations;
 use App\Models\Question;
 use App\Models\Thesis;
+use App\Models\User;
 use App\Models\UserBook;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
-
-use Illuminate\Support\Facades\DB;
-use phpseclib3\File\ASN1\Maps\Certificate;
+use Spatie\Permission\Models\Role;
 
 class UserBookController extends BaseController
 {
+
     public function index()
     {
 
@@ -37,13 +38,14 @@ class UserBookController extends BaseController
             return $this->sendError($validator->errors());
         }
 
-        $count = UserBook::where('status','!=','finished')->count();
+
+        $input = $request->all();
+        $input['user_id'] = Auth::id();
+        $count = UserBook::where('status','!=','finished')->where('id',$input['user_id'])->count();
+
         if($count > 0 ){
             return $this->sendError('You have an open book');
         }
-        $input = $request->all();
-        $input['user_id'] = Auth::id();
-
         try {
             $userBook = UserBook::create($input);
         } catch (\Illuminate\Database\QueryException $e) {
@@ -130,9 +132,9 @@ class UserBookController extends BaseController
     public function checkOpenBook()
     {
         $id = Auth::id();
- 
+
         $open_book = UserBook::where('user_id',$id)->where('status','stage_one')->orWhere('status','stage_two')->count();
- 
+
 
         return $this->sendResponse($open_book, 'Open Book');
     }
@@ -149,7 +151,7 @@ class UserBookController extends BaseController
         return $this->sendResponse($status, 'Status');
     }
 
- 
+
     public function checkCertificate($id){
         $status = Certificates::where('user_book_id',$id)->exists();
         return $this->sendResponse($status , 'Status' );
@@ -172,5 +174,31 @@ class UserBookController extends BaseController
 
     }
 
- 
+    public function getGeneralstatistics(){
+        $thesis = ThesisController::thesisStatistics();
+        $questions = QuestionController::questionsStatistics();
+        $generalInformations = GeneralInformationsController::generalInformationsStatistics();
+        $certificates = Certificates::count();
+        $users = User::count();
+        $books = Book::count();
+        $auditer = Role::where('name','auditer')->count();
+        $reviewer = Role::where('name','reviewer')->count();
+
+
+
+        $response = [
+            "thesises" => $thesis,
+            "questions" => $questions,
+            "general_informations" => $generalInformations,
+            "certificates" => $certificates,
+            'users' => $users,
+            "books" => $books,
+            "auditers" => $auditer,
+            "reviewer" => $reviewer,
+        ];
+        return $this->sendResponse($response , 'Statistics');
+
+    }
+
+
 }

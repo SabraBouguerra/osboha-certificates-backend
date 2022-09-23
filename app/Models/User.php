@@ -24,7 +24,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'email',
         'password',
-        'pdf',
+        'picture',
         'is_active'
     ];
     /**
@@ -62,6 +62,6 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         $this->notify(new \App\Notifications\MailResetPasswordNotification($token));
     }
-    
+
 
 }
