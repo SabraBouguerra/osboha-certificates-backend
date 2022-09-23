@@ -104,7 +104,7 @@ class QuestionController extends BaseController
 
         Quotation::where('question_id', $id)->delete();
         $result = Question::destroy($id);
-        
+
 
         if ($result == 0) {
 
@@ -203,6 +203,27 @@ class QuestionController extends BaseController
         return $this->sendResponse($questions, 'Questions');
     }
 
+
+
+      public static function questionsStatistics(){
+        $thesisCount = Question::count();
+        $very_excellent =  Question::where('degree' ,'>=',95)->where('degree','<',100)->count();
+        $excellent = Question::where('degree' ,'>',94.9)->where('degree','<',95)->count();
+        $veryGood =  Question::where('degree' ,'>',89.9)->where('degree','<',85)->count();
+        $good = Question::where('degree' ,'>',84.9)->where('degree','<',80)->count();
+        $accebtable = Question::where('degree' ,'>',79.9)->where('degree','<',70)->count();
+        $rejected = Question::where('status','rejected')->count();
+        return [
+            "total" => $thesisCount,
+            "very_excellent" =>( $very_excellent / $thesisCount) * 100,
+            "excellent" =>( $excellent / $thesisCount) * 100,
+            "veryGood" =>( $veryGood / $thesisCount) * 100,
+            "good" =>( $good / $thesisCount) * 100,
+            "accebtable" =>( $accebtable / $thesisCount) * 100,
+            "rejected" =>( $rejected / $thesisCount) * 100,
+        ];
+
+    }
 }
 
 

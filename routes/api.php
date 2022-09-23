@@ -90,7 +90,7 @@ Route::group(['prefix' => 'users'], function () {
     Route::delete('/{id}', [UserController::class, 'destroy'])->middleware(['auth:api' ,'role:user|admin']);
     Route::get('/list/un-active', [UserController::class, 'listUnactiveUser'])->middleware(['auth:api' ,'role:user|admin']);
     Route::get('/list/un-active-reviwers-auditors', [UserController::class, 'listUnactiveReviwers'])->middleware(['auth:api' ,'role:user|admin']);
-    Route::post('/upload-pdf',[UserController::class, 'uploadPdf'])->middleware((['auth:api']));
+    Route::post('/upload-user_book',[UserController::class, 'uploaduser_book'])->middleware((['auth:api']));
 
 });
 

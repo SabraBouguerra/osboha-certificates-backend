@@ -17,6 +17,7 @@ use Spatie\Permission\Models\Role;
 
 class UserBookController extends BaseController
 {
+
     public function index()
     {
 
@@ -174,14 +175,17 @@ class UserBookController extends BaseController
     }
 
     public function getGeneralstatistics(){
-        $thesis = Thesis::count();
-        $questions = Question::count();
-        $generalInformations = GeneralInformations::count();
+        $thesis = ThesisController::thesisStatistics();
+        $questions = QuestionController::questionsStatistics();
+        $generalInformations = GeneralInformationsController::generalInformationsStatistics();
         $certificates = Certificates::count();
         $users = User::count();
         $books = Book::count();
         $auditer = Role::where('name','auditer')->count();
         $reviewer = Role::where('name','reviewer')->count();
+
+
+
         $response = [
             "thesises" => $thesis,
             "questions" => $questions,
