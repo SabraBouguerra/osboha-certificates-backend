@@ -147,7 +147,7 @@ class UserController extends BaseController
 
     public function activeUser(Request $request,$id){
         $user = User::find($id);
-        $this->deletePhoto($user->picture);
+        $this->deleteUserPicture($user->picture);
       try{
         $user->update(['is_active' => true,'picture' => null]);
       }catch(\Error $e){
@@ -164,6 +164,7 @@ class UserController extends BaseController
             return $this->sendError('Path nout found');
         }
         $image = Storage::get($path);
+        echo($image);
         $exp = "/[.][a-z][a-z][a-z]/";
         if (is_null($image)) {
             return $this->sendError('Image not found');
@@ -189,20 +190,24 @@ class UserController extends BaseController
             return $this->sendError($validator->errors());
         }
         $input = $request->all();
-        $role = $this->GetRole($input['role']);
+        $role  = Role::where('name', $input['role'])->first();
 
       try{
 
         $user = User::create($input);
         $user->assignRole($role);
-        $this->createUserPhoto($request->file('image'), $user);
+
       }catch (\Illuminate\Database\QueryException $e){
         $errorCode = $e->errorInfo[1];
         if($errorCode == 1062){
             return $this->sendError('User already exist');
         }
     }
-        return $this->sendResponse($user,"User created");
+    $success['token'] = $user->createToken('random key')->accessToken;
+    $success['name'] = $user->name;
+    $success['role'] = $user->getRoleNames();;
+    $success['id'] = $user->id;
+        return $this->sendResponse($success,"User created");
     }
 
 }

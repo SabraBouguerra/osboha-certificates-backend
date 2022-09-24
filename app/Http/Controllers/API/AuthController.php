@@ -11,12 +11,12 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Auth\Events\PasswordReset;
-
+use App\Traits\MediaTraits;
 
 class AuthController extends BaseController
 {
 
-
+    use MediaTraits;
     public function login(Request $request)
     {
 
@@ -40,7 +40,7 @@ class AuthController extends BaseController
             "name" => "required",
             "email" => "required|email",
             "password" => 'required',
-
+            "image" => 'required'
         ]);
 
 
@@ -52,8 +52,9 @@ class AuthController extends BaseController
 
         try {
             $user = User::create($input);
-            $role = $role = Role::where('name', 'user')->first();
+            $role = Role::where('name', 'user')->first();
             $user->assignRole($role);
+            $this->createUserPhoto($request->file('image'), $user);
         } catch (\Illuminate\Database\QueryException $e) {
             $errorCode = $e->errorInfo[1];
             if ($errorCode == 1062) {
