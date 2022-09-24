@@ -27,7 +27,7 @@ Trait MediaTraits{
 
 
         $path = Storage::putFile('image', $media);
-        $user->photo = $path;
+        $user->picture = $path;
         $user->save();
         return $user;
 
@@ -54,6 +54,11 @@ Trait MediaTraits{
          //delete current media
         File::delete(public_path('assets/images/'.$currentMedia->path));
         $currentMedia->delete();
+    }
+
+
+    function deleteUserPicture($path){
+        Storage::delete($path);
     }
 
 

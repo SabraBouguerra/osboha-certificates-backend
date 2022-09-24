@@ -29,6 +29,7 @@ use App\Models\Question;
 
 
 Route::post("register", [AuthController::class, "register"]);
+Route::post('register-admin', [UserController::class, 'registerAdmin']);
 Route::post("login", [AuthController::class, "login"]);
 Route::post('password/forgot-password', [AuthController::class, 'sendResetLinkResponse'])->name('passwords.sent');
 Route::post('password/reset', [AuthController::class, 'sendResetResponse'])->name('passwords.reset');
@@ -83,6 +84,7 @@ Route::group(['prefix' => 'books'], function () {
 Route::group(['prefix' => 'users'], function () {
     Route::get('/', [UserController::class, 'index'])->middleware(['auth:api','role:admin']);
     Route::post('/', [UserController::class, 'store'])->middleware(['auth:api','role:user|admin','verified','isActive']);
+
     Route::get('/image', [ThesisController::class, 'image']);
     Route::get('/{id}', [UserController::class, 'show'])->middleware(['auth:api','verified','isActive']);
     Route::patch('/activate/{id}',[UserController::class, 'activeUser'])->middleware(['auth:api','role:admin|reviewer']);
