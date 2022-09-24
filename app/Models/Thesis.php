@@ -39,4 +39,14 @@ class Thesis extends Model
     public function auditor(){
         return $this->belongsTo(User::class);
     }
+
+    public static function boot() {
+        parent::boot();
+        self::deleting(function($thesis) { // before delete() method call this
+             $thesis->photos()->each(function($photo) {
+                $photo->delete(); // <-- direct deletion
+             });
+        });
+    }
+
 }
