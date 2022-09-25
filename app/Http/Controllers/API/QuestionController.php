@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Auth;
 
 
 class QuestionController extends BaseController
- {
+{
     public function index()
     {
 
@@ -29,8 +29,8 @@ class QuestionController extends BaseController
             'quotes' => 'required',
             'quotes.*.text' => 'required',
             'user_book_id' => 'required',
-            "starting_page"=> 'required',
-            "ending_page"=> 'required'
+            "starting_page" => 'required',
+            "ending_page" => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -38,13 +38,13 @@ class QuestionController extends BaseController
         }
         $input = $request->all();
         $quotationInput = $input['quotes'];
-        $qoutes =[];
+        $qoutes = [];
 
         foreach ($quotationInput as $value) {
 
-            $qoute = Quotation::create( $value);
-            array_push($qoutes,$qoute);
-          }
+            $qoute = Quotation::create($value);
+            array_push($qoutes, $qoute);
+        }
 
 
 
@@ -52,10 +52,10 @@ class QuestionController extends BaseController
             $newQuestion = Question::create($input);
             $newQuestion->quotation()->saveMany($qoutes);
         } catch (\Illuminate\Database\QueryException $e) {
-            echo($e);
+            echo ($e);
             return $this->sendError('User Book does not exist.');
         }
-        $question=Question::find($newQuestion->id);
+        $question = Question::find($newQuestion->id);
         return $this->sendResponse($question, "Question created");
     }
 
@@ -78,23 +78,33 @@ class QuestionController extends BaseController
             'question' => 'required',
             'quotes' => 'required',
             'quotes.*.text' => 'required',
-            "starting_page"=> 'required',
-            "ending_page"=> 'required'
+            "starting_page" => 'required',
+            "ending_page" => 'required'
         ]);
         if ($validator->fails()) {
             return $this->sendError('Validation error', $validator->errors());
         }
 
+        $input = $request->all();
+        $quotationInput = $input['quotes'];
+        $qoutes = [];
 
         try {
-            $question = Question::find($id);
-            if (Auth::id() == $question->user_book->user_id) {
+            foreach ($quotationInput as $value) {
 
-                $question->update($request->all());
+                $qoute = Quotation::create($value);
+                array_push($qoutes, $qoute);
             }
 
+            $question = Question::find($id);
+            if (Auth::id() == $question->user_book->user_id) {
+                $res=Quotation::where('id',$id)->delete();
+                $question->quotation()->saveMany($qoutes);
+                $question->update($request->all());
+            }
         } catch (\Error $e) {
-            return $this->sendError('User Book does not exist');
+
+            return $this->sendError($e);
         }
         return $this->sendResponse($question, 'Question updated Successfully!');
     }
@@ -128,16 +138,16 @@ class QuestionController extends BaseController
 
         $question = Question::find($id);
 
-            $question->reviews = $request->reviews;
-            $question->degree = $request->degree;
-            $question->reviewer_id = $request->reviewer_id;
-            $question->status = 'reviewed';
+        $question->reviews = $request->reviews;
+        $question->degree = $request->degree;
+        $question->reviewer_id = $request->reviewer_id;
+        $question->status = 'reviewed';
 
         try {
             $question->save();
             // dd(Question::where('user_book_id', $question->user_book_id)->where('status', 'audit')->orWhere('status', 'review')->count());
-            if( Question::where('user_book_id', $question->user_book_id)->where('status', 'audit')->orWhere('status', 'review')->count() == 0){
-                UserBook::where('id',$question->user_book_id)->update('status','finished');
+            if (Question::where('user_book_id', $question->user_book_id)->where('status', 'audit')->orWhere('status', 'review')->count() == 0) {
+                UserBook::where('id', $question->user_book_id)->update('status', 'finished');
             }
         } catch (\Error $e) {
             return $this->sendError('Questions does not exist');
@@ -183,47 +193,48 @@ class QuestionController extends BaseController
 
 
 
-    public function finalDegree($user_book_id){
-        $degrees = Question::where("user_book_id",$user_book_id)->avg('degree');
+    public function finalDegree($user_book_id)
+    {
+        $degrees = Question::where("user_book_id", $user_book_id)->avg('degree');
         return $this->sendResponse($degrees, 'Final Degree!');
     }
 
-    public function getUserBookQuestions($id){
-        $questions = Question::where('user_book_id',$id)->get();
-        return $this->sendResponse($questions,'Questions');
-
+    public function getUserBookQuestions($id)
+    {
+        $questions = Question::where('user_book_id', $id)->get();
+        return $this->sendResponse($questions, 'Questions');
     }
-    public function getByStatus($status){
-        $questions =  Question::with("user_book.user")->with("user_book.book")->with("user_book.questions")->where('status',$status)->groupBy('user_book_id')->get();
+    public function getByStatus($status)
+    {
+        $questions =  Question::with("user_book.user")->with("user_book.book")->with("user_book.questions")->where('status', $status)->groupBy('user_book_id')->get();
         return $this->sendResponse($questions, 'Questions');
     }
 
-    public function getByUserBook($user_book_id){
-        $questions =  Question::with("user_book.user")->with("user_book.book")->with("quotation")->where('user_book_id',$user_book_id)->get();
+    public function getByUserBook($user_book_id)
+    {
+        $questions =  Question::with("user_book.user")->with("user_book.book")->with("quotation")->where('user_book_id', $user_book_id)->get();
         return $this->sendResponse($questions, 'Questions');
     }
 
 
 
-      public static function questionsStatistics(){
+    public static function questionsStatistics()
+    {
         $thesisCount = Question::count();
-        $very_excellent =  Question::where('degree' ,'>=',95)->where('degree','<',100)->count();
-        $excellent = Question::where('degree' ,'>',94.9)->where('degree','<',95)->count();
-        $veryGood =  Question::where('degree' ,'>',89.9)->where('degree','<',85)->count();
-        $good = Question::where('degree' ,'>',84.9)->where('degree','<',80)->count();
-        $accebtable = Question::where('degree' ,'>',79.9)->where('degree','<',70)->count();
-        $rejected = Question::where('status','rejected')->count();
+        $very_excellent =  Question::where('degree', '>=', 95)->where('degree', '<', 100)->count();
+        $excellent = Question::where('degree', '>', 94.9)->where('degree', '<', 95)->count();
+        $veryGood =  Question::where('degree', '>', 89.9)->where('degree', '<', 85)->count();
+        $good = Question::where('degree', '>', 84.9)->where('degree', '<', 80)->count();
+        $accebtable = Question::where('degree', '>', 79.9)->where('degree', '<', 70)->count();
+        $rejected = Question::where('status', 'rejected')->count();
         return [
             "total" => $thesisCount,
-            "very_excellent" =>( $very_excellent / $thesisCount) * 100,
-            "excellent" =>( $excellent / $thesisCount) * 100,
-            "veryGood" =>( $veryGood / $thesisCount) * 100,
-            "good" =>( $good / $thesisCount) * 100,
-            "accebtable" =>( $accebtable / $thesisCount) * 100,
-            "rejected" =>( $rejected / $thesisCount) * 100,
+            "very_excellent" => ($very_excellent / $thesisCount) * 100,
+            "excellent" => ($excellent / $thesisCount) * 100,
+            "veryGood" => ($veryGood / $thesisCount) * 100,
+            "good" => ($good / $thesisCount) * 100,
+            "accebtable" => ($accebtable / $thesisCount) * 100,
+            "rejected" => ($rejected / $thesisCount) * 100,
         ];
-
     }
 }
-
-
