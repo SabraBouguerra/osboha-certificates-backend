@@ -19,9 +19,9 @@ return new class extends Migration
             $table->text('summary');
             $table->text("reviews")->nullable();
             $table->integer('degree')->nullable();
- 
-            $table->enum('status', ['audit', 'review', 'reviewed','rejected'])->default('audit');
- 
+
+            $table->enum('status', ['audit', 'review', 'reviewed','rejected'])->nullable();
+
             $table->bigInteger('reviewer_id')->unsigned()->nullable();
             $table->bigInteger('auditor_id')->unsigned()->nullable();
             $table->bigInteger("user_book_id")->unsigned()->index();
