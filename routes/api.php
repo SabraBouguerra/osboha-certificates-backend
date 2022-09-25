@@ -13,6 +13,7 @@ use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\BookCategoryController;
 use App\Http\Controllers\API\BookTypeController;
 use App\Http\Controllers\API\EmailVerificationController;
+use App\Http\Controllers\API\PDFController;
 use App\Models\Question;
 
 /*
@@ -26,7 +27,7 @@ use App\Models\Question;
 |
 */
 
-
+Route::get('generate-pdf', [PDFController::class, 'generatePDF']);
 
 Route::post("register", [AuthController::class, "register"]);
 Route::post('register-admin', [UserController::class, 'registerAdmin']);
