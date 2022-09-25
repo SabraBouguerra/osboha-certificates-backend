@@ -84,13 +84,15 @@ class AuthController extends BaseController
 
     protected function sendResetResponse(Request $request)
     {
-
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'token' => 'required',
             'email' => 'required|email',
             'password' => 'required|min:8|',
         ]);
 
+        if ($validator->fails()) {
+            return $this->sendError($validator->errors());
+        }
         $status = Password::reset(
             $request->only('email', 'password', 'password_confirmation', 'token'),
             function ($user, $password) {
@@ -99,7 +101,6 @@ class AuthController extends BaseController
                 ])->createToken('random key')->accessToken;
 
                 $user->save();
-                    dd("test");
                 event(new PasswordReset($user));
             }
         );
