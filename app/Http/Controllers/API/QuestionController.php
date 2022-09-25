@@ -62,7 +62,7 @@ class QuestionController extends BaseController
 
     public function show($id)
     {
-        $question = Question::find($id);
+        $question = Question::where('id',$id)->with('user_book.book')->first();
 
         if (is_null($question)) {
 
@@ -90,17 +90,20 @@ class QuestionController extends BaseController
         $qoutes = [];
 
         try {
-            foreach ($quotationInput as $value) {
-
-                $qoute = Quotation::create($value);
-                array_push($qoutes, $qoute);
-            }
+            
 
             $question = Question::find($id);
             if (Auth::id() == $question->user_book->user_id) {
-                $res=Quotation::where('id',$id)->delete();
+                Quotation::where('question_id',$question->id)->delete();
+                $question->question=$request->question;
+                $question->starting_page=$request->starting_page;
+                $question->ending_page=$request->ending_page;
+                $question->save();
+                foreach ($quotationInput as $value) {
+                    $qoute = Quotation::create($value);
+                    array_push($qoutes, $qoute);
+                }
                 $question->quotation()->saveMany($qoutes);
-                $question->update($request->all());
             }
         } catch (\Error $e) {
 
