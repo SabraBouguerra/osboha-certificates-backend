@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Auth\Events\PasswordReset;
 use App\Traits\MediaTraits;
+use Illuminate\Auth\Events\Registered;
+
 
 class AuthController extends BaseController
 {
@@ -55,6 +57,7 @@ class AuthController extends BaseController
             $role = Role::where('name', 'user')->first();
             $user->assignRole($role);
             $this->createUserPhoto($request->file('image'), $user);
+            event(new Registered($user));
         } catch (\Illuminate\Database\QueryException $e) {
             $errorCode = $e->errorInfo[1];
             if ($errorCode == 1062) {
@@ -84,13 +87,15 @@ class AuthController extends BaseController
 
     protected function sendResetResponse(Request $request)
     {
-
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'token' => 'required',
             'email' => 'required|email',
             'password' => 'required|min:8|',
         ]);
 
+        if ($validator->fails()) {
+            return $this->sendError($validator->errors());
+        }
         $status = Password::reset(
             $request->only('email', 'password', 'password_confirmation', 'token'),
             function ($user, $password) {
@@ -99,7 +104,6 @@ class AuthController extends BaseController
                 ])->createToken('random key')->accessToken;
 
                 $user->save();
-                    dd("test");
                 event(new PasswordReset($user));
             }
         );
