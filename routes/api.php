@@ -26,6 +26,9 @@ use App\Models\Question;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+Route::get('/phpinfo', function() {
+    return phpinfo();
+});
 
 Route::get('generate-pdf', [PDFController::class, 'generatePDF']);
 

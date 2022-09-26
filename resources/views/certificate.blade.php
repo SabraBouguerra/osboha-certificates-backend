@@ -7,7 +7,7 @@
 <body>
  <section class="first-page">
 <div>
-    <img src="images/backgroud.jpg" class="img" />
+    <img src="images/certificate.jpg" class="img" />
 </div>
  </section>
 </body>
