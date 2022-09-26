@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController as BaseController;
+use App\Models\Photos;
 use App\Models\Thesis;
 use Illuminate\Support\Facades\Validator;
 use App\Traits\MediaTraits;
@@ -61,7 +62,7 @@ class ThesisController extends BaseController
 
     public function show($id)
     {
-        $thesis = Thesis::find($id);
+        $thesis = Thesis::where('id',$id)->with('user_book.book')->first();
 
         if (is_null($thesis)) {
 
@@ -70,11 +71,10 @@ class ThesisController extends BaseController
         return $this->sendResponse($thesis, "Thesis");
     }
 
-
     public function update(Request $request,  $id)
     {
         $validator = Validator::make($request->all(), [
-            "thesis_text" => "required",
+            "text" => "required",
             "ending_page" => 'required',
             "starting_page" => 'required',
         ]);
@@ -84,10 +84,20 @@ class ThesisController extends BaseController
 
         try {
             $thesis = Thesis::find($id);
-
             if (Auth::id() == $thesis->user_book->user_id) {
+                Photos::where('thesis_id',$thesis->id)->delete();
+                $thesis->thesis_text=$request->text;
+                $thesis->ending_page=$request->ending_page;
+                $thesis->starting_page=$request->starting_page;
+                $thesis->save();
+                if ($request->has('image_1')) {
+                    $this->createThesisMedia($request->image_1, $thesis->id);
+                }
+                if ($request->has('image_2')) {
+                    $this->createThesisMedia($request->image_2, $thesis->id);
+                }
 
-                $thesis->update($request->all());
+
             }
         } catch (\Error $e) {
             return $this->sendError('Thesis does not exist');
