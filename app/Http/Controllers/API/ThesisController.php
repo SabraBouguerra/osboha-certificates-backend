@@ -71,7 +71,6 @@ class ThesisController extends BaseController
         return $this->sendResponse($thesis, "Thesis");
     }
 
-
     public function update(Request $request,  $id)
     {
         $validator = Validator::make($request->all(), [
