@@ -2,26 +2,24 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\API\BaseController;
-use Illuminate\Http\Request;
 use PDF;
+use Illuminate\Http\Request;
+use TCPDF_FONTS;
 
 class PDFController extends BaseController
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function generatePDF()
+    public function generatePDF() 
     {
-        $data = [
-            'title' => 'Welcome to ItSolutionStuff.com',
-            'date' => date('m/d/Y')
-        ];
+        // $path='C:\Users\someO\Desktop\laravel\osboha-certificates-backend\vendor\tecnickcom\tcpdf\fonts\ArbFONTS-ArabicUIDisplayUltraLight.ttf';
+        // $test=TCPDF_FONTS::addTTFfont($path,'TrueTypeUnicode','',32);
+    	// dd($test);
+        $html = '<h1 style="color:red;">تجربة الخط الأولى</h1>';
+        PDF::SetFont('ibmplexsansarabic', '', 10);
+        PDF::SetTitle('Hello World');
+        
+        PDF::AddPage();
+        PDF::writeHTML($html, true, false, true, false, '');
 
-        $pdf = PDF::loadView('certificate', $data);
-
-        return $pdf->download('itsolutionstuff.pdf');
+        PDF::Output('hello_world.pdf');
     }
 }
