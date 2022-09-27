@@ -16,6 +16,7 @@ use App\Http\Controllers\API\EmailVerificationController;
 use App\Http\Controllers\API\PDFController;
 use App\Models\Question;
 
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -28,7 +29,6 @@ use App\Models\Question;
 */
 
 Route::get('generate-pdf', [PDFController::class, 'generatePDF']);
-
 Route::post("register", [AuthController::class, "register"]);
 Route::post('register-admin', [UserController::class, 'registerAdmin']);
 Route::post("login", [AuthController::class, "login"]);
