@@ -2,21 +2,22 @@
 
 namespace App\Http\Controllers\API;
 
+ 
 use App\Http\Controllers\API\BaseController;
 
+ 
 use PDF;
+use Illuminate\Http\Request;
+use TCPDF_FONTS;
 
 class PDFController extends BaseController
 {
+ 
 
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function generatePDF()
+ 
+    public function generatePDF() 
     {
+ 
 
        // $path='C:\Users\someO\Desktop\laravel\osboha-certificates-backend\vendor\tecnickcom\tcpdf\fonts\ArbFONTS-ArabicUIDisplayUltraLight.ttf';
         // $test=TCPDF_FONTS::addTTFfont($path,'TrueTypeUnicode','',32);
@@ -29,5 +30,6 @@ class PDFController extends BaseController
         PDF::writeHTML(view('certificate',['name'=>'admin'])->render(), true, false, true, false, '');
 
         PDF::Output('hello_world.pdf');
+ 
     }
 }

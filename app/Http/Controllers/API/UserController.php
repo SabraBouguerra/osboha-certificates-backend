@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 use App\Traits\MediaTraits;
+use Illuminate\Auth\Events\Registered;
 
 class UserController extends BaseController
 {
@@ -198,6 +199,7 @@ class UserController extends BaseController
 
         $user = User::create($input);
         $user->assignRole($role);
+        event(new Registered($user));
 
       }catch (\Illuminate\Database\QueryException $e){
         $errorCode = $e->errorInfo[1];
