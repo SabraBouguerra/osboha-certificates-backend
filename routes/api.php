@@ -26,7 +26,7 @@ use App\Models\Question;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
+Route::get('verify-email/{id}/{hash}', [EmailVerificationController::class, 'verify']);
 Route::get('generate-pdf', [PDFController::class, 'generatePDF']);
 
 Route::post("register", [AuthController::class, "register"]);
@@ -183,5 +183,5 @@ Route::group(['prefix' => 'fqa'], function () {
 
 
 Route::post('email/verification-notification', [EmailVerificationController::class, 'sendVerificationEmail'])->middleware('auth:api');
-Route::get('verify-email/{id}/{hash}', [EmailVerificationController::class, 'verify'])->name('verification.verify');
+
 

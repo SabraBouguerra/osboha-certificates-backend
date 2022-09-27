@@ -42,7 +42,7 @@ class AuthController extends BaseController
             "password" => 'required',
             "image" => 'required'
         ]);
-
+ 
 
         if ($validator->fails()) {
             return $this->sendError($validator->errors());

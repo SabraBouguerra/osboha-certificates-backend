@@ -147,7 +147,9 @@ class UserController extends BaseController
 
     public function activeUser(Request $request,$id){
         $user = User::find($id);
+        if(!is_null($user->picture)){
         $this->deleteUserPicture($user->picture);
+        }
       try{
         $user->update(['is_active' => true,'picture' => null]);
       }catch(\Error $e){
