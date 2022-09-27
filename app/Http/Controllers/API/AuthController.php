@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Auth\Events\PasswordReset;
 use App\Traits\MediaTraits;
+use Illuminate\Auth\Events\Registered;
+
 
 class AuthController extends BaseController
 {
@@ -55,6 +57,7 @@ class AuthController extends BaseController
             $role = Role::where('name', 'user')->first();
             $user->assignRole($role);
             $this->createUserPhoto($request->file('image'), $user);
+            event(new Registered($user));
         } catch (\Illuminate\Database\QueryException $e) {
             $errorCode = $e->errorInfo[1];
             if ($errorCode == 1062) {

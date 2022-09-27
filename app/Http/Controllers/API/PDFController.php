@@ -2,35 +2,32 @@
 
 namespace App\Http\Controllers\API;
 
+ 
 use App\Http\Controllers\API\BaseController;
 
+ 
 use PDF;
+use Illuminate\Http\Request;
+use TCPDF_FONTS;
 
 class PDFController extends BaseController
 {
+ 
 
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function generatePDF()
+ 
+    public function generatePDF() 
     {
+        // $path='C:\Users\someO\Desktop\laravel\osboha-certificates-backend\vendor\tecnickcom\tcpdf\fonts\ArbFONTS-ArabicUIDisplayUltraLight.ttf';
+        // $test=TCPDF_FONTS::addTTFfont($path,'TrueTypeUnicode','',32);
+    	// dd($test);
+        $html = '<h1 style="color:red;">تجربة الخط الأولى</h1>';
+        PDF::SetFont('ibmplexsansarabic', '', 10);
+        PDF::SetTitle('Hello World');
+        
+        PDF::AddPage();
+        PDF::writeHTML($html, true, false, true, false, '');
 
-        // $userBook = UserBook::find($id);
-        // $degrees = Certificates::where('user_book_id',$id);
-        // $thesis = Thesis::where('user_book_id',$id);
-        // $questions = Question::where('user_book_id',$id);
-        // $generalInformations = Thesis::where('user_book_id',$id);
-        // $user = User::find($userBook->user_id);
-
-
-        // $pdf = PDF::loadView('certificate');
- PDF::SetTitle('Hello World');
-  PDF::AddPage();
-  PDF::Write(0, 'ييي ي');
-  PDF::Output('hello_world.pdf');
-        // return $pdf->download('itsolutionstuff.pdf');
+        PDF::Output('hello_world.pdf');
+ 
     }
 }
