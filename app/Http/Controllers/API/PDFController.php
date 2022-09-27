@@ -18,19 +18,16 @@ class PDFController extends BaseController
     public function generatePDF()
     {
 
-        // $userBook = UserBook::find($id);
-        // $degrees = Certificates::where('user_book_id',$id);
-        // $thesis = Thesis::where('user_book_id',$id);
-        // $questions = Question::where('user_book_id',$id);
-        // $generalInformations = Thesis::where('user_book_id',$id);
-        // $user = User::find($userBook->user_id);
+       // $path='C:\Users\someO\Desktop\laravel\osboha-certificates-backend\vendor\tecnickcom\tcpdf\fonts\ArbFONTS-ArabicUIDisplayUltraLight.ttf';
+        // $test=TCPDF_FONTS::addTTFfont($path,'TrueTypeUnicode','',32);
+    	// dd($test);
 
+       PDF::SetFont('aealarabiya', '', 18);
+        PDF::SetTitle('Hello World');
 
-        // $pdf = PDF::loadView('certificate');
- PDF::SetTitle('Hello World');
-  PDF::AddPage();
-  PDF::Write(0, 'ييي ي');
-  PDF::Output('hello_world.pdf');
-        // return $pdf->download('itsolutionstuff.pdf');
+        PDF::AddPage();
+        PDF::writeHTML(view('certificate',['name'=>'admin'])->render(), true, false, true, false, '');
+
+        PDF::Output('hello_world.pdf');
     }
 }
