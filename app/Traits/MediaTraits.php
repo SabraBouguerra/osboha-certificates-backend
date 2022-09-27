@@ -10,6 +10,7 @@ Trait MediaTraits{
 
     function createThesisMedia($media, $id){
 
+
         $path = Storage::putFile('image', $media);
 
         try{
@@ -61,6 +62,17 @@ Trait MediaTraits{
         Storage::delete($path);
     }
 
+
+
+      function updateThesisMedia($media, $oldPath){
+
+
+        $path = Storage::putFile('image', $media);
+        Storage::delete($oldPath);
+
+
+        return $path;
+    }
 
 
 }
