@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController as BaseController;
+use App\Models\Photos;
 use App\Models\Thesis;
 use Illuminate\Support\Facades\Validator;
 use App\Traits\MediaTraits;
@@ -43,12 +44,12 @@ class ThesisController extends BaseController
 
         try {
             $newthesis = Thesis::create($input);
-            $this->createThesisMedia($request->file('image'), $newthesis->id);
-            // if ($request->has('image')) {
-            //     foreach ($request->image as $image) {
-            //         $this->createThesisMedia($image, $newthesis->id);
-            //     }
-            // }
+
+            if ($request->has('images')) {
+                foreach ($request->file('images') as $image) {
+                    $this->createThesisMedia($image, $newthesis->id);
+                }
+            }
 
         } catch (\Illuminate\Database\QueryException $e) {
             return $this->sendResponse($e, 'User Book does not exist');
@@ -61,7 +62,7 @@ class ThesisController extends BaseController
 
     public function show($id)
     {
-        $thesis = Thesis::find($id);
+        $thesis = Thesis::where('id',$id)->with('user_book.book')->first();
 
         if (is_null($thesis)) {
 
@@ -81,6 +82,7 @@ class ThesisController extends BaseController
         if ($validator->fails()) {
             return $this->sendError('Validation error', $validator->errors());
         }
+
 
         try {
             $thesis = Thesis::find($id);
@@ -254,4 +256,24 @@ class ThesisController extends BaseController
         ];
 
     }
+
+
+
+    public function updatePicture(Request $request){
+        $validator = Validator::make($request->all(), [
+            'path' => 'required',
+            'image' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return $this->sendError($validator->errors());
+        }
+        $input = $request->all();
+        $photo = Photos::where('path',$input['path'])->first();
+        $newPath = $this->updateThesisMedia($input['image'], $photo->path);
+        $photo->path = $newPath;
+        $photo->save();
+        return $this->sendResponse($photo,'Photo updated');
+    }
+
+
 }

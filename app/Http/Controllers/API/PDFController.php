@@ -3,16 +3,13 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\API\BaseController;
-use App\Models\Certificates;
-use App\Models\Question;
-use App\Models\Thesis;
-use App\Models\User;
-use App\Models\UserBook;
-use Illuminate\Http\Request;
+
 use PDF;
 
 class PDFController extends BaseController
 {
+
+
     /**
      * Display a listing of the resource.
      *
@@ -29,8 +26,11 @@ class PDFController extends BaseController
         // $user = User::find($userBook->user_id);
 
 
-        $pdf = PDF::loadView('certificate');
-
-        return $pdf->download('itsolutionstuff.pdf');
+        // $pdf = PDF::loadView('certificate');
+ PDF::SetTitle('Hello World');
+  PDF::AddPage();
+  PDF::Write(0, 'ييي ي');
+  PDF::Output('hello_world.pdf');
+        // return $pdf->download('itsolutionstuff.pdf');
     }
 }

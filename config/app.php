@@ -182,7 +182,7 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
-        Barryvdh\DomPDF\ServiceProvider::class,
+        Elibyy\TCPDF\ServiceProvider::class,
         /*
          * Package Service Providers...
          */
@@ -212,7 +212,7 @@ return [
     */
 
     'aliases' => Facade::defaultAliases()->merge([
-        'PDF' => Barryvdh\DomPDF\Facade::class,
+        'PDF' => Elibyy\TCPDF\Facades\TCPDF::class
         // 'ExampleClass' => App\Example\ExampleClass::class,
     ])->toArray(),
 

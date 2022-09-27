@@ -10,12 +10,32 @@ body {
     box-sizing: border-box;
     -moz-box-sizing: border-box;
   }
+
+
+
+
+  .bsm{
+
+    position: absolute;
+      color: black;
+      top: 200px;
+      right: 175px;
+  }
+
+  h1{
+      position: absolute;
+      left: 330px;
+      top: 400px;
+  }
+
   .main-page {
-    width: 210mm;
-    min-height: 297mm;
-    margin: 10mm auto;
+    position: relative;
+    height: 100%;
     background: white;
     box-shadow: 0 0 0.5cm rgba(0,0,0,0.5);
+    background-image: url("../images/certificate.jpg");
+    background-position: center;
+
   }
   .sub-page {
     padding: 1cm;
@@ -25,7 +45,7 @@ body {
     size: A4;
     margin: 0;
   }
-  @media print {
+  /* @media print {
     html, body {
       width: 210mm;
       height: 297mm;
@@ -40,4 +60,5 @@ body {
       background: initial;
       page-break-after: always;
     }
-  }
+
+  } */
