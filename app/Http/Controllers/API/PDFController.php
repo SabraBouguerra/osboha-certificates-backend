@@ -17,15 +17,17 @@ class PDFController extends BaseController
  
     public function generatePDF() 
     {
-        // $path='C:\Users\someO\Desktop\laravel\osboha-certificates-backend\vendor\tecnickcom\tcpdf\fonts\ArbFONTS-ArabicUIDisplayUltraLight.ttf';
+ 
+
+       // $path='C:\Users\someO\Desktop\laravel\osboha-certificates-backend\vendor\tecnickcom\tcpdf\fonts\ArbFONTS-ArabicUIDisplayUltraLight.ttf';
         // $test=TCPDF_FONTS::addTTFfont($path,'TrueTypeUnicode','',32);
     	// dd($test);
-        $html = '<h1 style="color:red;">تجربة الخط الأولى</h1>';
-        PDF::SetFont('ibmplexsansarabic', '', 10);
+
+       PDF::SetFont('aealarabiya', '', 18);
         PDF::SetTitle('Hello World');
-        
+
         PDF::AddPage();
-        PDF::writeHTML($html, true, false, true, false, '');
+        PDF::writeHTML(view('certificate',['name'=>'admin'])->render(), true, false, true, false, '');
 
         PDF::Output('hello_world.pdf');
  
