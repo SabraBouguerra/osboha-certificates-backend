@@ -27,7 +27,7 @@ class PDFController extends BaseController
         PDF::SetTitle('Hello World');
 
         PDF::AddPage();
-        PDF::writeHTML(view('certificate',['name'=>'admin'])->render(), true, false, true, false, '');
+        PDF::writeHTML(view('certificate.layout',['name'=>'admin'])->render(), true, false, true, false, '');
 
         PDF::Output('hello_world.pdf');
  
