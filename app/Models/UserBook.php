@@ -17,7 +17,7 @@ class UserBook extends Model
 
     protected $table = 'user_book';
 
-    protected $with = array('thesises');
+    protected $with = array('thesises','user','book');
 
 
     public function user(){
@@ -38,6 +38,9 @@ class UserBook extends Model
 
     public function questions(){
         return $this->hasMany(Question::class);
+    }
+    public function generalInformation(){
+        return $this->hasOne(GeneralInformations::class);
     }
 }
 
