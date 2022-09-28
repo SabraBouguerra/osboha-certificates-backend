@@ -28,11 +28,10 @@ class AuthServiceProvider extends ServiceProvider
     {
 
         VerifyEmail::toMailUsing(function ($notifiable, $url) {
-            
             return (new MailMessage)
                 ->from('example@example.com', 'Example')
                 ->subject('تأكيد البريد الالكتروني')
-                ->line('Click the button below to verify your email address.')
+                ->line('لطفا، قم بالضغط على الزر أدناه، وذلك لتأكيد تسجيلك في موقع توثيق القراءة - أصبوحة 180.')
                 ->action('تأكيد البريد الالكتروني', $url);
         });
 

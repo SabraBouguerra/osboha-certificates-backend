@@ -5,6 +5,8 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController as BaseController;
 use App\Models\Certificates;
+use App\Models\GeneralInformations;
+use App\Models\Question;
 use App\Models\Thesis;
 use App\Models\UserBook;
 use Illuminate\Support\Facades\Validator;
@@ -104,4 +106,13 @@ class CertificatesController extends BaseController
         }
         return $this->sendResponse($result, 'Certificate deleted Successfully!');
     }
+
+    public function fullCertificate($user_book_id)
+    {
+        $fullCertificate=UserBook::where('id',$user_book_id)->with('certificates')->with('questions')->with('generalInformation')->get();
+
+        return $this->sendResponse($fullCertificate, 'Certificate deleted Successfully!');
+    }
+
+    
 }

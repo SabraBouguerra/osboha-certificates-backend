@@ -47,6 +47,7 @@ class UserController extends BaseController
         $user = User::create($input);
         $user->assignRole($role);
         $this->createUserPhoto($request->file('image'), $user);
+        event(new Registered($user));
       }catch (\Illuminate\Database\QueryException $e){
         $errorCode = $e->errorInfo[1];
         if($errorCode == 1062){

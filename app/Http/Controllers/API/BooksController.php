@@ -139,8 +139,9 @@ class BooksController extends BaseController
 
         try {
 
-           $userBook['book'] =Book::with('type', 'category')->where('id', $id)->first();
+            $userBook['book'] =Book::with('type', 'category')->where('id', $id)->first();
             $userBook['user_book'] = UserBook::with('thesises', 'questions','questions.quotation', 'certificates')->where('user_id', $userId)->where('book_id', $id)->first();
+            $userBook['already_have_one'] = UserBook::where('status', "!=",'finished')->where('user_id', $userId)->count();
 
             return $this->sendResponse($userBook, 'userBook');
         } catch (\Error $e) {

@@ -161,8 +161,8 @@ class UserBookController extends BaseController
 
     public function getStatistics($id){
         $thesisFinalDegree = Thesis::where("user_book_id",$id)->avg('degree');
-        $questionFinalDegree = Thesis::where("user_book_id",$id)->avg('degree');
-        $generalInformationsFinalDegree = Thesis::where("user_book_id",$id)->avg('degree');
+        $questionFinalDegree = Question::where("user_book_id",$id)->avg('degree');
+        $generalInformationsFinalDegree = GeneralInformations::where("user_book_id",$id)->avg('degree');
         $finalDegree = ($thesisFinalDegree + $questionFinalDegree + $generalInformationsFinalDegree) / 3;
         $response = [
             "thesises" => intval($thesisFinalDegree),
