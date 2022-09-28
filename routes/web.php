@@ -18,5 +18,8 @@ use App\Http\Controllers\API\PDFController;
 Route::get('/', function () {
     return view('welcome');
 });
+Route::get('/certificate', function () {
+    return view('certificate_2');
+});
 Route::get('generate-pdf', [PDFController::class, 'generatePDF']);
 
