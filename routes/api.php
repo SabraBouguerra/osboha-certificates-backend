@@ -27,7 +27,7 @@ use App\Models\Question;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::get('verify-email/{id}/{hash}', [EmailVerificationController::class, 'verify']);
+Route::get('verify-email/{id}/{hash}', [EmailVerificationController::class, 'verify'])->name('verification.verify');
 Route::get('generate-pdf', [PDFController::class, 'generatePDF']);
 Route::post("register", [AuthController::class, "register"]);
 Route::post('register-admin', [UserController::class, 'registerAdmin']);
