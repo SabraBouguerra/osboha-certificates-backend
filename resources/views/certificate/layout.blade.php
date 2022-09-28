@@ -283,12 +283,12 @@
                 <g id='XMLID_9_'>
                     <polygon id='XMLID_15_' class='st1' points='123.38,103.3 139.07,146.27 148.35,133.29 163.81,137.23 148.11,94.26 		' />
                     <g id='XMLID_13_'>
-                        <polygon id='XMLID_14_' class='st16' points='140.3,137.24 146.58,128.45 157.06,131.13 145.95,100.71 143.95,101.43 
+                        <polygon id='XMLID_14_' class='st16' points='140.3,137.24 146.58,128.45 157.06,131.13 145.95,100.71 143.95,101.43
                   153.69,128.08 145.7,126.04 140.91,132.75 129.76,102.6 127.77,103.33 			' />
                     </g>
                     <polygon id='XMLID_12_' class='st1' points='130.5,103.3 114.8,146.27 105.52,133.29 90.06,137.23 105.76,94.26 		' />
                     <g id='XMLID_10_'>
-                        <polygon id='XMLID_11_' class='st17' points='113.57,137.25 125.25,105.36 123.26,104.63 112.96,132.74 108.17,126.04 
+                        <polygon id='XMLID_11_' class='st17' points='113.57,137.25 125.25,105.36 123.26,104.63 112.96,132.74 108.17,126.04
                   100.19,128.08 109.92,101.43 107.92,100.71 96.81,131.13 107.29,128.45 			' />
                     </g>
                 </g>
@@ -339,12 +339,17 @@
             </foreignobject>
             @yield('signature')
             @yield('serial-number')
-            
+
 
         </svg>
 
 
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        var element = document.getElementById('page');
+        html2pdf(element);
+    </script>
 </body>
 
 </html>
