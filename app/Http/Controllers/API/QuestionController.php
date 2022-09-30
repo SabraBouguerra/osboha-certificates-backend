@@ -132,7 +132,7 @@ class QuestionController extends BaseController
         $validator = Validator::make($request->all(), [
             'reviews' => 'required',
             'degree' => 'required',
-            'reviewer_id' => 'required'
+            'auditor_id' => 'required'
         ]);
         if ($validator->fails()) {
             return $this->sendError('Validation error', $validator->errors());
@@ -143,36 +143,32 @@ class QuestionController extends BaseController
 
         $question->reviews = $request->reviews;
         $question->degree = $request->degree;
-        $question->reviewer_id = $request->reviewer_id;
-        $question->status = 'reviewed';
+        $question->auditor_id = $request->auditor_id;
+        $question->status = 'audited';
 
         try {
             $question->save();
-            // dd(Question::where('user_book_id', $question->user_book_id)->where('status', 'audit')->orWhere('status', 'review')->count());
-            if (Question::where('user_book_id', $question->user_book_id)->where('status', 'audit')->orWhere('status', 'review')->count() == 0) {
-                UserBook::where('id', $question->user_book_id)->update('status', 'finished');
-            }
         } catch (\Error $e) {
             return $this->sendError('Questions does not exist');
         }
         return $this->sendResponse($question, 'Degree added Successfully!');
     }
     //ready to review
-    public function auditQuestion($id)
+    public function reviewQuestion($id)
     {
         try {
-            $question = Question::where('user_book_id', $id)->update(['status' => 'audit']);
+            $question = Question::where('user_book_id', $id)->update(['status' => 'review']);
         } catch (\Error $e) {
             return $this->sendError('Question does not exist');
         }
     }
 
-    public function audit(Request $request)
+    public function review(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'id' => 'required',
             'status' => 'required',
-            'auditor_id' => 'required',
+            'reviewer_id' => 'required',
             'reviews' => 'required_if:status,rejected'
         ]);
 
@@ -183,7 +179,7 @@ class QuestionController extends BaseController
         try {
             $question = Question::find($request->id);
             $question->status = $request->status;
-            $question->auditor_id = $request->auditor_id;
+            $question->reviewer_id = $request->reviewer_id;
             if ($request->has('reviews')) {
                 $question->reviews = $request->reviews;
             }
@@ -215,7 +211,7 @@ class QuestionController extends BaseController
 
     public function getByUserBook($user_book_id)
     {
-        $questions =  Question::with("user_book.user")->with("user_book.book")->with("quotation")->where('user_book_id', $user_book_id)->get();
+        $questions =  Question::with("user_book.user")->with("user_book.book")->with('reviewer')->with('auditor')->where('user_book_id', $user_book_id)->get();
         return $this->sendResponse($questions, 'Questions');
     }
 
