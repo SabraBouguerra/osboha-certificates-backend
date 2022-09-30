@@ -76,8 +76,8 @@ class GeneralInformationsController extends BaseController
             else{
                 $general_informations->reviews = $request->reviews;
                 $general_informations->degree=$request->degree;
-                $general_informations->reviewer_id = $request->reviewer_id;
-                $general_informations->status='reviewed';
+                $general_informations->auditor_id = $request->auditor_id;
+                $general_informations->status='audited';
                 $general_informations->save();
 
             }
@@ -100,13 +100,23 @@ class GeneralInformationsController extends BaseController
         return $this->sendResponse($result, 'General Informations deleted Successfully!');
     }
 
+        //ready to review
+        public function reviewGeneralInformations($id)
+        {
+            try {
+                $generalInformations = GeneralInformations::where('user_book_id', $id)->update(['status' => 'review']);
+            } catch (\Error $e) {
+                return $this->sendError('General Informations does not exist');
+            }
+        }
+    
 
-    public function audit(Request $request)
+    public function review(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'id' => 'required',
             'status' => 'required',
-            'auditor_id' => 'required',
+            'reviewer_id' => 'required',
             'reviews' => 'required_if:status,rejected'
         ]);
 
@@ -117,7 +127,7 @@ class GeneralInformationsController extends BaseController
         try {
             $info = GeneralInformations::find($request->id);
             $info->status = $request->status;
-            $info->auditor_id = $request->auditor_id;
+            $info->reviewer_id = $request->reviewer_id;
             if ($request->has('reviews')) {
                 $info->reviews = $request->reviews;
             }
@@ -133,7 +143,7 @@ class GeneralInformationsController extends BaseController
         $validator = Validator::make($request->all(), [
             'reviews' => 'required',
             'degree' => 'required',
-            'reviewer_id' => 'required'
+            'auditor_id' => 'required'
         ]);
         if ($validator->fails()) {
             return $this->sendError('Validation error', $validator->errors());
@@ -144,8 +154,8 @@ class GeneralInformationsController extends BaseController
         $general_informations->reviews = $request->reviews;
 
         $general_informations->degree = $request->degree;
-        $general_informations->reviewer_id = $request->reviewer_id;
-        $general_informations->status = 'reviewed';
+        $general_informations->auditor_id = $request->auditor_id;
+        $general_informations->status = 'audited';
     try {
 
             $general_informations->save();
@@ -177,7 +187,7 @@ class GeneralInformationsController extends BaseController
 
 
     public function getByUserBook($user_book_id){
-        $general_informations =  GeneralInformations::with("user_book.user")->with("user_book.book")->where('user_book_id',$user_book_id)->first();
+        $general_informations =  GeneralInformations::with("user_book.user")->with("user_book.book")->with('reviewer')->with('auditor')->where('user_book_id',$user_book_id)->first();
         return $this->sendResponse($general_informations, 'General Informations');
     }
 

@@ -22,4 +22,12 @@ class GeneralInformations extends Model
     public function user_book(){
         return $this->belongsTo(UserBook::class,'user_book_id');
     }
+    function reviewer(){
+ 
+        return $this->belongsTo(User::class);
+    }
+    public function auditor(){
+        return $this->belongsTo(User::class);
+    }
+
 }

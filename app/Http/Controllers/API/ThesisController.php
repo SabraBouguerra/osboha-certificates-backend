@@ -125,7 +125,7 @@ class ThesisController extends BaseController
         $validator = Validator::make($request->all(), [
             'reviews' => 'required',
             'degree' => 'required',
-            'reviewer_id' => 'required'
+            'auditor_id' => 'required'
         ]);
         if ($validator->fails()) {
             return $this->sendError('Validation error', $validator->errors());
@@ -134,8 +134,8 @@ class ThesisController extends BaseController
         $thesis = Thesis::find($id);
         $thesis->reviews = $request->reviews;
         $thesis->degree = $request->degree;
-        $thesis->reviewer_id = $request->reviewer_id;
-        $thesis->status = 'reviewed';
+        $thesis->auditor_id = $request->auditor_id;
+        $thesis->status = 'audited';
 
 
         try {
@@ -177,21 +177,21 @@ class ThesisController extends BaseController
 
     //ready to review
 
-    public function auditThesis($id)
+    public function reviewThesis($id)
     {
         try {
-            $thesis = Thesis::where('user_book_id', $id)->update(['status' => 'audit']);
+            $thesis = Thesis::where('user_book_id', $id)->update(['status' => 'review']);
         } catch (\Error $e) {
             return $this->sendError('Thesis does not exist');
         }
     }
 
-    public function audit(Request $request)
+    public function review(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'id' => 'required',
             'status' => 'required',
-            'auditor_id' => 'required',
+            'reviewer_id' => 'required',
             'reviews' => 'required_if:status,rejected'
         ]);
 
@@ -202,7 +202,7 @@ class ThesisController extends BaseController
         try {
             $thesis = Thesis::find($request->id);
             $thesis->status = $request->status;
-            $thesis->auditor_id = $request->auditor_id;
+            $thesis->reviewer_id = $request->reviewer_id;
             if ($request->has('reviews')) {
                 $thesis->reviews = $request->reviews;
             }
@@ -223,7 +223,7 @@ class ThesisController extends BaseController
     public function getByUserBook($user_book_id)
     {
 
-        $thesises =  Thesis::with("user_book.user")->with("user_book.book")->with("photos")->where('user_book_id', $user_book_id)->get();
+        $thesises =  Thesis::with("user_book.user")->with("user_book.book")->with('reviewer')->with('auditor')->where('user_book_id', $user_book_id)->get();
         return $this->sendResponse($thesises, 'Thesises');
     }
 

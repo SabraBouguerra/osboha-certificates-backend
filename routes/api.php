@@ -108,7 +108,7 @@ Route::group(['prefix' => 'thesises'], function () {
 
     Route::get('/{id}', [ThesisController::class, 'show'])->middleware(['auth:api','verified','isActive']);
     Route::patch('update-photo/{id}',[ThesisController::class,"updatePhoto"])->middleware(['auth:api','verified','isActive']);
-    Route::patch('audit-thesis/{id}',[ThesisController::class,"auditThesis"])->middleware(['auth:api','verified','isActive']);
+    Route::patch('review-thesis/{id}',[ThesisController::class,"reviewThesis"])->middleware(['auth:api','verified','isActive']);
     Route::patch('/{id}', [ThesisController::class, 'update'])->middleware(['auth:api', 'role:user|admin','verified','isActive']);
     Route::delete('/{id}', [ThesisController::class, 'destroy'])->middleware(['auth:api','role:user|admin','verified','isActive']);
     Route::patch('add-degree/{id}',[ThesisController::class,"addDegree"])->middleware(['auth:api','role:admin|reviewer']);
@@ -116,7 +116,7 @@ Route::group(['prefix' => 'thesises'], function () {
     Route::post('update-photo',[ThesisController::class,"updatePicture"])->middleware(['auth:api','verified','isActive']);
     Route::post('upload/{id}',[ThesisController::class,"uploadPhoto"])->middleware(['auth:api','verified','isActive']);
     Route::get('user_book_id/{user_book_id}',[ThesisController::class,"getByUserBook"])->middleware(['auth:api','verified','isActive']);
-    Route::post('/audit',[ThesisController::class,"audit"])->middleware(['auth:api','verified','isActive']);
+    Route::post('/review',[ThesisController::class,"review"])->middleware(['auth:api','verified','isActive']);
 
 
 });
@@ -135,8 +135,8 @@ Route::group(['prefix' => 'questions'], function () {
     Route::get('final-degree/{id}',[QuestionController::class,"finalDegree"])->middleware(['auth:api']);
     Route::get('user_book_id/{user_book_id}',[QuestionController::class,"getByUserBook"])->middleware(['auth:api']);
     Route::get('status/{status}',[QuestionController::class,"getByStatus"])->middleware(['auth:api']);
-    Route::post('/audit',[QuestionController::class,"audit"])->middleware(['auth:api']);
-    Route::patch('audit-question/{id}',[QuestionController::class,"auditQuestion"])->middleware(['auth:api','verified','isActive']);
+    Route::post('/review',[QuestionController::class,"review"])->middleware(['auth:api']);
+    Route::patch('review-question/{id}',[QuestionController::class,"reviewQuestion"])->middleware(['auth:api','verified','isActive']);
 
 });
 
@@ -165,8 +165,9 @@ Route::group(['prefix' => 'general-informations'], function () {
     Route::get('final-degree/{id}',[GeneralInformationsController::class,"finalDegree"])->middleware(['auth:api']);
     Route::get('user_book_id/{user_book_id}',[GeneralInformationsController::class,"getByUserBook"])->middleware(['auth:api']);
      Route::get('status/{status}',[GeneralInformationsController::class,"getByStatus"])->middleware(['auth:api']);
-    Route::post('/audit',[GeneralInformationsController::class,"audit"])->middleware(['auth:api']);
-
+     Route::post('/review',[GeneralInformationsController::class,"review"])->middleware(['auth:api']);
+     Route::patch('review-general-informations/{id}',[GeneralInformationsController::class,"reviewGeneralInformations"])->middleware(['auth:api','verified','isActive']);
+ 
 
 
 });
