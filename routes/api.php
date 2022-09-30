@@ -110,6 +110,7 @@ Route::group(['prefix' => 'thesises'], function () {
     Route::patch('update-photo/{id}',[ThesisController::class,"updatePhoto"])->middleware(['auth:api','verified','isActive']);
     Route::patch('audit-thesis/{id}',[ThesisController::class,"auditThesis"])->middleware(['auth:api','verified','isActive']);
     Route::patch('/{id}', [ThesisController::class, 'update'])->middleware(['auth:api', 'role:user|admin','verified','isActive']);
+    Route::delete('/photo/{id}', [ThesisController::class, 'deletePhoto'])->middleware(['auth:api','role:user|admin','verified','isActive']);
     Route::delete('/{id}', [ThesisController::class, 'destroy'])->middleware(['auth:api','role:user|admin','verified','isActive']);
     Route::patch('add-degree/{id}',[ThesisController::class,"addDegree"])->middleware(['auth:api','role:admin|reviewer']);
 
@@ -143,7 +144,7 @@ Route::group(['prefix' => 'questions'], function () {
 //certificates routes
 Route::group(['prefix' => 'certificates'], function () {
     Route::get('/', [CertificatesController::class, 'index'])->middleware(['auth:api','role:reviewer|admin']);
-    Route::post('/', [CertificatesController::class, 'store'])->middleware(['auth:api','role:admin|reviewer']);
+    Route::post('/', [CertificatesController::class, 'store']);
     Route::get('/{id}', [CertificatesController::class, 'show'])->middleware(['auth:api','verified','isActive']);
     Route::get('/full-certificate/{user_book_id}', [CertificatesController::class, 'fullCertificate'])->middleware(['auth:api','verified','isActive']);
     Route::patch('/{id}', [CertificatesController::class, 'update'])->middleware(['auth:api','role:admin|reviewer']);

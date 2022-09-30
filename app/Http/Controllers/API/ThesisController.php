@@ -86,17 +86,12 @@ class ThesisController extends BaseController
         try {
             $thesis = Thesis::find($id);
             if (Auth::id() == $thesis->user_book->user_id) {
-                Photos::where('thesis_id',$thesis->id)->delete();
+
                 $thesis->thesis_text=$request->text;
                 $thesis->ending_page=$request->ending_page;
                 $thesis->starting_page=$request->starting_page;
                 $thesis->save();
-                if ($request->has('image_1')) {
-                    $this->createThesisMedia($request->image_1, $thesis->id);
-                }
-                if ($request->has('image_2')) {
-                    $this->createThesisMedia($request->image_2, $thesis->id);
-                }
+
 
 
             }
@@ -158,8 +153,8 @@ class ThesisController extends BaseController
     public function uploadPhoto(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            "images"    => "required|array|min:1|max:2",
-            "images.*"  => 'required|image|mimes:png,jpg,jpeg,gif,svg|max:2048',
+
+            "image"  => 'required|image|mimes:png,jpg,jpeg,gif,svg|max:2048',
         ]);
 
         if ($validator->fails()) {
@@ -169,8 +164,8 @@ class ThesisController extends BaseController
         if (is_null($thesis)) {
             return $this->sendError('Thesis does not exist');
         }
-        foreach ($request->file('images') as $imagefile) {
-            $this->createThesisMedia($imagefile, $thesis->id);
+        if ($request->has('image')) {
+            $this->createThesisMedia($request->file('image'), $thesis->id);
         }
         return $this->sendResponse($thesis, 'Photo uploaded Successfully!');
     }
@@ -282,6 +277,13 @@ class ThesisController extends BaseController
         $photo->path = $newPath;
         $photo->save();
         return $this->sendResponse($photo,'Photo updated');
+    }
+
+
+    public function deletePhoto($id){
+        $photo = Photos::find($id);
+        $this->deleteThesisMedia($photo->path);
+        $photo->delete();
     }
 
 

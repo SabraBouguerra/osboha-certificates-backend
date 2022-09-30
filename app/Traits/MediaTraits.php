@@ -75,4 +75,16 @@ Trait MediaTraits{
     }
 
 
+    function deleteThesisMedia($path){
+
+
+
+        Storage::delete($path);
+
+
+
+    }
+
+
+
 }
