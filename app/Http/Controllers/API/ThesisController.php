@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController as BaseController;
 use App\Models\Photos;
 use App\Models\Thesis;
+use App\Models\UserBook;
 use Illuminate\Support\Facades\Validator;
 use App\Traits\MediaTraits;
 use Illuminate\Support\Facades\Auth;
@@ -135,6 +136,13 @@ class ThesisController extends BaseController
 
         try {
             $thesis->save();
+            $stageUp= Thesis::where('user_book_id',$thesis->user_book_id)->where('status','!=','audited')->count();
+            if($stageUp == 0 ){
+                $userBook=UserBook::find($thesis->user_book_id);
+                $userBook->status="stage_two";
+                $userBook->save();
+            }
+    
         } catch (\Error $e) {
             return $this->sendError('Thesis does not exist');
         }
