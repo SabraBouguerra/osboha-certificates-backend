@@ -125,7 +125,10 @@ class UserController extends BaseController
 
     public function listUnactiveUser(){
       try{
-        $users = User::where('is_active',0)->get();
+        $users = User::with('roles')->where('is_active',0)->whereHas(
+            'roles', function($q){
+            $q->where('name', 'user');
+        })->get();
         return $this->sendResponse($users, 'All Un Accepted Users!');
       }catch(\Error $e){
         return $this->sendError('All Users Have Been Accepted');
@@ -137,7 +140,7 @@ class UserController extends BaseController
       try{
         $users = User::with('roles')->where('is_active',0)->whereHas(
             'roles', function($q){
-            $q->where('name', 'reviewer')->orWhere('name','auditor');
+            $q->where('name', 'reviewer')->orWhere('name','auditer');
         })->get();
 
         return $this->sendResponse($users, 'All Un Accepted Reviewers And Auditors!');
