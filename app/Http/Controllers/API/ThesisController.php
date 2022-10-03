@@ -184,6 +184,7 @@ class ThesisController extends BaseController
     {
         try {
             $thesis = Thesis::where('user_book_id', $id)->update(['status' => 'review']);
+            return $thesis;
         } catch (\Error $e) {
             return $this->sendError('Thesis does not exist');
         }

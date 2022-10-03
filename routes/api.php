@@ -108,7 +108,7 @@ Route::group(['prefix' => 'thesises'], function () {
 
     Route::get('/{id}', [ThesisController::class, 'show'])->middleware(['auth:api','verified','isActive']);
     Route::patch('update-photo/{id}',[ThesisController::class,"updatePhoto"])->middleware(['auth:api','verified','isActive']);
-    Route::patch('review-thesis/{id}',[ThesisController::class,"reviewThesis"])->middleware(['auth:api','verified','isActive']);
+    Route::patch('review-thesis/{id}',[ThesisController::class,"reviewThesis"])->middleware(['role:user|admin','auth:api','verified','isActive']);
     Route::patch('/{id}', [ThesisController::class, 'update'])->middleware(['auth:api', 'role:user|admin','verified','isActive']);
     Route::delete('/photo/{id}', [ThesisController::class, 'deletePhoto'])->middleware(['auth:api','role:user|admin','verified','isActive']);
     Route::delete('/{id}', [ThesisController::class, 'destroy'])->middleware(['auth:api','role:user|admin','verified','isActive']);
