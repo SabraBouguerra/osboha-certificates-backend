@@ -16,7 +16,7 @@ use App\Traits\MediaTraits;
 use Illuminate\Auth\Events\Registered;
 
 class UserController extends BaseController
-{
+{ 
 
     use MediaTraits;
     public function index(){
@@ -195,6 +195,7 @@ class UserController extends BaseController
         }
         $input = $request->all();
         $role  = Role::where('name', $input['role'])->first();
+        $input['password'] = Hash::make($request->password);
 
       try{
 

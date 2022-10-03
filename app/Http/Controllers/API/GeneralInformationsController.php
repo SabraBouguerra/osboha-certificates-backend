@@ -46,7 +46,7 @@ class GeneralInformationsController extends BaseController
 
     public function show($id)
     {
-        $general_informations = GeneralInformations::find($id);
+        $general_informations = GeneralInformations::where('id',$id)->with('user_book.book')->first();
 
         if (is_null($general_informations)) {
 
