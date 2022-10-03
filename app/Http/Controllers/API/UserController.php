@@ -11,6 +11,7 @@ use App\Http\Controllers\API\BaseController as BaseController;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Spatie\Permission\Models\Role;
 use App\Traits\MediaTraits;
 use Illuminate\Auth\Events\Registered;
@@ -109,6 +110,8 @@ class UserController extends BaseController
     }
 
     public function destroy($id){
+      $user=User::find($id);
+      $user->notify(new \App\Notifications\RejectUserEmail());
         $result = User::destroy($id);
 
         if ($result == 0) {
