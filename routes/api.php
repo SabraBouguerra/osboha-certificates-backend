@@ -117,6 +117,7 @@ Route::group(['prefix' => 'thesises'], function () {
     Route::post('update-photo',[ThesisController::class,"updatePicture"])->middleware(['auth:api','verified','isActive']);
     Route::post('upload/{id}',[ThesisController::class,"uploadPhoto"])->middleware(['auth:api','verified','isActive']);
     Route::get('user_book_id/{user_book_id}',[ThesisController::class,"getByUserBook"])->middleware(['auth:api','verified','isActive']);
+    Route::get('book/{book_id}',[ThesisController::class,"getByBook"])->middleware(['auth:api','verified','isActive']);
     Route::post('/review',[ThesisController::class,"review"])->middleware(['auth:api','verified','isActive']);
 
 
@@ -132,7 +133,7 @@ Route::group(['prefix' => 'questions'], function () {
     Route::patch('/{id}', [QuestionController::class, 'update'])->middleware(['auth:api', 'role:user|admin','verified','isActive']);
     Route::delete('/{id}', [QuestionController::class, 'destroy'])->middleware(['auth:api','role:user|admin','verified','isActive']);
     Route::patch('add-degree/{id}',[QuestionController::class,"addDegree"])->middleware(['auth:api','role:admin|auditor']);
-
+    Route::get('book/{book_id}',[QuestionController::class,"getByBook"])->middleware(['auth:api','verified','isActive']);
     Route::get('final-degree/{id}',[QuestionController::class,"finalDegree"])->middleware(['auth:api']);
     Route::get('user_book_id/{user_book_id}',[QuestionController::class,"getByUserBook"])->middleware(['auth:api']);
     Route::get('status/{status}',[QuestionController::class,"getByStatus"])->middleware(['auth:api']);
@@ -162,7 +163,7 @@ Route::group(['prefix' => 'general-informations'], function () {
     Route::patch('/{id}', [GeneralInformationsController::class, 'update'])->middleware(['auth:api', 'role:user|admin']);
     Route::delete('/{id}', [GeneralInformationsController::class, 'destroy'])->middleware(['auth:api','role:user|admin']);
     Route::patch('add-degree/{id}',[GeneralInformationsController::class,"addDegree"])->middleware(['auth:api','role:admin|auditor']);
-
+    Route::get('book/{book_id}',[GeneralInformationsController::class,"getByBook"])->middleware(['auth:api','verified','isActive']);
     Route::get('final-degree/{id}',[GeneralInformationsController::class,"finalDegree"])->middleware(['auth:api']);
     Route::get('user_book_id/{user_book_id}',[GeneralInformationsController::class,"getByUserBook"])->middleware(['auth:api']);
      Route::get('status/{status}',[GeneralInformationsController::class,"getByStatus"])->middleware(['auth:api']);
