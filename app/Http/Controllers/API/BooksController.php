@@ -134,14 +134,11 @@ class BooksController extends BaseController
         public function getUserBook($id)
 
     {
-
-        $userId = Auth::id();
-
         try {
 
             $userBook['book'] =Book::with('type', 'category')->where('id', $id)->first();
-            $userBook['user_book'] = UserBook::with('thesises', 'questions','questions.quotation', 'certificates')->where('user_id', $userId)->where('book_id', $id)->first();
-            $userBook['already_have_one'] = UserBook::where('status', "!=",'finished')->where('user_id', $userId)->count();
+            $userBook['user_book'] = UserBook::where('user_id', Auth::id())->where('book_id', $id)->first();
+            $userBook['already_have_one'] = UserBook::where('status', "!=",'finished')->where('user_id', Auth::id())->count();
 
             return $this->sendResponse($userBook, 'userBook');
         } catch (\Error $e) {

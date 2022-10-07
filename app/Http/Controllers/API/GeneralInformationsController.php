@@ -7,6 +7,7 @@ use App\Http\Controllers\API\BaseController as BaseController;
 use App\Models\GeneralInformations;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use App\Models\UserBook;
 
 
 
@@ -189,6 +190,12 @@ class GeneralInformationsController extends BaseController
     public function getByUserBook($user_book_id){
         $general_informations =  GeneralInformations::with("user_book.user")->with("user_book.book")->with('reviewer')->with('auditor')->where('user_book_id',$user_book_id)->first();
         return $this->sendResponse($general_informations, 'General Informations');
+    }
+    public function getByBook($book_id)
+    {
+        $general_informations['user_book']= UserBook::where('user_id', Auth::id())->where('book_id', $book_id)->first();
+        $general_informations['general_informations'] =  GeneralInformations::with('reviewer')->with('auditor')->where('user_book_id', $general_informations['user_book']->id)->first();
+        return $this->sendResponse($general_informations, 'general_informations');
     }
 
 

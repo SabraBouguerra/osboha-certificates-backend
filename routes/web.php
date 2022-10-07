@@ -21,5 +21,8 @@ Route::get('/', function () {
 Route::get('/certificate', function () {
     return view('certificate.page2');
 });
+Route::get('/confairm', function () {
+    return view('confairnEmail');
+});
 Route::get('generate-pdf', [PDFController::class, 'generatePDF']);
 

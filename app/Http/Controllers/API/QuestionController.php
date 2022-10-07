@@ -215,8 +215,12 @@ class QuestionController extends BaseController
         $questions =  Question::with("user_book.user")->with("user_book.book")->with('reviewer')->with('auditor')->where('user_book_id', $user_book_id)->get();
         return $this->sendResponse($questions, 'Questions');
     }
-
-
+    public function getByBook($book_id)
+    {
+        $questions['user_book']= UserBook::where('user_id', Auth::id())->where('book_id', $book_id)->first();
+        $questions['questions'] =  Question::with('reviewer')->with('auditor')->where('user_book_id', $questions['user_book']->id)->get();
+        return $this->sendResponse($questions, 'Questions');
+    }
 
     public static function questionsStatistics()
     {

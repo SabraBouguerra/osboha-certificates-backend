@@ -231,6 +231,13 @@ class ThesisController extends BaseController
         return $this->sendResponse($thesises, 'Thesises');
     }
 
+    public function getByBook($book_id)
+    {
+        $theses['user_book']= UserBook::where('user_id', Auth::id())->where('book_id', $book_id)->first();
+        $theses['theses'] =  Thesis::with('reviewer')->with('auditor')->where('user_book_id', $theses['user_book']->id)->get();
+        return $this->sendResponse($theses, 'theses');
+    }
+
 
     public function image(Request $request)
     {
