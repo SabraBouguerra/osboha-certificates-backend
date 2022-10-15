@@ -12,8 +12,8 @@ class Book extends Model
     protected $fillable = [
         'book_name',
         'pages',
-        'type_id',
-        'category_id',
+        'section_id',
+        'level_id',
         'status',
 
     ];
@@ -23,14 +23,14 @@ class Book extends Model
     }
 
 
-    protected $with = array('type','category');
+    protected $with = array('section','level');
 
-    public function type(){
-        return $this->belongsTo(BookType::class,'type_id');
+    public function level(){
+        return $this->belongsTo(BookLevel::class,'level_id');
     }
 
-    public function category(){
-        return $this->belongsTo(BookCategory::class,'category_id');
+    public function section(){
+        return $this->belongsTo(BookSection::class,'section_id');
     }
 
     public function userBook(){

@@ -41,7 +41,7 @@ class UserBookController extends BaseController
 
         $input = $request->all();
         $input['user_id'] = Auth::id();
-        $count = UserBook::where('status','!=','finished')->where('user_id',$input['user_id'])->count();
+        $count = pBook::where('status','!=','finished')->where('user_id',$input['user_id'])->count();
 
         if($count > 0 ){
             return $this->sendError('You have an open book');

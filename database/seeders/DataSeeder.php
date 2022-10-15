@@ -6,6 +6,8 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Book;
 use App\Models\BookCategory;
+use App\Models\BookLevel;
+use App\Models\BookSection;
 use App\Models\BookType;
 use App\Models\UserBook;
 use App\Models\Question;
@@ -23,27 +25,27 @@ class DataSeeder extends Seeder
      */
     public function run()
     {
-        BookCategory::create(['name' => 'book category']);
-        BookType::create(['name' => 'book category']);
+        BookSection::create(['name' => 'book section']);
+        BookLevel::create(['name' => 'book level']);
         Book::create([
             'book_name'=>"هذا كتاب جميل",
             'pages' => 122,
-            'type_id' => 1,
-            'category_id' => 1,
+            'level_id' => 1,
+            'section_id' => 1,
 
 
         ]);Book::create([
             'book_name'=>"هذا كتاب ",
             'pages' => 122,
-            'type_id' => 1,
-            'category_id' => 1,
+            'level_id' => 1,
+            'section_id' => 1,
 
 
         ]);Book::create([
             'book_name'=>"هذا  ",
             'pages' => 122,
-            'type_id' => 1,
-            'category_id' => 1,
+            'level_id' => 1,
+            'section_id' => 1,
 
 
         ]);

@@ -17,10 +17,10 @@ return new class extends Migration
             $table->bigIncrements('id')->unsigned()->index();
             $table->text('book_name');
             $table->integer('pages');
-            $table->bigInteger("category_id")->unsigned()->index();
-            $table->foreign("category_id")->references("id")->on("category");
-            $table->bigInteger("type_id")->unsigned()->index();
-            $table->foreign("type_id")->references("id")->on("type");
+            $table->bigInteger("section_id")->unsigned()->index();
+            $table->foreign("section_id")->references("id")->on("section");
+            $table->bigInteger("level_id")->unsigned()->index();
+            $table->foreign("level_id")->references("id")->on("level");
             $table->timestamps();
         });
     }

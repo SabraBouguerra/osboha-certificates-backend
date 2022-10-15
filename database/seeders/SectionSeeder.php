@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class TypeSeeder extends Seeder
+class SectionSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -16,14 +16,13 @@ class TypeSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('type')->insert([
-            'name' => 'simple'
-        ]);
-        DB::table('type')->insert([
-            'name' => 'medium'
-        ]);
-        DB::table('type')->insert([
-            'name' => 'difficult'
-        ]);
+        $cat = 1;
+        while ($cat <= 10) {
+            DB::table('section')->insert([
+                'name' => 'cat' . $cat,
+            ]);
+        $cat++;
+        }
+
     }
 }

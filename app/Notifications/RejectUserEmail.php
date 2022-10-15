@@ -48,7 +48,10 @@ class RejectUserEmail extends Notification
         return (new MailMessage)
         ->from('example@example.com', 'Example')
         ->subject('أصبوحة || رفض التسجيل')
-        ->line('يرجى اعادة التسجيل')
+        ->line('مرحبا
+
+        تحية طيبة لحضرتك،
+        للأسف لم يتم قبول تسجيلك في موقع توثيق القراءة - أصبوحة 180 بسبب عدم تطابق المعلومات مع الشروط. الرجاء إعادة التسجيل ومراعاة تقديم معلوماتك التي تطابق الوثائق الرسمية.')
         ->action('اعادة التسجيل', $this->pageUrl);
 }
 

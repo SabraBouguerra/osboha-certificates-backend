@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class CategorySeeder extends Seeder
+class LevelSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -16,13 +16,14 @@ class CategorySeeder extends Seeder
      */
     public function run()
     {
-        $cat = 1;
-        while ($cat <= 10) {
-            DB::table('category')->insert([
-                'name' => 'cat' . $cat,
-            ]);
-        $cat++;    
-        }
-        
+        DB::table('level')->insert([
+            'name' => 'simple'
+        ]);
+        DB::table('level')->insert([
+            'name' => 'medium'
+        ]);
+        DB::table('level')->insert([
+            'name' => 'difficult'
+        ]);
     }
 }

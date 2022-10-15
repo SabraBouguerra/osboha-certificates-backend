@@ -19,8 +19,8 @@ class BookFactory extends Factory
         return [
            'book_name' => rtrim($this->faker->sentence(random_int(1, 5)), '.'),
            'pages' => $this->faker->numberBetween(100, 1000),
-           'category_id' => $this->faker->numberBetween(1, 10),
-           'type_id' => $this->faker->numberBetween(1, 3),
+           'section_id' => $this->faker->numberBetween(1, 10),
+           'level_id' => $this->faker->numberBetween(1, 3),
         ];
     }
 }
