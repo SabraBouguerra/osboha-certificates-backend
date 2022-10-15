@@ -17,7 +17,7 @@ use App\Traits\MediaTraits;
 use Illuminate\Auth\Events\Registered;
 
 class UserController extends BaseController
-{ 
+{
 
     use MediaTraits;
     public function index(){
@@ -194,6 +194,7 @@ class UserController extends BaseController
             "email" => "required|email",
             "password" => 'required',
             'role' => 'required',
+            'fb_name' => 'required'
         ]);
 
         if ($validator->fails()) {

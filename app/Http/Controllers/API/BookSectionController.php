@@ -3,16 +3,16 @@
 namespace App\Http\Controllers\API;
 
 use Illuminate\Support\Facades\Validator;
-use App\Models\BookCategory;
+use App\Models\BookSection;
 use Illuminate\Http\Request;
 
-class BookCategoryController extends BaseController
+class BookSectionController extends BaseController
 {
     public function index()
     {
 
-        $category = BookCategory::all();
-        return $this->sendResponse($category, "Category");
+        $Section = BookSection::all();
+        return $this->sendResponse($Section, "Section");
     }
 
 
@@ -28,24 +28,24 @@ class BookCategoryController extends BaseController
         $input = $request->all();
 
         try {
-            $category = BookCategory::create($input);
+            $Section = BookSection::create($input);
         } catch (\Illuminate\Database\QueryException $e) {
-            return $this->sendError('Category does not exist');
+            return $this->sendError('Section does not exist');
         }
 
-        return $this->sendResponse($category, "Category created");
+        return $this->sendResponse($Section, "Section created");
     }
 
 
     public function show($id)
     {
-        $category = BookCategory::find($id);
+        $Section = BookSection::find($id);
 
-        if (is_null($category)) {
+        if (is_null($Section)) {
 
-            return $this->sendError('Category does not exist');
+            return $this->sendError('Section does not exist');
         }
-        return $this->sendResponse($category, "Category");
+        return $this->sendResponse($Section, "Section");
     }
 
 
@@ -60,28 +60,28 @@ class BookCategoryController extends BaseController
         }
 
 
-        $category = BookCategory::find($id);
+        $Section = BookSection::find($id);
 
         $updateParam = [
             "name" => $input['name'],
 
         ];
 
-            $category->update($updateParam);
+            $Section->update($updateParam);
 
-        return $this->sendResponse($category, 'Category updated Successfully!');
+        return $this->sendResponse($Section, 'Section updated Successfully!');
     }
 
     public function destroy($id)
     {
 
-        $category = BookCategory::destroy($id);
+        $Section = BookSection::destroy($id);
 
-        if ($category == 0) {
+        if ($Section == 0) {
 
-            return $this->sendError('Category does not exist');
+            return $this->sendError('Section does not exist');
         }
-        return $this->sendResponse($category, 'Category deleted Successfully');
+        return $this->sendResponse($Section, 'Section deleted Successfully');
     }
 
 

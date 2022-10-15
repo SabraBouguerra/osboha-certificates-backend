@@ -15,8 +15,8 @@ class BooksController extends BaseController
 
     public function index()
     {
-        $books['books'] =Book::with('type', 'category')->paginate(10);
-        $books['open_book'] = Book::with('type', 'category')->select('books.*', 'user_book.status','user_book.id as user_book_id')->join('user_book', 'books.id', '=', 'user_book.book_id')->where('user_id', Auth::id())->where('status', "!=",'finished')->get();
+        $books['books'] =Book::paginate(10);
+        $books['open_book'] = Book::select('books.*', 'user_book.status','user_book.id as user_book_id')->join('user_book', 'books.id', '=', 'user_book.book_id')->where('user_id', Auth::id())->where('status', "!=",'finished')->get();
         return $this->sendResponse($books, "Books");
     }
 

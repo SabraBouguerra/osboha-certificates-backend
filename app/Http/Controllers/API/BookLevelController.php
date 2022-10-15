@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Models\BookType;
+use App\Models\BookLevel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class BookTypeController extends BaseController
+class BookLevelController extends BaseController
 {
     public function index()
     {
 
-        $Type = BookType::all();
-        return $this->sendResponse($Type, "Type");
+        $level = BookLevel::all();
+        return $this->sendResponse($level, "level");
     }
 
 
@@ -28,24 +28,24 @@ class BookTypeController extends BaseController
         $input = $request->all();
 
         try {
-            $type = BookType::create($input);
+            $level = BookLevel::create($input);
         } catch (\Illuminate\Database\QueryException $e) {
-            return $this->sendError('Type does not exist');
+            return $this->sendError('level does not exist');
         }
 
-        return $this->sendResponse($type, "Type created");
+        return $this->sendResponse($level, "level created");
     }
 
 
     public function show($id)
     {
-        $type = BookType::find($id);
+        $level = BookLevel::find($id);
 
-        if (is_null($type)) {
+        if (is_null($level)) {
 
-            return $this->sendError('Type does not exist');
+            return $this->sendError('level does not exist');
         }
-        return $this->sendResponse($type, "Type");
+        return $this->sendResponse($level, "level");
     }
 
 
@@ -63,28 +63,28 @@ class BookTypeController extends BaseController
 
 
 
-        $type = BookType::find($id);
+        $level = BookLevel::find($id);
 
         $updateParam = [
             "name" => $input['name'],
 
         ];
 
-            $type->update($updateParam);
+            $level->update($updateParam);
 
-        return $this->sendResponse($type, 'Type updated Successfully!');
+        return $this->sendResponse($level, 'level updated Successfully!');
     }
 
     public function destroy($id)
     {
 
-        $type = BookType::destroy($id);
+        $level = BookLevel::destroy($id);
 
-        if ($type == 0) {
+        if ($level == 0) {
 
-            return $this->sendError('Type does not exist');
+            return $this->sendError('level does not exist');
         }
-        return $this->sendResponse($type, 'Type deleted Successfully');
+        return $this->sendResponse($level, 'level deleted Successfully');
     }
 
 }
