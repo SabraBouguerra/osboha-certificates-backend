@@ -53,7 +53,7 @@ class ThesisController extends BaseController
             }
 
         } catch (\Illuminate\Database\QueryException $e) {
-            return $this->sendResponse($e, 'User Book does not exist');
+            return $this->sendError($e, 'User Book does not exist');
         }
         $thesis = Thesis::find($newthesis->id);
 
@@ -142,7 +142,7 @@ class ThesisController extends BaseController
                 $userBook->status="stage_two";
                 $userBook->save();
             }
-    
+
         } catch (\Error $e) {
             return $this->sendError('Thesis does not exist');
         }
@@ -302,6 +302,12 @@ class ThesisController extends BaseController
         $photo = Photos::find($id);
         $this->deleteThesisMedia($photo->path);
         $photo->delete();
+    }
+
+
+    public function getThesisPhotosCount($user_book_id){
+        $thesis = Thesis::where("user_book_id",$user_book_id)->has('photos')->count();
+        return $this->sendResponse($thesis,'photos count');
     }
 
 

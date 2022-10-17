@@ -85,8 +85,9 @@ Route::group(['prefix' => 'books'], function () {
 //Users routes
 
 Route::group(['prefix' => 'users'], function () {
-    Route::get('/', [UserController::class, 'index'])->middleware(['auth:api','role:admin']);
+    Route::get('/', [UserController::class, 'index']);
     Route::post('/', [UserController::class, 'store'])->middleware(['auth:api','role:user|admin','verified','isActive']);
+
 
     Route::get('/image', [ThesisController::class, 'image']);
     Route::get('/{id}', [UserController::class, 'show'])->middleware(['auth:api','verified','isActive']);
@@ -107,7 +108,7 @@ Route::group(['prefix' => 'thesises'], function () {
     Route::post('/', [ThesisController::class, 'store'])->middleware(['auth:api','role:user|admin','verified','isActive']);
     Route::get('final-degree/{id}',[ThesisController::class,"finalDegree"])->middleware(['auth:api','verified','isActive']);
     Route::get('user-book-status/{status}',[ThesisController::class,"getByUserBookStatus"])->middleware(['auth:api','verified','isActive']);
-
+    Route::get('/photo-count/{id}', [ThesisController::class, 'getThesisPhotosCount']);
     Route::get('/{id}', [ThesisController::class, 'show'])->middleware(['auth:api','verified','isActive']);
     Route::patch('update-photo/{id}',[ThesisController::class,"updatePhoto"])->middleware(['auth:api','verified','isActive']);
     Route::patch('review-thesis/{id}',[ThesisController::class,"reviewThesis"])->middleware(['role:user|admin','auth:api','verified','isActive']);
