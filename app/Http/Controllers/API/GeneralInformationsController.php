@@ -130,14 +130,9 @@ class GeneralInformationsController extends BaseController
             $info->status = $request->status;
             $info->reviewer_id = $request->reviewer_id;
             if ($request->has('reviews')) {
+                //REJECT OR RETARD
                 $info->reviews = $request->reviews;
                 $userBook=UserBook::where('id',$info->user_book_id)->update(['status'=>$request->status ,'reviews'=>$request->reviews ]);
-
-                // $userBook=UserBook::find($info->user_book_id);
-                // $userBook->status=$request->status;
-                // $userBook->reviews=$request->reviews;
-                // $userBook->save();
-
             }
 
             $info->save();
@@ -187,9 +182,10 @@ class GeneralInformationsController extends BaseController
          $general_informations = GeneralInformations::where('user_book_id',$user_book_id)->first();
         return $this->sendResponse($general_informations, 'General Informations!');
     }
-
     public function getByStatus($status){
-        $general_informations=UserBook::with('generalInformation')->where('status',$status)->get();
+        $general_informations=UserBook::whereHas('generalInformation', function ($q) use ($status) {
+            $q->where('status',$status);
+        })->where('status',$status)->get();
         // $general_informations =  GeneralInformations::with("user_book.user")->with("user_book.book")->where('status',$status)->groupBy('user_book_id')->get();
         return $this->sendResponse($general_informations, 'General Informations');
     }

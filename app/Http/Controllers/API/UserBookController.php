@@ -36,7 +36,7 @@ class UserBookController extends BaseController
             return $this->sendError($validator->errors());
         }
 
-        $count = UserBook::where('status','!=','finished')->where('user_id',Auth::id())->count();
+        $count = UserBook::whereNull('status')->orWhere('status','!=','finished')->where('user_id',Auth::id())->count();
 
         if($count > 0 ){
             return $this->sendError('You have an open book');
@@ -45,7 +45,6 @@ class UserBookController extends BaseController
             $userBook=UserBook::firstOrCreate([
                 'book_id' => $request->book_id,
                 'user_id'=>Auth::id()
-
             ]);
 
         } catch (\Illuminate\Database\QueryException $e) {
