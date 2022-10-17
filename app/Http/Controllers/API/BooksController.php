@@ -25,11 +25,9 @@ class BooksController extends BaseController
 
     public function checkAchievement($id)
     {
-        $already_have_one = UserBook::where('status', "!=",'finished')->where('user_id', Auth::id())->first();
+        $already_have_one = UserBook::whereNull('status')->orWhere('status', "!=",'finished')->where('user_id', Auth::id())->first();
         return $this->sendResponse($already_have_one, "Already Have One");
     }
-
-
 
 
     public function store(Request $request)
