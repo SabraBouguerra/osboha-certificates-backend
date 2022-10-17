@@ -59,6 +59,7 @@ Route::group(['prefix' => 'level'], function () {
         Route::get('/certificate/{id}',[UserBookController::class,"checkCertificate"])->middleware(['auth:api','verified','isActive']);
         Route::get('/statistics/{id}',[UserBookController::class,"getStatistics"])->middleware(['auth:api','verified','isActive']);
         Route::get('/general-statistics/',[UserBookController::class,"getGeneralstatistics"]);
+        Route::get('/by-book-id/{bookId}',[UserBookController::class,"getByBookID"])->middleware(['auth:api','verified','isActive']);
         Route::get('/stage-status/{id}',[UserBookController::class,"getStageStatus"])->middleware(['auth:api','verified','isActive']);
         Route::get('/{id}', [UserBookController::class, 'show'])->middleware(['auth:api','verified','isActive']);
         Route::patch('/{id}', [UserBookController::class, 'update'])->middleware(['auth:api','role:admin|reviewer']);
@@ -105,7 +106,7 @@ Route::group(['prefix' => 'thesises'], function () {
     Route::get('/', [ThesisController::class, 'index']);
     Route::post('/', [ThesisController::class, 'store'])->middleware(['auth:api','role:user|admin','verified','isActive']);
     Route::get('final-degree/{id}',[ThesisController::class,"finalDegree"])->middleware(['auth:api','verified','isActive']);
-    Route::get('status/{status}',[ThesisController::class,"getByStatus"])->middleware(['auth:api','verified','isActive']);
+    Route::get('user-book-status/{status}',[ThesisController::class,"getByUserBookStatus"])->middleware(['auth:api','verified','isActive']);
 
     Route::get('/{id}', [ThesisController::class, 'show'])->middleware(['auth:api','verified','isActive']);
     Route::patch('update-photo/{id}',[ThesisController::class,"updatePhoto"])->middleware(['auth:api','verified','isActive']);

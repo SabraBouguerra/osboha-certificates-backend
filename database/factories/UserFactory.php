@@ -25,6 +25,7 @@ class UserFactory extends Factory
             'password' => bcrypt('password123'), // password
             'is_active' => true,
             'remember_token' => $this->faker->asciify("OSBOHA180 ***********"),
+            'is_active'=>1,
         ];
     }
 
