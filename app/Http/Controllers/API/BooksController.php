@@ -16,13 +16,19 @@ class BooksController extends BaseController
     public function index()
     {
         $books['books'] =Book::with('type', 'category')->paginate(10);
-        $books['open_book'] = Book::with('type', 'category')->select('books.*', 'user_book.status')->join('user_book', 'books.id', '=', 'user_book.book_id')->where('user_id', Auth::id())->where('status', "!=",'finished')->get();
+        $books['open_book'] = Book::with('type', 'category')->select('books.*', 'user_book.status')->join('user_book', 'books.id', '=', 'user_book.book_id')->where('user_id', Auth::id())->whereNull('status')->orWhere('status', "!=",'finished')->get();
 
         // $books['open_book'] = UserBook::where('user_id', Auth::id())->where('status', "!=",'finished')->first();
 
         return $this->sendResponse($books, "Books");
     }
 
+
+    public function checkAchievement($id)
+    {
+        $already_have_one = UserBook::whereNull('status')->orWhere('status', "!=",'finished')->where('user_id', Auth::id())->first();
+        return $this->sendResponse($already_have_one, "Already Have One");
+    }
 
     public function store(Request $request)
     {

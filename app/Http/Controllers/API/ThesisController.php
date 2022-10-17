@@ -196,7 +196,6 @@ class ThesisController extends BaseController
             'id' => 'required',
             'status' => 'required',
             'reviewer_id' => 'required',
-            'reviews' => 'required_if:status,rejected'
         ]);
 
         if ($validator->fails()) {
@@ -209,6 +208,8 @@ class ThesisController extends BaseController
             $thesis->reviewer_id = $request->reviewer_id;
             if ($request->has('reviews')) {
                 $thesis->reviews = $request->reviews;
+                $userBook=UserBook::where('id',$thesis->user_book_id)->update(['status'=>$request->status ,'reviews'=>$request->reviews ]);
+
             }
 
             $thesis->save();
@@ -217,9 +218,10 @@ class ThesisController extends BaseController
         }
     }
 
-    public function getByStatus($status)
+    public function getByUserBookStatus($status)
     {
-        $thesises =  Thesis::with("user_book.user")->with("user_book.book")->where('status', $status)->groupBy('user_book_id')->get();
+        $thesises=UserBook::with('thesises')->where('status', $status)->get();
+        //$thesises =  Thesis::with("user_book.user")->with("user_book.book")->where('status', $status)->groupBy('user_book_id')->get();
 
         return $this->sendResponse($thesises, 'Thesises');
     }

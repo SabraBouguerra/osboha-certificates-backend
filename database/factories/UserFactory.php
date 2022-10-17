@@ -23,6 +23,7 @@ class UserFactory extends Factory
             'email_verified_at' => now(),
             'password' => bcrypt('password123'), // password
             'remember_token' => $this->faker->asciify("OSBOHA180 ***********"),
+            'is_active'=>1,
         ];
     }
 

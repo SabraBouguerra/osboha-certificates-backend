@@ -3,6 +3,9 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Role;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -14,17 +17,17 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         // \App\Models\User::factory(10)->create();
+
         $this->call([
-            RolesSeeder::class,
-            CategorySeeder::class,
-            TypeSeeder::class,
-            BookSeeder::class,
-            FqasSeeder::class,
-            UsersTableSeeder::class,
-            User_BookSeeder::class,
-            ThesisSeeder::class
-
-
+            // RolesSeeder::class,
+            // CategorySeeder::class,
+            // TypeSeeder::class,
+            // BookSeeder::class,
+            OneUserSeeder::class,
+            // FqasSeeder::class,
+            // UsersTableSeeder::class,
+            // User_BookSeeder::class,
+            // ThesisSeeder::class
         ]);
     }
 }

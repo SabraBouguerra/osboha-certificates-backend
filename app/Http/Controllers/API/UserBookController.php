@@ -32,22 +32,22 @@ class UserBookController extends BaseController
             'book_id' => 'required'
         ]);
 
-
-
         if ($validator->fails()) {
             return $this->sendError($validator->errors());
         }
 
-
-        $input = $request->all();
-        $input['user_id'] = Auth::id();
-        $count = UserBook::where('status','!=','finished')->where('user_id',$input['user_id'])->count();
+        $count = UserBook::where('status','!=','finished')->where('user_id',Auth::id())->count();
 
         if($count > 0 ){
             return $this->sendError('You have an open book');
         }
         try {
-            $userBook = UserBook::create($input);
+            $userBook=UserBook::firstOrCreate([
+                'book_id' => $request->book_id,
+                'user_id'=>Auth::id()
+
+            ]);
+
         } catch (\Illuminate\Database\QueryException $e) {
             echo ($e);
             return $this->sendError('User or book does not exist');
@@ -55,6 +55,12 @@ class UserBookController extends BaseController
         return $this->sendResponse($userBook, "User book created");
     }
 
+    
+    public function getByBookID($bookId)
+    {
+        $userBook = UserBook::with('thesises','questions','generalInformation')->where('book_id',$bookId)->where('user_id', Auth::id())->first();
+        return $userBook;
+    }
 
     public function show($id)
     {
@@ -70,22 +76,13 @@ class UserBookController extends BaseController
     {
         $input = $request->all();
         $validator = Validator::make($request->all(), [
-            'book_id',
-            'user_id'
+            'status' => 'required',
         ]);
         if ($validator->fails()) {
             return $this->sendError('Validation error', $validator->errors());
         }
-
-
-        $userBook = UserBook::find($id);
-
-        $updateParam = [
-            "book_id" => $input['book_id'],
-            "user_id" => $input['user_id'],
-        ];
         try {
-            $userBook->update($updateParam);
+            $userBook = UserBook::where('id',$id)->update(['status'=>$request->status]);
         } catch (\Error $e) {
             return $this->sendError('UserBook does not exist');
         }
@@ -133,7 +130,7 @@ class UserBookController extends BaseController
     {
         $id = Auth::id();
 
-        $open_book = UserBook::where('user_id',$id)->where('status','stage_one')->orWhere('status','stage_two')->count();
+        $open_book = UserBook::where('user_id',$id)->where('status','!=','finished')->count();
 
 
         return $this->sendResponse($open_book, 'Open Book');
