@@ -20,7 +20,13 @@ class BooksController extends BaseController
 
         // $books['open_book'] = UserBook::where('user_id', Auth::id())->where('status', "!=",'finished')->first();
 
-        return $this->sendResponse($books, "Books");
+  return $this->sendResponse($books, "Books");
+    }
+
+    public function checkAchievement($id)
+    {
+        $already_have_one = UserBook::where('status', "!=",'finished')->where('user_id', Auth::id())->first();
+        return $this->sendResponse($already_have_one, "Already Have One");
     }
 
 

@@ -25,7 +25,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'email',
         'password',
         'picture',
-        'is_active'
+        'is_active',
+        'fb_name'
     ];
     /**
      * The attributes that should be hidden for serialization.

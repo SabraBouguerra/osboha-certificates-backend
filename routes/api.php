@@ -10,8 +10,8 @@ use App\Http\Controllers\API\GeneralInformationsController;
 use App\Http\Controllers\API\QuestionController;
 use App\Http\Controllers\API\ThesisController;
 use App\Http\Controllers\API\UserController;
-use App\Http\Controllers\API\BookCategoryController;
-use App\Http\Controllers\API\BookTypeController;
+use App\Http\Controllers\API\BookSectionController;
+use App\Http\Controllers\API\BookLevelController;
 use App\Http\Controllers\API\EmailVerificationController;
 use App\Http\Controllers\API\PDFController;
 use App\Models\Question;
@@ -36,20 +36,20 @@ Route::post('password/forgot-password', [AuthController::class, 'sendResetLinkRe
 Route::post('password/reset', [AuthController::class, 'sendResetResponse'])->name('passwords.reset');
 
 //category routes
-Route::group(['prefix' => 'category'], function () {
-    Route::get('/', [BookCategoryController::class, 'index'])->middleware(['auth:api','role:admin']);
-    Route::post('/', [BookCategoryController::class, 'store'])->middleware(['auth:api','role:admin']);
-    Route::get('/{id}', [BookCategoryController::class, 'show'])->middleware(['auth:api','role:admin']);
-    Route::patch('/{id}', [BookCategoryController::class, 'update'])->middleware(['auth:api','role:admin']);
-    Route::delete('/{id}', [BookCategoryController::class, 'destroy'])->middleware(['auth:api','role:admin']);
+Route::group(['prefix' => 'section'], function () {
+    Route::get('/', [BookSectionController::class, 'index'])->middleware(['auth:api','role:admin']);
+    Route::post('/', [BookSectionController::class, 'store'])->middleware(['auth:api','role:admin']);
+    Route::get('/{id}', [BookSectionController::class, 'show'])->middleware(['auth:api','role:admin']);
+    Route::patch('/{id}', [BookSectionController::class, 'update'])->middleware(['auth:api','role:admin']);
+    Route::delete('/{id}', [BookSectionController::class, 'destroy'])->middleware(['auth:api','role:admin']);
 });
 //type routes
-Route::group(['prefix' => 'type'], function () {
-    Route::get('/', [BookTypeController::class, 'index'])->middleware(['auth:api','role:admin']);
-    Route::post('/', [BookTypeController::class, 'store'])->middleware(['auth:api','role:admin']);
-    Route::get('/{id}', [BookTypeController::class, 'show'])->middleware(['auth:api','role:admin']);
-    Route::patch('/{id}', [BookTypeController::class, 'update'])->middleware(['auth:api','role:admin']);
-    Route::delete('/{id}', [BookTypeController::class, 'destroy'])->middleware(['auth:api','role:admin']);
+Route::group(['prefix' => 'level'], function () {
+    Route::get('/', [BookLevelController::class, 'index'])->middleware(['auth:api','role:admin']);
+    Route::post('/', [BookLevelController::class, 'store'])->middleware(['auth:api','role:admin']);
+    Route::get('/{id}', [BookLevelController::class, 'show'])->middleware(['auth:api','role:admin']);
+    Route::patch('/{id}', [BookLevelController::class, 'update'])->middleware(['auth:api','role:admin']);
+    Route::delete('/{id}', [BookLevelController::class, 'destroy'])->middleware(['auth:api','role:admin']);
 });
  //users routes
     Route::group(['prefix' => 'userbook'], function () {
@@ -171,7 +171,7 @@ Route::group(['prefix' => 'general-informations'], function () {
      Route::get('status/{status}',[GeneralInformationsController::class,"getByStatus"])->middleware(['auth:api']);
      Route::post('/review',[GeneralInformationsController::class,"review"])->middleware(['auth:api']);
      Route::patch('review-general-informations/{id}',[GeneralInformationsController::class,"reviewGeneralInformations"])->middleware(['auth:api','verified','isActive']);
- 
+
 
 
 });

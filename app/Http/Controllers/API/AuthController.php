@@ -41,9 +41,10 @@ class AuthController extends BaseController
             "name" => "required",
             "email" => "required|email",
             "password" => 'required',
+            'fb_name' => 'required',
             "image" => 'required'
         ]);
- 
+
 
         if ($validator->fails()) {
             return $this->sendError($validator->errors());
@@ -61,6 +62,8 @@ class AuthController extends BaseController
             $errorCode = $e->errorInfo[1];
             if ($errorCode == 1062) {
                 return $this->sendError('User already exist');
+            }else{
+                 return $this->sendError($e);
             }
         }
         $success['token'] = $user->createToken('random key')->accessToken;
