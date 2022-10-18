@@ -183,6 +183,8 @@ class QuestionController extends BaseController
             $question->reviewer_id = $request->reviewer_id;
             if ($request->has('reviews')) {
                 $question->reviews = $request->reviews;
+                $userBook=UserBook::where('id',$question->user_book_id)->update(['status'=>$request->status ,'reviews'=>$request->reviews ]);
+
             }
 
             $question->save();
@@ -206,14 +208,19 @@ class QuestionController extends BaseController
     }
     public function getByStatus($status)
     {
-        $questions =  Question::with("user_book.user")->with("user_book.book")->with("user_book.questions")->where('status', $status)->groupBy('user_book_id')->get();
+        $questions=UserBook::with('questions')->whereHas('questions', function ($q) use ($status) {
+            $q->where('status',$status);
+        })->where('status',$status)->groupBy('user_id')->get();
         return $this->sendResponse($questions, 'Questions');
+
     }
 
     public function getByUserBook($user_book_id)
     {
-        $questions =  Question::with("user_book.user")->with("user_book.book")->with('reviewer')->with('auditor')->where('user_book_id', $user_book_id)->get();
-        return $this->sendResponse($questions, 'Questions');
+        $response['questions'] =  Question::with("user_book.user")->with("user_book.book")->with('reviewer')->with('auditor')->where('user_book_id', $user_book_id)->get();
+        $response['acceptedQuestions'] =  Question::where('user_book_id', $user_book_id)->where('status','audit')->count();
+        $response['userBook'] =  UserBook::find($user_book_id);
+        return $this->sendResponse( $response, 'Questions');
     }
     public function getByBook($book_id)
     {

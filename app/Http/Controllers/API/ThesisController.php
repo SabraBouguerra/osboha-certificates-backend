@@ -220,17 +220,19 @@ class ThesisController extends BaseController
 
     public function getByUserBookStatus($status)
     {
-        $thesises=UserBook::with('thesises')->where('status', $status)->get();
-        //$thesises =  Thesis::with("user_book.user")->with("user_book.book")->where('status', $status)->groupBy('user_book_id')->get();
-
+        $thesises=UserBook::whereHas('thesises', function ($q) use ($status) {
+            $q->where('status',$status);
+        })->where('status',$status)->groupBy('user_id')->get();
         return $this->sendResponse($thesises, 'Thesises');
     }
 
     public function getByUserBook($user_book_id)
     {
 
-        $thesises =  Thesis::with("user_book.user")->with("user_book.book")->with('reviewer')->with('auditor')->where('user_book_id', $user_book_id)->get();
-        return $this->sendResponse($thesises, 'Thesises');
+        $response['thesises'] =  Thesis::with("user_book.user")->with("user_book.book")->with('reviewer')->with('auditor')->where('user_book_id', $user_book_id)->get();
+        $response['acceptedThesises'] =  Thesis::where('user_book_id', $user_book_id)->where('status','audit')->count();
+        $response['userBook'] =  UserBook::find($user_book_id);
+        return $this->sendResponse( $response, 'Thesises');
     }
 
     public function getByBook($book_id)
