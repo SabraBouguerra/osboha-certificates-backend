@@ -124,6 +124,30 @@ class UserBookController extends BaseController
         }
         return $this->sendResponse($userBook, 'UserBook updated Successfully!');
     }
+    public function review(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'id' => 'required',
+            'status' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->sendError($validator->errors());
+        }
+
+        try {
+            //REJECT OR RETARD ENTIER USER BOOK
+            $userBook=UserBook::where('id',$request->id)->update(['status'=>$request->status ,'reviews'=>$request->reviews ]);
+            $theses=Thesis::where('user_book_id',$request->id)->update(['status'=>$request->status ,'reviews'=>$request->reviews ]);
+            $questions=Question::where('user_book_id',$request->id)->update(['status'=>$request->status ,'reviews'=>$request->reviews ]);
+            $generalInformations=GeneralInformations::where('user_book_id',$request->id)->update(['status'=>$request->status ,'reviews'=>$request->reviews ]);
+
+
+        } catch (\Error $e) {
+            return $this->sendError('User Book does not exist');
+        }
+    }
+
 
     public function checkOpenBook()
     {
