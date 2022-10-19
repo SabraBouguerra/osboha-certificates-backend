@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController as BaseController;
 use App\Models\Question;
 use App\Models\Quotation;
+use App\Models\User;
 use App\Models\UserBook;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
@@ -183,7 +184,12 @@ class QuestionController extends BaseController
             $question->reviewer_id = $request->reviewer_id;
             if ($request->has('reviews')) {
                 $question->reviews = $request->reviews;
-                $userBook=UserBook::where('id',$question->user_book_id)->update(['status'=>$request->status ,'reviews'=>$request->reviews ]);
+                $userBook=UserBook::find($question->user_book_id);
+                $user=User::find($userBook->user_id);
+                $userBook->status=$request->status;
+                $userBook->reviews=$request->reviews;
+                $userBook->save();
+                $user->notify(new \App\Notifications\RejectAchievement());
 
             }
 

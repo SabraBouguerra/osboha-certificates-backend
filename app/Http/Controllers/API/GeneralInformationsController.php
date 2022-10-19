@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController as BaseController;
 use App\Models\GeneralInformations;
+use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use App\Models\UserBook;
@@ -132,7 +133,12 @@ class GeneralInformationsController extends BaseController
             if ($request->has('reviews')) {
                 //REJECT OR RETARD
                 $info->reviews = $request->reviews;
-                $userBook=UserBook::where('id',$info->user_book_id)->update(['status'=>$request->status ,'reviews'=>$request->reviews ]);
+                $userBook=UserBook::find($info->user_book_id);
+                $userBook->status=$request->status;
+                $userBook->reviews=$request->reviews;
+                $userBook->save();
+                $user=User::find($userBook->user_id);
+                $user->notify(new \App\Notifications\RejectAchievement());
             }
 
             $info->save();

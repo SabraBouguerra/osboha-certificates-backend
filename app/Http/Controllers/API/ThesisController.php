@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController as BaseController;
 use App\Models\Photos;
 use App\Models\Thesis;
+use App\Models\User;
 use App\Models\UserBook;
 use Illuminate\Support\Facades\Validator;
 use App\Traits\MediaTraits;
@@ -208,11 +209,15 @@ class ThesisController extends BaseController
             $thesis->reviewer_id = $request->reviewer_id;
             if ($request->has('reviews')) {
                 $thesis->reviews = $request->reviews;
-                $userBook=UserBook::where('id',$thesis->user_book_id)->update(['status'=>$request->status ,'reviews'=>$request->reviews ]);
-
+                $userBook=UserBook::find($thesis->user_book_id);
+                $user=User::find($userBook->user_id);
+                $userBook->status=$request->status;
+                $userBook->reviews=$request->reviews;
+                $userBook->save();
+                $user->notify(new \App\Notifications\RejectAchievement());
             }
-
             $thesis->save();
+
         } catch (\Error $e) {
             return $this->sendError('Thesis does not exist');
         }
