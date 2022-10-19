@@ -137,10 +137,14 @@ class UserBookController extends BaseController
 
         try {
             //REJECT OR RETARD ENTIER USER BOOK
-            $userBook=UserBook::where('id',$request->id)->update(['status'=>$request->status ,'reviews'=>$request->reviews ]);
+            $userBook=UserBook::find($request->id);
+            $user=User::find($userBook->user_id);
+            $userBook->status=$request->status;
+            $userBook->reviews=$request->reviews;
             $theses=Thesis::where('user_book_id',$request->id)->update(['status'=>$request->status ,'reviews'=>$request->reviews ]);
             $questions=Question::where('user_book_id',$request->id)->update(['status'=>$request->status ,'reviews'=>$request->reviews ]);
             $generalInformations=GeneralInformations::where('user_book_id',$request->id)->update(['status'=>$request->status ,'reviews'=>$request->reviews ]);
+            $user->notify(new \App\Notifications\RejectAchievement());
 
 
         } catch (\Error $e) {
