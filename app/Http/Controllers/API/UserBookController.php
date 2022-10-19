@@ -197,8 +197,8 @@ class UserBookController extends BaseController
     }
 
 
-    public function getUserBookByStatus($status){
-        $user_books = UserBook::where('status',$status)->with('user')->with('book')->get();
+    public function getUserBookByStatus($user_book_status){
+        $user_books = UserBook::where('status',$user_book_status)->with('user')->with('book')->get();
         return $this->sendResponse($user_books , 'UserBooks');
     }
 
