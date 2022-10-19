@@ -72,11 +72,12 @@ Route::group(['prefix' => 'books'], function () {
     Route::post('/', [BooksController::class, 'store'])->middleware(['auth:api', 'role:admin']);
     Route::get('/user',[BooksController::class ,'getBooksForUser'])->middleware(['auth:api','verified','isActive']);
     Route::get('/user/{id}',[BooksController::class ,'getOpenBook'])->middleware(['auth:api','verified','isActive']);
+    Route::get('/check-achievement/{id}',[BooksController::class ,'checkAchievement'])->middleware(['auth:api','verified','isActive']);
     Route::get('/{id}', [BooksController::class, 'show'])->middleware(['auth:api','verified','isActive']);
     Route::patch('/{id}', [BooksController::class, 'update'])->middleware(['auth:api','role:admin']);
     Route::delete('/{id}', [BooksController::class, 'destroy'])->middleware(['auth:api','role:admin']);
     Route::get('/user-book/{id}',[BooksController::class ,'getUserBook'])->middleware(['auth:api','verified','isActive']);
-    Route::get('/check-achievement/{id}',[BooksController::class ,'checkAchievement'])->middleware(['auth:api','verified','isActive']);
+
 
 
 });
