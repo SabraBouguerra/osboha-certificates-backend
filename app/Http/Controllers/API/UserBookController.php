@@ -54,7 +54,7 @@ class UserBookController extends BaseController
         return $this->sendResponse($userBook, "User book created");
     }
 
-    
+
     public function getByBookID($bookId)
     {
         $userBook = UserBook::with('thesises','questions','generalInformation')->where('book_id',$bookId)->where('user_id', Auth::id())->first();
@@ -222,6 +222,12 @@ class UserBookController extends BaseController
         ];
         return $this->sendResponse($response , 'Statistics');
 
+    }
+
+
+    public function getUserBookByStatus($status){
+        $user_books = UserBook::where('status',$status)->with('user')->with('book')->get();
+        return $this->sendResponse($user_books , 'UserBooks');
     }
 
 
