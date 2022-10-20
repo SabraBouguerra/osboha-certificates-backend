@@ -79,6 +79,7 @@ Route::group(['prefix' => 'books'], function () {
     Route::delete('/{id}', [BooksController::class, 'destroy'])->middleware(['auth:api','role:admin']);
     Route::get('/user-book/{id}',[BooksController::class ,'getUserBook'])->middleware(['auth:api','verified','isActive']);
     Route::get('/check-achievement/{id}',[BooksController::class ,'checkAchievement'])->middleware(['auth:api','verified','isActive']);
+    Route::get('/by-name/{name}',[BooksController::class ,'bookByName'])->middleware(['auth:api','verified','isActive']);
 
 
 });
