@@ -55,6 +55,7 @@ Route::group(['prefix' => 'level'], function () {
     Route::group(['prefix' => 'userbook'], function () {
         Route::get('/', [UserBookController::class, 'index'])->middleware(['auth:api','role:admin|reviewer']);
         Route::post('/', [UserBookController::class, 'store'])->middleware(['auth:api']);
+        Route::get('/status/{status}',[UserBookController::class ,'getUserBookByStatus'])->middleware(['auth:api','verified','isActive',"role:admin"]);
         Route::get('/count',[UserBookController::class,"checkOpenBook"])->middleware(['auth:api','verified','isActive']);
         Route::get('/certificate/{id}',[UserBookController::class,"checkCertificate"])->middleware(['auth:api','verified','isActive']);
         Route::get('/statistics/{id}',[UserBookController::class,"getStatistics"])->middleware(['auth:api','verified','isActive']);
@@ -74,6 +75,7 @@ Route::group(['prefix' => 'books'], function () {
     Route::post('/', [BooksController::class, 'store'])->middleware(['auth:api', 'role:admin']);
     Route::get('/user',[BooksController::class ,'getBooksForUser'])->middleware(['auth:api','verified','isActive']);
     Route::get('/user/{id}',[BooksController::class ,'getOpenBook'])->middleware(['auth:api','verified','isActive']);
+    Route::get('/check-achievement/{id}',[BooksController::class ,'checkAchievement'])->middleware(['auth:api','verified','isActive']);
     Route::get('/{id}', [BooksController::class, 'show'])->middleware(['auth:api','verified','isActive']);
     Route::patch('/{id}', [BooksController::class, 'update'])->middleware(['auth:api','role:admin']);
     Route::delete('/{id}', [BooksController::class, 'destroy'])->middleware(['auth:api','role:admin']);

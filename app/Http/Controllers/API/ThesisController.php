@@ -47,7 +47,7 @@ class ThesisController extends BaseController
         try {
             $newthesis = Thesis::create($input);
 
-            if ($request->has('images')) {
+            if (!is_null(($request->file('images')))) {
                 foreach ($request->file('images') as $image) {
                     $this->createThesisMedia($image, $newthesis->id);
                 }
