@@ -16,11 +16,16 @@ class BooksController extends BaseController
     public function index()
     {
         $books['books'] =Book::with('section', 'level')->paginate(9);
-        $books['open_book'] = Book::with('section', 'level')->select('books.*', 'user_book.status')->join('user_book', 'books.id', '=', 'user_book.book_id')->where('user_id', Auth::id())->whereNull('status')->orWhere('status', "!=",'finished')->get();
+        $books['open_book']= Book::with('section', 'level')->whereHas('userBook', function ($q) {
+            $q->where('user_id', Auth::id())
+            ->where(function ($query) {
+                $query->where('status', '!=', 'finished')
+                    ->orWhereNull('status');
+            });
 
-        // $books['open_book'] = UserBook::where('user_id', Auth::id())->where('status', "!=",'finished')->first();
+        })->get();
 
-  return $this->sendResponse($books, "Books");
+        return $this->sendResponse($books, "Books");
     }
 
     public function checkAchievement($id)
@@ -28,6 +33,16 @@ class BooksController extends BaseController
 
         $already_have_one = UserBook::where('user_id', Auth::id())->whereNull('status')->orWhere('status', "!=",'finished')->first();
         return $this->sendResponse($already_have_one, "Already Have One");
+    }
+    public function bookByName($name)
+    {
+        $books = Book::with('section', 'level')->where('book_name','LIKE','%'.$name.'%')->paginate(9);
+        if($books->isNotEmpty()){
+            return $this->sendResponse($books, "Already Have One");
+        }
+        else{
+            return $this->sendResponse('empty','No Books Found');
+        }        
     }
 
 
