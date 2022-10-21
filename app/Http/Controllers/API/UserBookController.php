@@ -36,7 +36,10 @@ class UserBookController extends BaseController
             return $this->sendError($validator->errors());
         }
 
-        $count = UserBook::whereNull('status')->orWhere('status','!=','finished')->where('user_id',Auth::id())->count();
+        $count = UserBook::where(function ($query) {
+            $query->where('status', '!=', 'finished')
+                ->orWhereNull('status');
+        })->where('user_id',Auth::id())->count();
 
         if($count > 0 ){
             return $this->sendError('You have an open book');
@@ -57,8 +60,16 @@ class UserBookController extends BaseController
 
     public function getByBookID($bookId)
     {
-        $userBook = UserBook::with('thesises','questions','generalInformation')->where('book_id',$bookId)->where('user_id', Auth::id())->first();
-        return $userBook;
+        $userBook['userBook'] = UserBook::with('thesises','questions','generalInformation')->where('book_id',$bookId)->where('user_id', Auth::id())->first();
+        $userBook['completionPercentage']=10;
+        $theses=Thesis::where('user_book_id',$userBook['userBook']->id)->count();
+        $userBook['completionPercentage']=$userBook['completionPercentage'] + (6.25 * $theses); //50 \ 8 => 6.25 for each (50%)
+        $questions=Question::where('user_book_id',$userBook['userBook']->id)->count();//25 \ 5 => 5 for each (25%)
+        $userBook['completionPercentage']=$userBook['completionPercentage'] + (5 * $questions);
+        $generalInformations=GeneralInformations::where('user_book_id',$userBook['userBook']->id)->count();
+        $userBook['completionPercentage']=$userBook['completionPercentage'] + (15 * $generalInformations); // only one  (15%)
+
+        return $this->sendResponse($userBook, "User book created");
     }
 
     public function show($id)
