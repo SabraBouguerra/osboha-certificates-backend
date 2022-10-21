@@ -25,10 +25,10 @@ class OneUserSeeder extends Seeder
     public function run()
     {
         ## Role ##
-        // $admin = Role::create(['name' => 'admin']);
-        // $reviewer = Role::create(['name' => 'reviewer']);
-        // $auditor = Role::create(['name' => 'auditor']);
-        // $user = Role::create(['name' => 'user']);
+        $admin = Role::create(['name' => 'admin']);
+        $reviewer = Role::create(['name' => 'reviewer']);
+        $auditor = Role::create(['name' => 'auditor']);
+        $user = Role::create(['name' => 'user']);
 
         ## category ##
         $cat = 1;

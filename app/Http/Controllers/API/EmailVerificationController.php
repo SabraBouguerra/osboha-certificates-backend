@@ -35,17 +35,13 @@ class EmailVerificationController extends Controller
         }
 
         if ($user->hasVerifiedEmail()) {
-            return [
-                'message' => 'Email already verified'
-            ];
+            return view('confairnEmail');
         }
 
         if ($user->markEmailAsVerified()) {
             event(new Verified($request->user()));
         }
 
-        return [
-            'message'=>'Email has been verified'
-        ];
+        return view('confairnEmail');
     }
 }
