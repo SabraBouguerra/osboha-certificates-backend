@@ -125,11 +125,9 @@ class UserBookController extends BaseController
 
         $userBook = UserBook::find($id);
 
-        $updateParam = [
-            'status' => $input['status']
-        ];
+        $userBook-> status = $input['status'];
         try {
-            $userBook->update($updateParam);
+            $userBook->save();
         } catch (\Error $e) {
             return $this->sendError('UserBook does not exist');
         }
@@ -236,8 +234,8 @@ class UserBookController extends BaseController
     }
 
 
-    public function getUserBookByStatus($status){
-        $user_books = UserBook::where('status',$status)->with('user')->with('book')->get();
+    public function getUserBookByStatus($user_book_status){
+        $user_books = UserBook::where('status',$user_book_status)->with('user')->with('book')->get();
         return $this->sendResponse($user_books , 'UserBooks');
     }
 
