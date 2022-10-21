@@ -56,6 +56,7 @@ Route::group(['prefix' => 'level'], function () {
         Route::get('/', [UserBookController::class, 'index'])->middleware(['auth:api','role:admin|reviewer']);
         Route::post('/', [UserBookController::class, 'store'])->middleware(['auth:api']);
         Route::get('/status/{status}',[UserBookController::class ,'getUserBookByStatus'])->middleware(['auth:api','verified','isActive',"role:admin"]);
+        Route::patch('/status/{id}',[UserBookController::class ,'changeStatus'])->middleware(['auth:api','verified','isActive',"role:admin"]);
         Route::get('/count',[UserBookController::class,"checkOpenBook"])->middleware(['auth:api','verified','isActive']);
         Route::get('/certificate/{id}',[UserBookController::class,"checkCertificate"])->middleware(['auth:api','verified','isActive']);
         Route::get('/statistics/{id}',[UserBookController::class,"getStatistics"])->middleware(['auth:api','verified','isActive']);

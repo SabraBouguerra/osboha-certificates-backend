@@ -54,6 +54,9 @@ class CertificatesController extends BaseController
         $certificate->final_grade = $finalDegree;
         try {
             $certificate->save();
+            $userBook = UserBook::find($input['user_book_id']);
+            $userBook->status = 'finished';
+            $userBook->save();
         } catch (\Illuminate\Database\QueryException $e) {
             echo($e);
             return $this->sendError('User Book does not exist');
@@ -109,10 +112,27 @@ class CertificatesController extends BaseController
 
     public function fullCertificate($user_book_id)
     {
-        $fullCertificate=UserBook::where('id',$user_book_id)->with('certificates')->with('questions')->with('generalInformation')->get();
+        $fullCertificate=UserBook::where('id',$user_book_id)->with('questions')->with('generalInformation')->get();
+        $all_avareges = UserBook::
+        join('general_informations', 'user_book.id', '=', 'general_informations.user_book_id')
+        ->join('questions', 'user_book.id', '=', 'questions.user_book_id')
+        ->join('thesis', 'user_book.id', '=', 'thesis.user_book_id')
+        ->select(\DB::raw('avg(general_informations.degree) as general_informations_degree,avg(questions.degree) as questions_degree,avg(thesis.degree) as thesises_degree'))
+        ->where('user_book.id', $user_book_id)
+        ->get();
+        $thesisDegree = $all_avareges[0]['thesises_degree'];
+        $generalInformationsDegree = $all_avareges[0]['general_informations_degree'];
+        $questionsDegree = $all_avareges[0]['questions_degree'];
+        $finalDegree = ($questionsDegree+$generalInformationsDegree+$thesisDegree) /3 ;
+         $certificate = new Certificates();
 
-        return $this->sendResponse($fullCertificate, 'Certificate deleted Successfully!');
+        $certificate->thesis_grade = $questionsDegree;
+        $certificate->check_reading_grade = $questionsDegree;
+        $certificate->general_summary_grade = $generalInformationsDegree;
+        $certificate->final_grade = $finalDegree;
+        $response = ["degrees" => $certificate,"information" => $fullCertificate];
+        return $this->sendResponse($response, 'Certificate deleted Successfully!');
     }
 
-    
+
 }
