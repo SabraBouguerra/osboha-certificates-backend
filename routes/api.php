@@ -64,7 +64,7 @@ Route::group(['prefix' => 'level'], function () {
         Route::get('/by-book-id/{bookId}',[UserBookController::class,"getByBookID"])->middleware(['auth:api','verified','isActive']);
         Route::get('/stage-status/{id}',[UserBookController::class,"getStageStatus"])->middleware(['auth:api','verified','isActive']);
         Route::get('/{id}', [UserBookController::class, 'show'])->middleware(['auth:api','verified','isActive']);
-        Route::patch('/{id}', [UserBookController::class, 'update'])->middleware(['auth:api','role:admin|reviewer']);
+        Route::patch('/{id}', [UserBookController::class, 'update'])->middleware(['auth:api']);
         Route::delete('/{id}', [UserBookController::class, 'destroy'])->middleware(['auth:api','role:admin|reviewer']);
         Route::post('/review',[UserBookController::class,"review"])->middleware(['auth:api','verified','isActive']);
 
