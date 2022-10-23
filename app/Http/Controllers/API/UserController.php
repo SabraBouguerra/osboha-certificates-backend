@@ -143,7 +143,7 @@ class UserController extends BaseController
       try{
         $users = User::with('roles')->where('is_active',0)->whereHas(
             'roles', function($q){
-            $q->where('name', 'reviewer')->orWhere('name','auditer');
+            $q->where('name', 'reviewer')->orWhere('name','auditor');
         })->get();
 
         return $this->sendResponse($users, 'All Un Accepted Reviewers And Auditors!');
