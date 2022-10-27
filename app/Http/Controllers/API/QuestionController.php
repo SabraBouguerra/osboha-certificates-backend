@@ -159,7 +159,10 @@ class QuestionController extends BaseController
     public function reviewQuestion($id)
     {
         try {
-            $question = Question::where('user_book_id', $id)->update(['status' => 'review']);
+            $question = Question::where('user_book_id', $id)->where(function ($query) {
+                $query->where('status','retard')
+                    ->orWhereNull('status');
+            })->update(['status' => 'ready']);
         } catch (\Error $e) {
             return $this->sendError('Question does not exist');
         }
@@ -186,9 +189,6 @@ class QuestionController extends BaseController
                 $question->reviews = $request->reviews;
                 $userBook=UserBook::find($question->user_book_id);
                 $user=User::find($userBook->user_id);
-                $userBook->status=$request->status;
-                $userBook->reviews=$request->reviews;
-                $userBook->save();
                 $user->notify(new \App\Notifications\RejectAchievement());
 
             }
@@ -224,7 +224,7 @@ class QuestionController extends BaseController
     public function getByUserBook($user_book_id)
     {
         $response['questions'] =  Question::with("user_book.user")->with("user_book.book")->with('reviewer')->with('auditor')->where('user_book_id', $user_book_id)->get();
-        $response['acceptedQuestions'] =  Question::where('user_book_id', $user_book_id)->where('status','audit')->count();
+        $response['acceptedQuestions'] =  Question::where('user_book_id', $user_book_id)->where('status','accept')->count();
         $response['userBook'] =  UserBook::find($user_book_id);
         return $this->sendResponse( $response, 'Questions');
     }

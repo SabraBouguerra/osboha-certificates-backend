@@ -184,7 +184,10 @@ class ThesisController extends BaseController
     public function reviewThesis($id)
     {
         try {
-            $thesis = Thesis::where('user_book_id', $id)->update(['status' => 'review']);
+            $thesis = Thesis::where('user_book_id', $id)->where(function ($query) {
+                $query->where('status','retard')
+                    ->orWhereNull('status');
+            })->update(['status' => 'ready']);
             return $thesis;
         } catch (\Error $e) {
             return $this->sendError('Thesis does not exist');
@@ -194,7 +197,8 @@ class ThesisController extends BaseController
     public function review(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'id' => 'required',
+            'id' => 'required_without:user_book_id',
+            'user_book_id' => 'required_without:id',
             'status' => 'required',
             'reviewer_id' => 'required',
         ]);
@@ -204,38 +208,42 @@ class ThesisController extends BaseController
         }
 
         try {
-            $thesis = Thesis::find($request->id);
-            $thesis->status = $request->status;
-            $thesis->reviewer_id = $request->reviewer_id;
-            if ($request->has('reviews')) {
-                $thesis->reviews = $request->reviews;
-                $userBook=UserBook::find($thesis->user_book_id);
-                $user=User::find($userBook->user_id);
-                $userBook->status=$request->status;
-                $userBook->reviews=$request->reviews;
-                $userBook->save();
-                $user->notify(new \App\Notifications\RejectAchievement());
+            if($request->has('id')){
+                $thesis = Thesis::find($request->id);
+                $thesis->status = $request->status;
+                $thesis->reviewer_id = $request->reviewer_id;
+                if ($request->has('reviews')) {
+                    $thesis->reviews = $request->reviews;
+                    $userBook=UserBook::find($thesis->user_book_id);
+                    $user=User::find($userBook->user_id);
+                    $user->notify(new \App\Notifications\RejectAchievement());
+                }
+                $thesis->save();
             }
-            $thesis->save();
+            else if($request->has('user_book_id')){
+                $thesis = Thesis::where('user_book_id',$request->user_book_id)->update(['status'=>$request->status]);
 
+            }
         } catch (\Error $e) {
             return $this->sendError('Thesis does not exist');
         }
     }
 
-    public function getByUserBookStatus($status)
-    {
-        $thesises=UserBook::whereHas('thesises', function ($q) use ($status) {
-            $q->where('status',$status);
-        })->where('status',$status)->groupBy('user_id')->get();
+    public function getByStatus($status){
+        $thesises =  Thesis::with("user_book.user")->with("user_book.book")->where('status',$status)->groupBy('user_book_id')->get();
+ 
         return $this->sendResponse($thesises, 'Thesises');
     }
 
-    public function getByUserBook($user_book_id)
+    public function getByUserBook($user_book_id,$status='')
     {
-
-        $response['thesises'] =  Thesis::with("user_book.user")->with("user_book.book")->with('reviewer')->with('auditor')->where('user_book_id', $user_book_id)->get();
-        $response['acceptedThesises'] =  Thesis::where('user_book_id', $user_book_id)->where('status','audit')->count();
+        if($status != ''){
+            $response['thesises'] =  Thesis::with("user_book.user")->with("user_book.book")->with('reviewer')->with('auditor')->where('user_book_id', $user_book_id)->where('status',$status)->get();
+        }
+        else{
+            $response['thesises'] =  Thesis::with("user_book.user")->with("user_book.book")->with('reviewer')->with('auditor')->where('user_book_id', $user_book_id)->get();
+        }
+        $response['acceptedThesises'] =  Thesis::where('user_book_id', $user_book_id)->where('status','accept')->count();
         $response['userBook'] =  UserBook::find($user_book_id);
         return $this->sendResponse( $response, 'Thesises');
     }

@@ -20,7 +20,7 @@ return new class extends Migration
             $table->text("reviews")->nullable();
             $table->integer('degree')->nullable();
 
-            $table->enum('status', ['audit', 'review', 'audited','rejected','retard'])->nullable();
+            $table->enum('status', ['ready','audit', 'review', 'audited','rejected','retard'])->nullable();
 
             $table->bigInteger('reviewer_id')->unsigned()->nullable();
             $table->bigInteger('auditor_id')->unsigned()->nullable();
