@@ -62,11 +62,17 @@ class UserBookController extends BaseController
     {
         $userBook['userBook'] = UserBook::with('thesises','questions','generalInformation')->where('book_id',$bookId)->where('user_id', Auth::id())->first();
         $userBook['completionPercentage']=10;
-        $theses=Thesis::where('user_book_id',$userBook['userBook']->id)->count();
+        $theses=Thesis::where('user_book_id',$userBook['userBook']->id)->where(function ($query) {
+            $query->whereNotNull('status')->orWhere('status','!=','retard')->orWhere('status','!=','rejected');
+        })->count();
         $userBook['completionPercentage']=$userBook['completionPercentage'] + (6.25 * $theses); //50 \ 8 => 6.25 for each (50%)
-        $questions=Question::where('user_book_id',$userBook['userBook']->id)->count();//25 \ 5 => 5 for each (25%)
+        $questions=Question::where('user_book_id',$userBook['userBook']->id)->where(function ($query) {
+            $query->whereNotNull('status')->orWhere('status','!=','retard')->orWhere('status','!=','rejected');
+        })->count();//25 \ 5 => 5 for each (25%)
         $userBook['completionPercentage']=$userBook['completionPercentage'] + (5 * $questions);
-        $generalInformations=GeneralInformations::where('user_book_id',$userBook['userBook']->id)->count();
+        $generalInformations=GeneralInformations::where('user_book_id',$userBook['userBook']->id)->where(function ($query) {
+            $query->whereNotNull('status')->orWhere('status','!=','retard')->orWhere('status','!=','rejected');
+        })->count();
         $userBook['completionPercentage']=$userBook['completionPercentage'] + (15 * $generalInformations); // only one  (15%)
 
         return $this->sendResponse($userBook, "User book created");
@@ -92,7 +98,25 @@ class UserBookController extends BaseController
             return $this->sendError('Validation error', $validator->errors());
         }
         try {
-            $userBook = UserBook::where('id',$id)->update(['status'=>$request->status]);
+            $userBook=UserBook::find($id);
+            $userBook->status=$request->status;
+            $userBook->save();
+            $user=User::find($userBook->user_id);
+            $theses=Thesis::where('user_book_id',$id)->where(function ($query) {
+                $query->where('status','retard')
+                    ->orWhereNull('status');
+            })->update(['status'=>$request->status]);
+            $questions=Question::where('user_book_id',$id)->where(function ($query) {
+                $query->where('status','retard')
+                    ->orWhereNull('status');
+            })->update(['status'=>$request->status]);
+            $generalInformations=GeneralInformations::where('user_book_id',$id)->where(function ($query) {
+                $query->where('status','retard')
+                    ->orWhereNull('status');
+            })->update(['status'=>$request->status]);
+            $user->notify(new \App\Notifications\ReviewBook());
+
+
         } catch (\Error $e) {
             return $this->sendError('UserBook does not exist');
         }
@@ -150,6 +174,7 @@ class UserBookController extends BaseController
             $user=User::find($userBook->user_id);
             $userBook->status=$request->status;
             $userBook->reviews=$request->reviews;
+            $userBook->save();
             $theses=Thesis::where('user_book_id',$request->id)->update(['status'=>$request->status ,'reviews'=>$request->reviews ]);
             $questions=Question::where('user_book_id',$request->id)->update(['status'=>$request->status ,'reviews'=>$request->reviews ]);
             $generalInformations=GeneralInformations::where('user_book_id',$request->id)->update(['status'=>$request->status ,'reviews'=>$request->reviews ]);

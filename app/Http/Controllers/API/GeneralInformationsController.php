@@ -106,7 +106,7 @@ class GeneralInformationsController extends BaseController
         public function reviewGeneralInformations($id)
         {
             try {
-                $generalInformations = GeneralInformations::where('user_book_id', $id)->update(['status' => 'review']);
+                $generalInformations = GeneralInformations::where('user_book_id', $id)->update(['status' => 'ready']);
             } catch (\Error $e) {
                 return $this->sendError('General Informations does not exist');
             }
@@ -134,9 +134,6 @@ class GeneralInformationsController extends BaseController
                 //REJECT OR RETARD
                 $info->reviews = $request->reviews;
                 $userBook=UserBook::find($info->user_book_id);
-                $userBook->status=$request->status;
-                $userBook->reviews=$request->reviews;
-                $userBook->save();
                 $user=User::find($userBook->user_id);
                 $user->notify(new \App\Notifications\RejectAchievement());
             }

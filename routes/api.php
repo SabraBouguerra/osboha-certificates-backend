@@ -113,7 +113,7 @@ Route::group(['prefix' => 'thesises'], function () {
     Route::get('/', [ThesisController::class, 'index']);
     Route::post('/', [ThesisController::class, 'store'])->middleware(['auth:api','verified','isActive']);
     Route::get('final-degree/{id}',[ThesisController::class,"finalDegree"])->middleware(['auth:api','verified','isActive']);
-    Route::get('user-book-status/{status}',[ThesisController::class,"getByUserBookStatus"])->middleware(['auth:api','verified','isActive']);
+    Route::get('by-status/{status}',[ThesisController::class,"getByStatus"])->middleware(['auth:api','verified','isActive']);
     Route::get('/photo-count/{id}', [ThesisController::class, 'getThesisPhotosCount']);
     Route::get('/{id}', [ThesisController::class, 'show'])->middleware(['auth:api','verified','isActive']);
     Route::patch('update-photo/{id}',[ThesisController::class,"updatePhoto"])->middleware(['auth:api','verified','isActive']);
@@ -125,7 +125,7 @@ Route::group(['prefix' => 'thesises'], function () {
 
     Route::post('update-photo',[ThesisController::class,"updatePicture"])->middleware(['auth:api','verified','isActive']);
     Route::post('upload/{id}',[ThesisController::class,"uploadPhoto"])->middleware(['auth:api','verified','isActive']);
-    Route::get('user_book_id/{user_book_id}',[ThesisController::class,"getByUserBook"])->middleware(['auth:api','verified','isActive']);
+    Route::get('user_book_id/{user_book_id}&{status?}',[ThesisController::class,"getByUserBook"])->middleware(['auth:api','verified','isActive']);
     Route::get('book/{book_id}',[ThesisController::class,"getByBook"])->middleware(['auth:api','verified','isActive']);
     Route::post('/review',[ThesisController::class,"review"])->middleware(['auth:api','verified','isActive']);
 
