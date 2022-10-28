@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController as BaseController;
 use App\Models\User;
+use App\Models\UserBook;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -221,6 +222,25 @@ class UserController extends BaseController
     $success['role'] = $user->getRoleNames();;
     $success['id'] = $user->id;
         return $this->sendResponse($success,"User created");
+    }
+
+
+
+    public function getUserStatistics(){
+        $id = Auth::id();
+        $thesises =  ThesisController::thesisStatisticsForUser($id);
+        $qestions =  QuestionController::questionsStatisticsForUser($id);
+        $generalInformations = GeneralInformationsController::generalInformationsStatisticsForUser($id);
+        $certificates =   UserBook::join('certificates', 'user_book.id', '=', 'certificates.user_book_id')->where('user_id',$id)->count();
+
+        $response = [
+            "thesises" => $thesises,
+            "questions" => $qestions,
+            "general_informations" => $generalInformations,
+            "certificates" => $certificates,
+
+        ];
+        return $this->sendResponse($response , 'Statistics');
     }
 
 }
