@@ -254,4 +254,22 @@ class QuestionController extends BaseController
             "rejected" => ($rejected / $thesisCount) * 100,
         ];
     }
+
+    public static function questionsStatisticsForUser($id)
+    {
+        $questionsCount = UserBook::join('questions', 'user_book.id', '=', 'questions.user_book_id')->where('user_id',$id)->count();
+        $very_excellent =  UserBook::join('questions', 'user_book.id', '=', 'questions.user_book_id')->where('degree', '>=', 95)->where('degree', '<=', 100)->count();
+        $excellent = UserBook::join('questions', 'user_book.id', '=', 'questions.user_book_id')->where('degree', '>', 94.9)->where('degree', '<', 95)->count();
+        $veryGood = UserBook::join('questions', 'user_book.id', '=', 'questions.user_book_id')->where('degree', '>', 89.9)->where('degree', '<', 85)->count();
+        $good = UserBook::join('questions', 'user_book.id', '=', 'questions.user_book_id')->where('degree', '>', 84.9)->where('degree', '<', 80)->count();
+        $accebtable = UserBook::join('questions', 'user_book.id', '=', 'questions.user_book_id')->where('degree', '>', 79.9)->where('degree', '<', 70)->count();
+        return [
+            "total" => $questionsCount,
+            "very_excellent" => ($very_excellent / $questionsCount) * 100,
+            "excellent" => ($excellent / $questionsCount) * 100,
+            "veryGood" => ($veryGood / $questionsCount) * 100,
+            "good" => ($good / $questionsCount) * 100,
+            "accebtable" => ($accebtable / $questionsCount) * 100,
+        ];
+    }
 }

@@ -291,7 +291,23 @@ class ThesisController extends BaseController
             "accebtable" =>( $accebtable / $thesisCount) * 100,
             "rejected" =>( $rejected / $thesisCount) * 100,
         ];
+    }
 
+    public static function thesisStatisticsForUser($id){
+        $thesisCount = UserBook::join('thesis', 'user_book.id', '=', 'thesis.user_book_id')->where('user_id',$id)->count();
+        $very_excellent =  UserBook::join('thesis', 'user_book.id', '=', 'thesis.user_book_id')->where('user_id',$id)->where('degree','<=',100)->count();
+        $excellent =UserBook::join('thesis', 'user_book.id', '=', 'thesis.user_book_id')->where('user_id',$id)->where('degree','<',95)->count();
+        $veryGood =  UserBook::join('thesis', 'user_book.id', '=', 'thesis.user_book_id')->where('user_id',$id)->where('degree','<',85)->count();
+        $good = UserBook::join('thesis', 'user_book.id', '=', 'thesis.user_book_id')->where('user_id',$id)->where('degree','<',80)->count();
+        $accebtable = UserBook::join('thesis', 'user_book.id', '=', 'thesis.user_book_id')->where('user_id',$id)->where('degree','<',70)->count();
+        return [
+            "total" => $thesisCount,
+            "very_excellent" =>( $very_excellent / $thesisCount) * 100,
+            "excellent" =>( $excellent / $thesisCount) * 100,
+            "very_good" =>( $veryGood / $thesisCount) * 100,
+            "good" =>( $good / $thesisCount) * 100,
+            "accebtable" =>( $accebtable / $thesisCount) * 100
+        ];
     }
 
 

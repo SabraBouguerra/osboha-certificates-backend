@@ -111,7 +111,7 @@ class GeneralInformationsController extends BaseController
                 return $this->sendError('General Informations does not exist');
             }
         }
-    
+
 
     public function review(Request $request)
     {
@@ -208,7 +208,7 @@ class GeneralInformationsController extends BaseController
 
 
     public static function generalInformationsStatistics(){
-        $thesisCount = GeneralInformations::count();
+        $generalInformationsCount = GeneralInformations::count();
         $very_excellent =  GeneralInformations::where('degree' ,'>=',95)->where('degree','<',100)->count();
         $excellent = GeneralInformations::where('degree' ,'>',94.9)->where('degree','<',95)->count();
         $veryGood =  GeneralInformations::where('degree' ,'>',89.9)->where('degree','<',85)->count();
@@ -216,14 +216,30 @@ class GeneralInformationsController extends BaseController
         $accebtable = GeneralInformations::where('degree' ,'>',79.9)->where('degree','<',70)->count();
         $rejected = GeneralInformations::where('status','rejected')->count();
         return [
-            "total" => $thesisCount,
-            "very_excellent" =>( $very_excellent / $thesisCount) * 100,
-            "excellent" =>( $excellent / $thesisCount) * 100,
-            "very_good" =>( $veryGood / $thesisCount) * 100,
-            "good" =>( $good / $thesisCount) * 100,
-            "accebtable" =>( $accebtable / $thesisCount) * 100,
-            "rejected" =>( $rejected / $thesisCount) * 100,
+            "total" => $generalInformationsCount,
+            "very_excellent" =>( $very_excellent / $generalInformationsCount) * 100,
+            "excellent" =>( $excellent / $generalInformationsCount) * 100,
+            "very_good" =>( $veryGood / $generalInformationsCount) * 100,
+            "good" =>( $good / $generalInformationsCount) * 100,
+            "accebtable" =>( $accebtable / $generalInformationsCount) * 100,
+            "rejected" =>( $rejected / $generalInformationsCount) * 100,
         ];
+    }
 
+    public static function generalInformationsStatisticsForUser($id){
+        $generalInformationsCount = UserBook::join('general_informations', 'user_book.id', '=', 'general_informations.user_book_id')->where('user_id',$id)->count();
+        $very_excellent =  UserBook::join('general_informations', 'user_book.id', '=', 'general_informations.user_book_id')->where('degree' ,'>=',95)->where('degree','<=',100)->count();
+        $excellent = UserBook::join('general_informations', 'user_book.id', '=', 'general_informations.user_book_id')->where('degree' ,'>',94.9)->where('degree','<',95)->count();
+        $veryGood =  UserBook::join('general_informations', 'user_book.id', '=', 'general_informations.user_book_id')->where('degree' ,'>',89.9)->where('degree','<',85)->count();
+        $good = UserBook::join('general_informations', 'user_book.id', '=', 'general_informations.user_book_id')->where('degree' ,'>',84.9)->where('degree','<',80)->count();
+        $accebtable = UserBook::join('general_informations', 'user_book.id', '=', 'general_informations.user_book_id')->where('degree' ,'>',79.9)->where('degree','<',70)->count();
+        return [
+            "total" => $generalInformationsCount,
+            "very_excellent" =>( $very_excellent / $generalInformationsCount) * 100,
+            "excellent" =>( $excellent / $generalInformationsCount) * 100,
+            "very_good" =>( $veryGood / $generalInformationsCount) * 100,
+            "good" =>( $good / $generalInformationsCount) * 100,
+            "accebtable" =>( $accebtable / $generalInformationsCount) * 100
+        ];
     }
 }
