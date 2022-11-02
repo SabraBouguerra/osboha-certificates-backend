@@ -8,7 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class ReviewBook extends Notification
+class ReviewBook extends Notification implements ShouldQueue
 {
     use Queueable;
     protected $pageUrl;

@@ -11,8 +11,8 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Auth\Notifications\ResetPassword;
 
-class RejectUserEmail extends Notification
-{
+class RejectUserEmail extends Notification implements ShouldQueue
+{ 
     use Queueable;
     protected $pageUrl;
 

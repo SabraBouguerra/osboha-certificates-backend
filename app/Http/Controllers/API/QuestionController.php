@@ -171,7 +171,8 @@ class QuestionController extends BaseController
     public function review(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'id' => 'required',
+            'id' => 'required_without:user_book_id',
+            'user_book_id' => 'required_without:id',
             'status' => 'required',
             'reviewer_id' => 'required',
             'reviews' => 'required_if:status,rejected'
@@ -182,18 +183,26 @@ class QuestionController extends BaseController
         }
 
         try {
-            $question = Question::find($request->id);
-            $question->status = $request->status;
-            $question->reviewer_id = $request->reviewer_id;
-            if ($request->has('reviews')) {
-                $question->reviews = $request->reviews;
-                $userBook=UserBook::find($question->user_book_id);
-                $user=User::find($userBook->user_id);
-                $user->notify(new \App\Notifications\RejectAchievement());
+            if($request->has('id')){
+
+                $question = Question::find($request->id);
+                $question->status = $request->status;
+                $question->reviewer_id = $request->reviewer_id;
+                if ($request->has('reviews')) {
+                    $question->reviews = $request->reviews;
+                    $userBook=UserBook::find($question->user_book_id);
+                    $user=User::find($userBook->user_id);
+                    $user->notify(new \App\Notifications\RejectAchievement())->delay(now()->addMinutes(2));
+
+                }
+
+                $question->save();
+            }
+            else if($request->has('user_book_id')){
+                $questions = Question::where('user_book_id',$request->user_book_id)->update(['status'=>$request->status]);
 
             }
 
-            $question->save();
         } catch (\Error $e) {
             return $this->sendError('Question does not exist');
         }
