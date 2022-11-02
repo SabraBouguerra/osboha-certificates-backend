@@ -111,7 +111,7 @@ class UserController extends BaseController
 
     public function destroy($id){
       $user=User::find($id);
-      $user->notify(new \App\Notifications\RejectUserEmail());
+      $user->notify(new \App\Notifications\RejectUserEmail())->delay(now()->addMinutes(2));
         $result = User::destroy($id);
 
         if ($result == 0) {
