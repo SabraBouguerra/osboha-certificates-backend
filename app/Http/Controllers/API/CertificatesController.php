@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\API;
 
+
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController as BaseController;
 use App\Models\Certificates;
@@ -132,6 +134,13 @@ class CertificatesController extends BaseController
         $certificate->final_grade = $finalDegree;
         $response = ["degrees" => $certificate,"information" => $fullCertificate];
         return $this->sendResponse($response, 'Certificate deleted Successfully!');
+    }
+
+    public function getUserCertificates(){
+        $id = Auth::id();
+        $certificates = UserBook::join('certificates',"user_book.id","=","certificates.user_book_id")->where('user_id',$id)->get();
+
+        return $this->sendResponse($certificates, 'Certificates');
     }
 
 

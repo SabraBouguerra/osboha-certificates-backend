@@ -154,6 +154,7 @@ Route::group(['prefix' => 'questions'], function () {
 Route::group(['prefix' => 'certificates'], function () {
     Route::get('/', [CertificatesController::class, 'index'])->middleware(['auth:api','role:admin']);
     Route::post('/', [CertificatesController::class, 'store']);
+    Route::get('/user', [CertificatesController::class, 'getUserCertificates'])->middleware(['auth:api','verified','isActive']);
     Route::get('/{id}', [CertificatesController::class, 'show'])->middleware(['auth:api','verified','isActive']);
     Route::get('/full-certificate/{user_book_id}', [CertificatesController::class, 'fullCertificate'])->middleware(['auth:api','verified','isActive']);
     Route::patch('/{id}', [CertificatesController::class, 'update'])->middleware(['auth:api','role:admin|reviewer']);
