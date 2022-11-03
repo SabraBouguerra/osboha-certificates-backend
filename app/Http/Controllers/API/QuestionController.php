@@ -223,11 +223,8 @@ class QuestionController extends BaseController
     }
     public function getByStatus($status)
     {
-        $questions=UserBook::with('questions')->whereHas('questions', function ($q) use ($status) {
-            $q->where('status',$status);
-        })->where('status',$status)->groupBy('user_id')->get();
+        $questions =  Question::with("user_book.user")->with("user_book.book")->with("user_book.questions")->where('status',$status)->groupBy('user_book_id')->get();
         return $this->sendResponse($questions, 'Questions');
-
     }
 
     public function getByUserBook($user_book_id)
