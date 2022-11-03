@@ -186,11 +186,9 @@ class GeneralInformationsController extends BaseController
         return $this->sendResponse($general_informations, 'General Informations!');
     }
     public function getByStatus($status){
-        $general_informations=UserBook::with('generalInformation')->whereHas('generalInformation', function ($q) use ($status) {
-            $q->where('status',$status);
-        })->where('status',$status)->get();
-        // $general_informations =  GeneralInformations::with("user_book.user")->with("user_book.book")->where('status',$status)->groupBy('user_book_id')->get();
-        return $this->sendResponse($general_informations, 'General Informations');
+        $general_informations =  GeneralInformations::with("user_book.user")->with("user_book.book")->where('status',$status)->groupBy('user_book_id')->get();
+        return $this->sendResponse($general_informations, 'Questions');
+
     }
 
 
