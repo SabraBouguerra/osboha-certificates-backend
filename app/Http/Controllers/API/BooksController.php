@@ -20,8 +20,8 @@ class BooksController extends BaseController
             $q->where('user_id', Auth::id())
             ->where(function ($query) {
                 $query->where('status', '!=', 'finished')
-                    ->orWhereNull('status');
-            });
+                ->where('status', '!=', 'rejected');
+            })->orWhereNull('status');
 
         })->get();
 
@@ -33,8 +33,8 @@ class BooksController extends BaseController
 
         $already_have_one = UserBook::where('user_id', Auth::id())->where(function ($query) {
             $query->where('status', '!=', 'finished')
-                ->orWhereNull('status');
-        })->first();
+            ->where('status', '!=', 'rejected');
+    })->orWhereNull('status')->first();
         return $this->sendResponse($already_have_one, "Already Have One");
     }
     public function bookByName($name)

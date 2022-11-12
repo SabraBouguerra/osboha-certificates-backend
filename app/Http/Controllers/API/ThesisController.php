@@ -4,12 +4,15 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController as BaseController;
+use App\Models\GeneralInformations;
 use App\Models\Photos;
+use App\Models\Question;
 use App\Models\Thesis;
 use App\Models\User;
 use App\Models\UserBook;
 use Illuminate\Support\Facades\Validator;
 use App\Traits\MediaTraits;
+use GuzzleHttp\Psr7\Query;
 use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Support\Facades\Storage;
@@ -137,11 +140,12 @@ class ThesisController extends BaseController
 
         try {
             $thesis->save();
-            $stageUp= Thesis::where('user_book_id',$thesis->user_book_id)->where('status','!=','audited')->count();
-            if($stageUp == 0 ){
-                $userBook=UserBook::find($thesis->user_book_id);
-                $userBook->status="stage_two";
-                $userBook->save();
+            // Stage Up
+            $auditedTheses = Thesis::where('user_book_id', $thesis->user_book_id)->where('status', 'audited')->count();
+            $auditedGeneralInfo = GeneralInformations::where('user_book_id', $thesis->user_book_id)->where('status', 'audited')->count();
+            $auditedQuestions = Question::where('user_book_id', $thesis->user_book_id)->where('status', 'audited')->count();
+            if ($auditedTheses >= 8 && $auditedQuestions >= 5 && $auditedGeneralInfo) {
+                $userBook = UserBook::where('id', $thesis->user_book_id)->update(['status' => 'audited']);
             }
 
         } catch (\Error $e) {
@@ -224,7 +228,7 @@ class ThesisController extends BaseController
                 $thesis->save();
             }
             else if($request->has('user_book_id')){
-                $thesis = Thesis::where('user_book_id',$request->user_book_id)->update(['status'=>$request->status]);
+                $thesis = Thesis::where('user_book_id',$request->user_book_id)->where('status', 'accept')->update(['status'=>$request->status]);
 
             }
         } catch (\Error $e) {
