@@ -5,6 +5,8 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController as BaseController;
 use App\Models\GeneralInformations;
+use App\Models\Question;
+use App\Models\Thesis;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
@@ -135,7 +137,7 @@ class GeneralInformationsController extends BaseController
                 $info->reviews = $request->reviews;
                 $userBook=UserBook::find($info->user_book_id);
                 $user=User::find($userBook->user_id);
-                $user->notify(new \App\Notifications\RejectAchievement())->delay(now()->addMinutes(2));
+                $user->notify((new \App\Notifications\RejectAchievement())->delay(now()->addMinutes(2)));
             }
 
             $info->save();
@@ -163,8 +165,16 @@ class GeneralInformationsController extends BaseController
         $general_informations->auditor_id = $request->auditor_id;
         $general_informations->status = 'audited';
     try {
-
             $general_informations->save();
+
+            // Stage Up
+            $auditedTheses=Thesis::where('user_book_id', $general_informations->user_book_id)->where('status', 'audited')->count();
+            $auditedQuestions=Question::where('user_book_id', $general_informations->user_book_id)->where('status', 'audited')->count();
+            if($auditedTheses >= 8 && $auditedQuestions >= 5 ){
+                $userBook=UserBook::where('id', $general_informations->user_book_id)->update(['status' => 'audited']);
+            }
+
+
         } catch (\Error $e) {
             return $this->sendError('General Informations does not exist');
         }

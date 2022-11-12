@@ -38,8 +38,9 @@ class UserBookController extends BaseController
 
         $count = UserBook::where(function ($query) {
             $query->where('status', '!=', 'finished')
-                ->orWhereNull('status');
-        })->where('user_id',Auth::id())->count();
+            ->Where('status', '!=', 'rejected')
+                ->WhereNull('status');
+})->where('user_id',Auth::id())->count();
 
         if($count > 0 ){
             return $this->sendError('You have an open book');
@@ -80,7 +81,7 @@ class UserBookController extends BaseController
         $questions=Question::where('user_book_id',$userBook['userBook']->id)->where(function ($query) {
             $query->where('status','!=','retard')->where('status','!=','rejected');
         })->count();
-        if($theses >5){
+        if($questions >5){
             $userBook['completionPercentage']=$userBook['completionPercentage'] + (5 * 5);
         }
         else{
