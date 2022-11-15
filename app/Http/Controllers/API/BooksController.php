@@ -16,12 +16,16 @@ class BooksController extends BaseController
     public function index()
     {
         $books['books'] =Book::with('section', 'level')->paginate(9);
+
+        // SELECT * FROM `user_book` WHERE user_id =1 and (status != 'finished' || status is null )
+
         $books['open_book']= Book::with('section', 'level')->whereHas('userBook', function ($q) {
             $q->where('user_id', Auth::id())
             ->where(function ($query) {
                 $query->where('status', '!=', 'finished')
-                ->where('status', '!=', 'rejected');
-            })->orWhereNull('status');
+                ->where('status', '!=', 'rejected')
+                ->orWhereNull('status');
+            });
 
         })->get();
 
@@ -33,8 +37,9 @@ class BooksController extends BaseController
 
         $already_have_one = UserBook::where('user_id', Auth::id())->where(function ($query) {
             $query->where('status', '!=', 'finished')
-            ->where('status', '!=', 'rejected');
-    })->orWhereNull('status')->first();
+            ->where('status', '!=', 'rejected')
+            ->orWhereNull('status');
+        })->first();
         return $this->sendResponse($already_have_one, "Already Have One");
     }
     public function bookByName($name)

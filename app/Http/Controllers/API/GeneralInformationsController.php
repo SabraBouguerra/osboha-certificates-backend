@@ -137,7 +137,9 @@ class GeneralInformationsController extends BaseController
                 $info->reviews = $request->reviews;
                 $userBook=UserBook::find($info->user_book_id);
                 $user=User::find($userBook->user_id);
-                $user->notify((new \App\Notifications\RejectAchievement())->delay(now()->addMinutes(2)));
+                $user->notify(
+                    (new \App\Notifications\RejectAchievement())->delay(now()->addMinutes(2))
+                );
             }
 
             $info->save();

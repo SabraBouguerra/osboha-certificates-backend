@@ -67,7 +67,7 @@ class UserBookController extends BaseController
         
         //50 \ 8 => 6.25 for each (50%)
         $theses=Thesis::where('user_book_id',$userBook['userBook']->id)->where(function ($query) {
-            $query->where('status','!=','retard')->where('status','!=','rejected');
+            $query->where('status','!=','retard')->where('status','!=','rejected')->orWhereNull('status');
         })->count();
         if($theses >8){
             $userBook['completionPercentage']=$userBook['completionPercentage'] + (6.25 * 8); 
@@ -79,7 +79,7 @@ class UserBookController extends BaseController
 
         //25 \ 5 => 5 for each (25%)
         $questions=Question::where('user_book_id',$userBook['userBook']->id)->where(function ($query) {
-            $query->where('status','!=','retard')->where('status','!=','rejected');
+            $query->where('status','!=','retard')->where('status','!=','rejected')->orWhereNull('status');
         })->count();
         if($questions >5){
             $userBook['completionPercentage']=$userBook['completionPercentage'] + (5 * 5);
@@ -89,7 +89,7 @@ class UserBookController extends BaseController
         }
 
         $generalInformations=GeneralInformations::where('user_book_id',$userBook['userBook']->id)->where(function ($query) {
-            $query->where('status','!=','retard')->where('status','!=','rejected');
+            $query->where('status','!=','retard')->where('status','!=','rejected')->orWhereNull('status');
         })->count();
         $userBook['completionPercentage']=$userBook['completionPercentage'] + (15 * $generalInformations); // only one  (15%)
 

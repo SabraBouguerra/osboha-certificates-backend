@@ -223,8 +223,10 @@ class ThesisController extends BaseController
                     $userBook->status=$request->status;
                     $userBook->reviews=$request->reviews;
                     $userBook->save();
-                    $user->notify((new \App\Notifications\RejectAchievement())->delay(now()->addMinutes(2)));
-                }
+                    $user->notify(
+                        (new \App\Notifications\RejectAchievement())->delay(now()->addMinutes(2))
+                    );
+                    }
                 $thesis->save();
             }
             else if($request->has('user_book_id')){
