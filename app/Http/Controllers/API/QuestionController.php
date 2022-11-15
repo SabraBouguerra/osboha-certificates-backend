@@ -200,7 +200,9 @@ class QuestionController extends BaseController
                     $question->reviews = $request->reviews;
                     $userBook = UserBook::find($question->user_book_id);
                     $user = User::find($userBook->user_id);
-                    $user->notify(new \App\Notifications\RejectAchievement())->delay(now()->addMinutes(2));
+                    $user->notify(
+                        (new \App\Notifications\RejectAchievement())->delay(now()->addMinutes(2))
+                    );
                 }
 
                 $question->save();
