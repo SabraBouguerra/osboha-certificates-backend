@@ -17,13 +17,13 @@ class LevelSeeder extends Seeder
     public function run()
     {
         DB::table('level')->insert([
-            'name' => 'simple'
+            'name' => 'بسيط'
         ]);
         DB::table('level')->insert([
-            'name' => 'medium'
+            'name' => 'متوسط'
         ]);
         DB::table('level')->insert([
-            'name' => 'difficult'
+            'name' => 'متقدم'
         ]);
     }
 }

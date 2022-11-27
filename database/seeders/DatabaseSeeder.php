@@ -20,10 +20,10 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             // RolesSeeder::class,
-            // LevelSeeder::class,
-            // SectionSeeder::class,
-            // BookSeeder::class,
-            OneUserSeeder::class,
+            LevelSeeder::class,
+            SectionSeeder::class,
+            BookSeeder::class,
+            //OneUserSeeder::class,
             // FqasSeeder::class,
             // UsersTableSeeder::class,
             // User_BookSeeder::class,
