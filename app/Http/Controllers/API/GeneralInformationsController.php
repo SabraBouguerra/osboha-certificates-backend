@@ -137,6 +137,14 @@ class GeneralInformationsController extends BaseController
                 $info->reviews = $request->reviews;
                 $userBook=UserBook::find($info->user_book_id);
                 $user=User::find($userBook->user_id);
+                if( $request->status == 'rejected'){
+                    $userBook->status=$request->status;
+                    $userBook->reviews=$request->reviews;
+                    $userBook->save();        
+                    $theses=Thesis::where('user_book_id',$info->user_book_id)->update(['status'=>$request->status ,'reviews'=>$request->reviews ]);
+                    $questions=Question::where('user_book_id',$info->user_book_id)->update(['status'=>$request->status ,'reviews'=>$request->reviews ]);
+        
+                }
                 $user->notify(
                     (new \App\Notifications\RejectAchievement())->delay(now()->addMinutes(2))
                 );

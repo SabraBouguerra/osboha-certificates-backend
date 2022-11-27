@@ -105,7 +105,19 @@ class UserBookController extends BaseController
         return $userBook;
     }
 
+    public function lastAchievement()
+    {
+        $userBook = UserBook::where('user_id',Auth::id())->latest()->first();
+        return $this->sendResponse($userBook, 'Last Achevment');
+    }
 
+    public function finishedAchievement()
+    {
+        $userBook = UserBook::where('user_id',Auth::id())->where('status','finished')->get();
+        return $this->sendResponse($userBook, 'Last Achevment');
+    }
+
+    
     public function update(Request $request, $id)
     {
         $input = $request->all();
@@ -123,7 +135,9 @@ class UserBookController extends BaseController
             $theses=Thesis::where('user_book_id',$id)->where('status','ready')->update(['status'=>$request->status]);
             $questions=Question::where('user_book_id',$id)->where('status','ready')->update(['status'=>$request->status]);
             $generalInformations=GeneralInformations::where('user_book_id',$id)->where('status','ready')->update(['status'=>$request->status]);
-            $user->notify(new \App\Notifications\ReviewBook())->delay(now()->addMinutes(1));
+            $user->notify(
+                (new \App\Notifications\RejectAchievement())->delay(now()->addMinutes(2))
+            );
 
 
         } catch (\Error $e) {
@@ -158,9 +172,15 @@ class UserBookController extends BaseController
 
         $userBook = UserBook::find($id);
 
-        $userBook-> status = $input['status'];
+        $userBook->status = $input['status'];
         try {
+            $user=User::find($userBook->user_id);
             $userBook->save();
+            if($userBook->status == 'rejected' || $userBook->status=='retard')
+            $user->notify(
+                (new \App\Notifications\RejectAchievement())->delay(now()->addMinutes(2))
+            );
+
         } catch (\Error $e) {
             return $this->sendError('UserBook does not exist');
         }
@@ -187,7 +207,9 @@ class UserBookController extends BaseController
             $theses=Thesis::where('user_book_id',$request->id)->update(['status'=>$request->status ,'reviews'=>$request->reviews ]);
             $questions=Question::where('user_book_id',$request->id)->update(['status'=>$request->status ,'reviews'=>$request->reviews ]);
             $generalInformations=GeneralInformations::where('user_book_id',$request->id)->update(['status'=>$request->status ,'reviews'=>$request->reviews ]);
-            $user->notify(new \App\Notifications\RejectAchievement())->delay(now()->addMinutes(2));
+            $user->notify(
+                (new \App\Notifications\RejectAchievement())->delay(now()->addMinutes(2))
+            );
 
 
         } catch (\Error $e) {
