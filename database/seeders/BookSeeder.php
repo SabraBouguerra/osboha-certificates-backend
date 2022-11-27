@@ -1,9 +1,8 @@
 <?php
 
 namespace Database\Seeders;
+
 use App\Models\Book;
-
-
 use Illuminate\Database\Seeder;
 
 class BookSeeder extends Seeder
@@ -15,6 +14,22 @@ class BookSeeder extends Seeder
      */
     public function run()
     {
-        $books = Book::factory()->count(30)->create();
+
+        $csvFile = fopen(base_path("database/data/books.csv"), "r");
+
+        $firstline = true;
+        while (($data = fgetcsv($csvFile, 2000, ",")) !== FALSE) {
+            if (!$firstline) {
+                Book::create([
+                    'book_name' => $data['0'],
+                    'level_id' => $data['1'],
+                    'section_id' => $data['2'],
+                    'pages' => $data['3']
+                ]);
+            }
+            $firstline = false;
+        }
+
+        fclose($csvFile);
     }
 }
