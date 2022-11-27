@@ -10,6 +10,7 @@ use App\Models\Certificates;
 use App\Models\GeneralInformations;
 use App\Models\Question;
 use App\Models\Thesis;
+use App\Models\User;
 use App\Models\UserBook;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
@@ -41,7 +42,7 @@ class CertificatesController extends BaseController
         join('general_informations', 'user_book.id', '=', 'general_informations.user_book_id')
         ->join('questions', 'user_book.id', '=', 'questions.user_book_id')
         ->join('thesis', 'user_book.id', '=', 'thesis.user_book_id')
-        ->select(\DB::raw('avg(general_informations.degree) as general_informations_degree,avg(questions.degree) as questions_degree,avg(thesis.degree) as thesises_degree'))
+        ->select(DB::raw('avg(general_informations.degree) as general_informations_degree,avg(questions.degree) as questions_degree,avg(thesis.degree) as thesises_degree'))
         ->where('user_book.id', $input['user_book_id'])
         ->get();
         $thesisDegree = $all_avareges[0]['thesises_degree'];
@@ -57,8 +58,13 @@ class CertificatesController extends BaseController
         try {
             $certificate->save();
             $userBook = UserBook::find($input['user_book_id']);
+            $user=User::find($userBook->user_id);
             $userBook->status = 'finished';
             $userBook->save();
+            $user->notify(
+                (new \App\Notifications\Certificate())->delay(now()->addMinutes(2))
+            );
+
         } catch (\Illuminate\Database\QueryException $e) {
             echo($e);
             return $this->sendError('User Book does not exist');
@@ -119,7 +125,7 @@ class CertificatesController extends BaseController
         join('general_informations', 'user_book.id', '=', 'general_informations.user_book_id')
         ->join('questions', 'user_book.id', '=', 'questions.user_book_id')
         ->join('thesis', 'user_book.id', '=', 'thesis.user_book_id')
-        ->select(\DB::raw('avg(general_informations.degree) as general_informations_degree,avg(questions.degree) as questions_degree,avg(thesis.degree) as thesises_degree'))
+        ->select(DB::raw('avg(general_informations.degree) as general_informations_degree,avg(questions.degree) as questions_degree,avg(thesis.degree) as thesises_degree'))
         ->where('user_book.id', $user_book_id)
         ->get();
         $thesisDegree = $all_avareges[0]['thesises_degree'];
