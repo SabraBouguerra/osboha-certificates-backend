@@ -15,15 +15,17 @@ class RejectUserEmail extends Notification implements ShouldQueue
 { 
     use Queueable;
     protected $pageUrl;
+    protected $rejectNote;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($rejectNote)
     {
         $this->pageUrl = 'http://127.0.0.1:8080/auth/signup';
+        $this->rejectNote=$rejectNote;
     }
 
     /**
@@ -49,10 +51,11 @@ class RejectUserEmail extends Notification implements ShouldQueue
         ->from('example@example.com', 'Example')
         ->subject('أصبوحة || رفض التسجيل')
         ->line('مرحبا
-
         تحية طيبة لحضرتك،
-        للأسف لم يتم قبول تسجيلك في موقع توثيق القراءة - أصبوحة 180 بسبب عدم تطابق المعلومات مع الشروط. الرجاء إعادة التسجيل ومراعاة تقديم معلوماتك التي تطابق الوثائق الرسمية.')
-        ->action('اعادة التسجيل', $this->pageUrl);
+        للأسف لم يتم قبول تسجيلك في موقع توثيق القراءة - أصبوحة 180 بسبب عدم تطابق المعلومات مع الشروط. الرجاء تحديث بياناتك ومراعاة تقديم معلوماتك التي تطابق الوثائق الرسمية.')
+        ->line('سبب الرفض ')
+        ->line($this->rejectNote)
+        ->action('تحديث بياناتي', $this->pageUrl);
 }
 
     /**
