@@ -13,6 +13,7 @@ use App\Models\User;
 use App\Models\UserBook;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 
 class UserBookController extends BaseController
@@ -107,7 +108,15 @@ class UserBookController extends BaseController
 
     public function lastAchievement()
     {
-        $userBook = UserBook::where('user_id',Auth::id())->latest()->first();
+        $userBook['last_achievement'] = UserBook::where('user_id',Auth::id())->latest()->first();
+        $userBook['statistics'] = UserBook::
+        join('general_informations', 'user_book.id', '=', 'general_informations.user_book_id')
+        ->join('questions', 'user_book.id', '=', 'questions.user_book_id')
+        ->join('thesis', 'user_book.id', '=', 'thesis.user_book_id')
+        ->select(DB::raw('avg(general_informations.degree) as general_informations_degree,avg(questions.degree) as questions_degree,avg(thesis.degree) as thesises_degree'))
+        ->where('user_id', Auth::id())
+        ->orderBy('user_book.created_at', 'desc')->first();
+
         return $this->sendResponse($userBook, 'Last Achevment');
     }
 
