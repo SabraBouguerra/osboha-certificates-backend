@@ -38,4 +38,15 @@ class Question extends Model
     public function quotation(){
         return $this->hasMany(Quotation::class);
     }
+
+    public static function boot()
+    {
+        parent::boot();
+        self::deleting(function ($question) { 
+            $question->quotation()->each(function ($quotation) {
+                $quotation->delete(); 
+            });
+        });
+    }
+
 }

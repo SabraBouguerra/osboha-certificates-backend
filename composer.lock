@@ -4,9 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
- 
-    "content-hash": "f901132b0692222f6becd7b2b24f0b7e",
- 
+    "content-hash": "fbbef7f94a386f1ea12e5ff25a6ae3a9",
     "packages": [
         {
             "name": "barryvdh/laravel-dompdf",
@@ -140,72 +138,6 @@
                 }
             ],
             "time": "2022-08-10T22:54:19+00:00"
-        },
-        {
-            "name": "codedge/laravel-fpdf",
-            "version": "1.9.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/codedge/laravel-fpdf.git",
-                "reference": "e2bc9836fd981d15bd44a1c60ad27c990012574d"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/codedge/laravel-fpdf/zipball/e2bc9836fd981d15bd44a1c60ad27c990012574d",
-                "reference": "e2bc9836fd981d15bd44a1c60ad27c990012574d",
-                "shasum": ""
-            },
-            "require": {
-                "illuminate/support": "^8.0 || ^9.0",
-                "php": "^8.0 || ^8.1"
-            },
-            "require-dev": {
-                "orchestra/testbench": "^6.25.0",
-                "phpunit/phpunit": "^9.5.24"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "aliases": {
-                        "Fpdf": "Codedge\\Fpdf\\Facades\\Fpdf"
-                    },
-                    "providers": [
-                        "Codedge\\Fpdf\\FpdfServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Codedge\\Fpdf\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Holger Lösken",
-                    "email": "holger.loesken@codedge.de"
-                }
-            ],
-            "description": "Laravel package to include Fpdf. It ships with Fpdf 1.84.",
-            "keywords": [
-                "fpdf",
-                "laravel",
-                "pdf"
-            ],
-            "support": {
-                "issues": "https://github.com/codedge/laravel-fpdf/issues",
-                "source": "https://github.com/codedge/laravel-fpdf"
-            },
-            "funding": [
-                {
-                    "url": "https://github.com/codedge",
-                    "type": "github"
-                }
-            ],
-            "time": "2022-09-14T07:28:26+00:00"
         },
         {
             "name": "defuse/php-encryption",
@@ -708,21 +640,21 @@
         },
         {
             "name": "elibyy/tcpdf-laravel",
-            "version": "9.1.0",
+            "version": "9.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/elibyy/tcpdf-laravel.git",
-                "reference": "53e1efec14de840b5206e864bfdbb83f1012dc6f"
+                "reference": "e73d3ea1ab9bce664667c03c2437230b4e5b4ad9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/elibyy/tcpdf-laravel/zipball/53e1efec14de840b5206e864bfdbb83f1012dc6f",
-                "reference": "53e1efec14de840b5206e864bfdbb83f1012dc6f",
+                "url": "https://api.github.com/repos/elibyy/tcpdf-laravel/zipball/e73d3ea1ab9bce664667c03c2437230b4e5b4ad9",
+                "reference": "e73d3ea1ab9bce664667c03c2437230b4e5b4ad9",
                 "shasum": ""
             },
             "require": {
                 "illuminate/support": "^6.0|^7.0|^8.0|^9.0",
-                "tecnickcom/tcpdf": "6.2.*|6.3.*|6.4.*|6.5.*|dev-main"
+                "tecnickcom/tcpdf": "6.2.*|6.3.*|6.4.*|6.5.*|6.6.*|dev-main"
             },
             "type": "library",
             "extra": {
@@ -758,9 +690,9 @@
             ],
             "support": {
                 "issues": "https://github.com/elibyy/tcpdf-laravel/issues",
-                "source": "https://github.com/elibyy/tcpdf-laravel/tree/9.1.0"
+                "source": "https://github.com/elibyy/tcpdf-laravel/tree/9.3.0"
             },
-            "time": "2022-08-12T15:05:04+00:00"
+            "time": "2022-12-15T18:54:08+00:00"
         },
         {
             "name": "firebase/php-jwt",

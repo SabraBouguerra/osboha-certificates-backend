@@ -60,6 +60,21 @@ class UserController extends BaseController
     }
 
 
+    public function updateInfo(Request $request){
+      
+      try{
+        $user=User::where('id',Auth::id())->update(['name'=>$request->name,'fb_name'=>$request->fb_name,'is_active'=>0]); 
+        $user=User::where('id',Auth::id())->first();
+        $this->createUserPhoto($request->file('image'), $user);
+        }catch(\Error $e){
+        return $this->sendError($e);
+      }
+
+    }
+
+
+
+
     private function GetRole($role){
         $role = Role::where('name', $role)->first();
         if (is_null($role)) {
@@ -92,7 +107,6 @@ class UserController extends BaseController
             return $this->sendError('Validation error' , $validator->errors());
         }
 
-
         $user = User::find($id);
         $input['password'] = Hash::make($request->password);
         $updateParam = [
@@ -110,10 +124,21 @@ class UserController extends BaseController
 
     }
 
-    public function destroy($id){
-      $user=User::find($id);
-      $user->notify(new \App\Notifications\RejectUserEmail());
-        $result = User::destroy($id);
+    public function deactivate(Request $request){
+      $input = $request->all();
+
+      $validator = Validator::make($input,[
+        "id" => "required",
+        "rejectNote" => "required",
+        
+    ]);
+    if ($validator->fails()) {
+        return $this->sendError('Validation error' , $validator->errors());
+    }
+    $user=User::where('id',$request->id)->update(['is_active'=>2]);
+    $userToNotify=User::find($request->id);
+    $userToNotify->notify(new \App\Notifications\RejectUserEmail($request->rejectNote));
+    $result = $user;
 
         if ($result == 0) {
 

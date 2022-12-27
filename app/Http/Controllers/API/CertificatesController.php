@@ -120,7 +120,14 @@ class CertificatesController extends BaseController
 
     public function fullCertificate($user_book_id)
     {
-        $fullCertificate=UserBook::where('id',$user_book_id)->with('questions')->with('generalInformation')->get();
+        $fullCertificate=UserBook::where('id',$user_book_id)->with('thesises', function ($query) {
+            $query->where('status','=','audited');
+        })->with('generalInformation', function ($query) {
+            $query->where('status','=','audited');
+        })->with('questions', function ($query) {
+            $query->where('status','=','audited');
+        })->get();
+        
         $all_avareges = UserBook::
         join('general_informations', 'user_book.id', '=', 'general_informations.user_book_id')
         ->join('questions', 'user_book.id', '=', 'questions.user_book_id')
@@ -134,7 +141,7 @@ class CertificatesController extends BaseController
         $finalDegree = ($questionsDegree+$generalInformationsDegree+$thesisDegree) /3 ;
          $certificate = new Certificates();
 
-        $certificate->thesis_grade = $questionsDegree;
+        $certificate->thesis_grade = $thesisDegree;
         $certificate->check_reading_grade = $questionsDegree;
         $certificate->general_summary_grade = $generalInformationsDegree;
         $certificate->final_grade = $finalDegree;
