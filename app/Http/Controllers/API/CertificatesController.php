@@ -141,7 +141,7 @@ class CertificatesController extends BaseController
         $finalDegree = ($questionsDegree+$generalInformationsDegree+$thesisDegree) /3 ;
          $certificate = new Certificates();
 
-        $certificate->thesis_grade = $questionsDegree;
+        $certificate->thesis_grade = $thesisDegree;
         $certificate->check_reading_grade = $questionsDegree;
         $certificate->general_summary_grade = $generalInformationsDegree;
         $certificate->final_grade = $finalDegree;

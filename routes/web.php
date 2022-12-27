@@ -25,4 +25,9 @@ Route::get('/confairm', function () {
     return view('confairnEmail');
 });
 Route::get('generate-pdf', [PDFController::class, 'generatePDF']);
+Route::get('generate-pdf_4', [testPDF::class, 'pdff']);
 
+Route::get('generate-pdf_2', function(){
+    return view('certificate.layout');
+
+});
