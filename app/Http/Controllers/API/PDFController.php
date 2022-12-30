@@ -2,41 +2,74 @@
 
 namespace App\Http\Controllers\API;
 
-
 use App\Http\Controllers\API\BaseController;
-
-
+use App\Models\Certificates;
+use App\Models\UserBook;
+use App\Notifications\Certificate;
 use PDF;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use TCPDF_FONTS;
 
 class PDFController extends BaseController
 {
 
-
-
-    public function generatePDFViwe()
+    public function generatePDF($user_book_id)
     {
-        return view('certificate.layout');
-    }
 
-    public function generatePDF()
-    {
         
+        ######### START GET USER ACHEVMENTS #########
+        $fullCertificate = UserBook::where('id', $user_book_id)->with('thesises', function ($query) {
+            $query->where('status', '=', 'audited');
+        })->with('generalInformation', function ($query) {
+            $query->where('status', '=', 'audited');
+        })->with('questions', function ($query) {
+            $query->where('status', '=', 'audited');
+        })->get();
 
+        $all_avareges = UserBook::join('general_informations', 'user_book.id', '=', 'general_informations.user_book_id')
+            ->join('questions', 'user_book.id', '=', 'questions.user_book_id')
+            ->join('thesis', 'user_book.id', '=', 'thesis.user_book_id')
+            ->select(DB::raw('avg(general_informations.degree) as general_informations_degree,avg(questions.degree) as questions_degree,avg(thesis.degree) as thesises_degree'))
+            ->where('user_book.id', $user_book_id)
+            ->get();
+        $thesisDegree = $all_avareges[0]['thesises_degree'];
+        $generalInformationsDegree = $all_avareges[0]['general_informations_degree'];
+        $questionsDegree = $all_avareges[0]['questions_degree'];
+        $finalDegree = ($questionsDegree + $generalInformationsDegree + $thesisDegree) / 3;
+        $certificateDegrees = new Certificates();
+
+        $certificateDegrees->thesis_grade = $thesisDegree;
+        $certificateDegrees->questions_grade = $questionsDegree;
+        $certificateDegrees->general_summary_grade = $generalInformationsDegree;
+        $certificateDegrees->final_grade = $finalDegree;
+
+        ######### END GET USER ACHEVMENTS #########
+
+        ######### START GENERATING PDF #########
 
         // set document information
-        PDF::SetCreator('PDF_CREATOR');
-        PDF::SetAuthor('Nicola Asuni');
-        PDF::SetTitle('TCPDF Example 051');
-        PDF::SetSubject('TCPDF Tutorial');
-        PDF::SetKeywords('TCPDF, PDF, example, test, guide');
+        PDF::SetAuthor('OSBOHA 180');
+        $title= $fullCertificate[0]->user->name  . ' || ' . $fullCertificate[0]->book->book_name;
+        PDF::SetTitle($title);
+        PDF::SetSubject('توثيق انجاز كتاب');
+        PDF::SetKeywords('Osboha, PDF, توثيق, كتاب, كتب, أصبوحة , اصبوحة, 180');
 
-        // set header and footer fonts
-        PDF::setHeaderFont(array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+        $tagvs = array('p' => array(0 => array('h' => 0, 'n' => 0), 1 => array('h' => 0, 'n' => 0)));
+        PDF::setHtmlVSpace($tagvs);
 
-        // set default monospaced font
-        PDF::SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+        $lg = array();
+        $lg['a_meta_charset'] = 'UTF-8';
+        $lg['a_meta_dir'] = 'rtl';
+        $lg['a_meta_language'] = 'fa';
+        $lg['w_page'] = 'page';
+
+        // set some language-dependent strings (optional)
+        PDF::setLanguageArray($lg);
+
+        //After Write
+        PDF::setRTL(true);
+
 
         // set margins
         PDF::SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
@@ -52,41 +85,107 @@ class PDFController extends BaseController
         // set image scale factor
         PDF::setImageScale(PDF_IMAGE_SCALE_RATIO);
 
-        // set some language-dependent strings (optional)
-        if (@file_exists(dirname(__FILE__) . '/lang/eng.php')) {
-            require_once(dirname(__FILE__) . '/lang/eng.php');
-            PDF::setLanguageArray($l);
-        }
-
-        // ---------------------------------------------------------
-
         // set font
         PDF::SetFont('Calibri', '', 48);
 
+        // ###################### START PAGES ###################### //
+
+        // ###################### PAGE 1 ###################### //
+
         // add a page
         PDF::AddPage();
-
-
-        // -- set new background ---
-
         // get the current page break margin
         $bMargin = PDF::getBreakMargin();
         // get current auto-page-break mode
         $auto_page_break = PDF::getAutoPageBreak();
         // disable auto-page-break
         PDF::SetAutoPageBreak(false, 0);
+
         // set bacground image
+        $img_file = asset('asset/images/certTempWthiSign.jpg');
         // Image($file, $x='', $y='', $w=0, $h=0, $type='', $link='', $align='', $resize=false, $dpi=300, $palign='', $ismask=false, $imgmask=false, $border=0, $fitbox=false, $hidden=false, $fitonpage=false)
-        $img_file = 'C:\Users\someO\Desktop\laravel\osboha-certificates-backend\public\asset\images\certTemp.jpg';
         PDF::Image($img_file, 0, 0, 210, 297, '', '', '', false, 300, '', false, false, 0);
+
         // restore auto-page-break status
         PDF::SetAutoPageBreak($auto_page_break, $bMargin);
         // set the starting point for the page content
         PDF::setPageMark();
+        PDF::writeHTML(view('certificate.page1', ['name' => $fullCertificate[0]->user->name , 'book'=>$fullCertificate[0]->book->book_name ,'level'=>$fullCertificate[0]->book->level->name , 'date'=>\Carbon\Carbon::parse($fullCertificate[0]->updated_at)->format('d/m/Y')])->render(), true, false, true, false, '');
+
+        // ###################### END PAGE 1 ###################### //
+
+        // ###################### START PAGE 2 ###################### //
+        $this->addPage();
+        PDF::writeHTML(view('certificate.page2', ['certificateDegrees' => $certificateDegrees])->render(), true, false, true, false, '');
+        ###################### END PAGE 2 ######################
+
+        ###################### START PAGE 3 ######################
+        $this->addPage();
+        PDF::writeHTML(view('certificate.page3')->render(), true, false, true, false, '');
+        ###################### END PAGE 3 ###################### 
 
 
-        PDF::writeHTML(view('certificate.layout', ['name' => 'admin'])->render(), true, false, true, false, '');
+        ###################### START GRNRRAL INFORMATION ###################### 
+        $this->addPage();
+        foreach ($fullCertificate as $part) {
+            PDF::writeHTML(view('certificate.generalInfo', ['certificate' => $part['generalInformation'] , 'textDegree'=>$this->textDegree($part['generalInformation']->degree)])->render(), true, false, true, false, '');
+        }
+        ###################### END GRNRRAL INFORMATION ###################### 
+
+
+                ###################### START THESIS ###################### 
+                foreach ($fullCertificate as $key=>$part) {
+                    foreach ($part['thesises'] as $key=>$thesis) {
+                        $this->addPage();
+                        PDF::writeHTML(view('certificate.achevment', ['mainTitle' => 'الأطروحات' , 'subTitle'=>'أطروحة', 'index'=> $key+1, 'achevmentText' => $thesis->thesis_text , 'textDegree'=>$this->textDegree($thesis->degree)])->render(), true, false, true, false, '');
+                }
+            }
+                ###################### END THESIS ###################### 
+        
+                ###################### START THESIS ###################### 
+                foreach ($fullCertificate as $key=>$part) {
+                    foreach ($part['questions'] as $key=>$question) {
+                        $this->addPage();
+                        PDF::writeHTML(view('certificate.achevment', ['mainTitle' => 'الأسئلة المعرفية' , 'subTitle'=>'سؤال', 'index'=> $key+1, 'achevmentText' => $question->question , 'textDegree'=>$this->textDegree($question->degree), 'quotes' =>$question->quotation ])->render(), true, false, true, false, '');
+                }
+            }
+                ###################### END THESIS ###################### 
+        
+
+        //        $pdf->lastPage();
+
         //Close and output PDF document
-        PDF::Output('example_051.pdf', 'I');
+        PDF::Output($title.'.pdf', 'I');
+
+
+        ######### END GENERATING PDF #########
+
+    }
+    public function addPage()
+    {
+        PDF::AddPage();
+
+        $bMargin = PDF::getBreakMargin();
+        $auto_page_break = PDF::getAutoPageBreak();
+        PDF::SetAutoPageBreak(false, 0);
+
+        $img_file = asset('asset/images/certTemp.jpg');
+        PDF::Image($img_file, 0, 0, 210, 297, '', '', '', false, 300, '', false, false, 0);
+
+        PDF::SetAutoPageBreak($auto_page_break, $bMargin);
+        PDF::setPageMark();
+    }
+
+    public function textDegree($degree)
+    {
+        $textDegree = "";
+
+        if ($degree <= 100 && $degree > 94) $textDegree = "امتياز";
+        else if ($degree < 95 && $degree > 89.9) $textDegree = "ممتاز";
+        else if ($degree < 90 && $degree > 84.9) $textDegree = "جيد جدا";
+        else if ($degree < 85 && $degree > 79.9) $textDegree = "جيد";
+        else if ($degree > 69.9 && $degree < 80) $textDegree = "مقبول";
+
+        return $textDegree;
     }
 }

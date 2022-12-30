@@ -26,7 +26,7 @@ class MailResetPasswordNotification extends Notification
     public function __construct($token)
     {
         $this->token=$token;
-        $this->pageUrl = 'http://127.0.0.1:8080/auth/reset-password/';
+        $this->pageUrl = 'https://www.eligible.osboha180.com/auth/reset-password/';
         $this->timer=config('auth.passwords.users.expire');
     }
 

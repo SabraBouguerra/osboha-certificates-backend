@@ -31,3 +31,8 @@ Route::get('generate-pdf_2', function(){
     return view('certificate.layout');
 
 });
+
+Route::get('check-pdf-page', function(){
+    return view('certificate.page1');
+
+});
