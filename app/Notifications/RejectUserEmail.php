@@ -24,7 +24,7 @@ class RejectUserEmail extends Notification implements ShouldQueue
      */
     public function __construct($rejectNote)
     {
-        $this->pageUrl = 'http://127.0.0.1:8080/auth/signup';
+        $this->pageUrl = 'https://www.eligible.osboha180.com/auth/signup';
         $this->rejectNote=$rejectNote;
     }
 

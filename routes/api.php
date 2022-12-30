@@ -28,8 +28,6 @@ use App\Models\Question;
 |
 */
 Route::get('verify-email/{id}/{hash}', [EmailVerificationController::class, 'verify'])->name('verification.verify');
-Route::get('generate-pdf', [PDFController::class, 'generatePDF']);
-Route::get('generate-pdf_2', [PDFController::class, 'generatePDFViwe']);
 Route::post("register", [AuthController::class, "register"]);
 Route::post('register-admin', [UserController::class, 'registerAdmin']);
 Route::post("login", [AuthController::class, "login"]);
@@ -164,6 +162,9 @@ Route::group(['prefix' => 'certificates'], function () {
     Route::get('/full-certificate/{user_book_id}', [CertificatesController::class, 'fullCertificate'])->middleware(['auth:api','verified','isActive']);
     Route::patch('/{id}', [CertificatesController::class, 'update'])->middleware(['auth:api','role:admin|reviewer']);
     Route::delete('/{id}', [CertificatesController::class, 'destroy'])->middleware(['auth:api','role:admin']);
+    
+    // generate PDF
+    Route::get('/generate-pdf/{user_book_id}', [PDFController::class, 'generatePDF']);
 
 });
 
