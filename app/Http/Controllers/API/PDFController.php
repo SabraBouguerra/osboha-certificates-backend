@@ -102,7 +102,7 @@ class PDFController extends BaseController
         PDF::SetAutoPageBreak(false, 0);
 
         // set bacground image
-        $img_file = asset('asset/images/certTempWthiSign.jpg');
+        $img_file = 'https://scontent.fruh4-4.fna.fbcdn.net/v/t1.15752-9/321018891_998203714472901_2917387006404159496_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=ae9488&_nc_ohc=KIL9lvH3NKQAX-dNPoA&_nc_ht=scontent.fruh4-4.fna&oh=03_AdSn-xPaJkybQcyAbeOEQvZw8mZib2OuMQ-d_wuCdD2XMg&oe=63D7AE31';
         // Image($file, $x='', $y='', $w=0, $h=0, $type='', $link='', $align='', $resize=false, $dpi=300, $palign='', $ismask=false, $imgmask=false, $border=0, $fitbox=false, $hidden=false, $fitonpage=false)
         PDF::Image($img_file, 0, 0, 210, 297, '', '', '', false, 300, '', false, false, 0);
 
@@ -169,7 +169,8 @@ class PDFController extends BaseController
         $auto_page_break = PDF::getAutoPageBreak();
         PDF::SetAutoPageBreak(false, 0);
 
-        $img_file = asset('asset/images/certTemp.jpg');
+//$img_file = asset('asset/images/certTemp.jpg');
+        $img_file = 'https://scontent.fruh4-4.fna.fbcdn.net/v/t1.15752-9/321305767_682741096665260_3089836325661716829_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=ae9488&_nc_ohc=8CPY4uwPowYAX-OPJK3&_nc_ht=scontent.fruh4-4.fna&oh=03_AdTMYsSrdcOpkQX8-PT1-QkB8UB8mnXJi-DZmMGZHscEjw&oe=63D7BEBE';
         PDF::Image($img_file, 0, 0, 210, 297, '', '', '', false, 300, '', false, false, 0);
 
         PDF::SetAutoPageBreak($auto_page_break, $bMargin);

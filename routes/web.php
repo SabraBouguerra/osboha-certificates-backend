@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\PDFController;
+use App\Http\Controllers\InstallFonts;
 
 
 /*
@@ -24,8 +25,8 @@ Route::get('/certificate', function () {
 Route::get('/confairm', function () {
     return view('confairnEmail');
 });
-Route::get('generate-pdf', [PDFController::class, 'generatePDF']);
-Route::get('generate-pdf_4', [testPDF::class, 'pdff']);
+Route::get('generate-pdf/{user_book_id}', [PDFController::class, 'generatePDF']);
+Route::get('install-fonts', [InstallFonts::class, 'index']);
 
 Route::get('generate-pdf_2', function(){
     return view('certificate.layout');

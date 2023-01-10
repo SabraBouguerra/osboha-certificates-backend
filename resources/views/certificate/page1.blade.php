@@ -17,11 +17,11 @@
                   <strong>مستوى الكتاب: {{$level}} </strong>
             </p>
             <p>
-                  <strong><span style="font-size: 13px"> </span></strong>
+                  <strong><span style="font-weight: bolder;"> </span></strong>
             </p>
             <p>
                   تثبت هذه الوثيقة من مشروع صناعة القرّاء (أصبوحة 180) بأن 
-                  <strong> {{$name}}</strong>
+                  <strong><span style="color: white; background-color:#1d753b"> {{$name}}</span></strong>
 
                   قد حصل عليها بموجب المعايير المتبعة
                   قد طبق معايير القراءة المنهجية من خلال إنجازه قراءة كتاب
