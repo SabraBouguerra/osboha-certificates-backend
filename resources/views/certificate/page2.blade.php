@@ -30,7 +30,7 @@
             <strong style="color: #00b050">||</strong>
             <span class="{{ ($certificateDegrees->general_summary_grade <= 89 && $certificateDegrees->general_summary_grade > 84) ? 'highlight' : ''  }}"> جيد جدا </span>
             <strong style="color: #00b050">||</strong>
-            <span class="{{ ($certificateDegrees->general_summary_grade <= 84 && $certificateDegrees->general_summary_grade > 94) ? 'highlight' : ''  }}"> جيد </span>
+            <span class="{{ ($certificateDegrees->general_summary_grade <= 84 && $certificateDegrees->general_summary_grade > 79) ? 'highlight' : ''  }}"> جيد </span>
             <strong style="color: #00b050">||</strong>
             <span class="{{ ($certificateDegrees->general_summary_grade <= 79 && $certificateDegrees->general_summary_grade > 69) ? 'highlight' : ''  }}"> مقبول </span>
 
@@ -47,7 +47,7 @@
             <strong style="color: #00b050">||</strong>
             <span class="{{ ($certificateDegrees->questions_grade <= 89 && $certificateDegrees->questions_grade > 84) ? 'highlight' : ''  }}"> جيد جدا </span>
             <strong style="color: #00b050">||</strong>
-            <span class="{{ ($certificateDegrees->questions_grade <= 84 && $certificateDegrees->questions_grade > 94) ? 'highlight' : ''  }}"> جيد </span>
+            <span class="{{ ($certificateDegrees->questions_grade <= 84 && $certificateDegrees->questions_grade > 79) ? 'highlight' : ''  }}"> جيد </span>
             <strong style="color: #00b050">||</strong>
             <span class="{{ ($certificateDegrees->questions_grade <= 79 && $certificateDegrees->questions_grade > 69) ? 'highlight' : ''  }}"> مقبول </span>
 
@@ -61,7 +61,7 @@
             <strong style="color: #00b050">||</strong>
             <span class="{{ ($certificateDegrees->thesis_grade <= 89 && $certificateDegrees->thesis_grade > 84) ? 'highlight' : ''  }}"> جيد جدا </span>
             <strong style="color: #00b050">||</strong>
-            <span class="{{ ($certificateDegrees->thesis_grade <= 84 && $certificateDegrees->thesis_grade > 94) ? 'highlight' : ''  }}"> جيد </span>
+            <span class="{{ ($certificateDegrees->thesis_grade <= 84 && $certificateDegrees->thesis_grade > 79) ? 'highlight' : ''  }}"> جيد </span>
             <strong style="color: #00b050">||</strong>
             <span class="{{ ($certificateDegrees->thesis_grade <= 79 && $certificateDegrees->thesis_grade > 69) ? 'highlight' : ''  }}"> مقبول </span>
             (
