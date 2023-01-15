@@ -91,7 +91,7 @@ Route::group(['prefix' => 'books'], function () {
 
 //Users routes
 
-Route::group(['prefix' => 'users'], function () {
+Route::group(['prefix' => 'users'], function () { 
     Route::get('/', [UserController::class, 'index']);
     Route::post('/', [UserController::class, 'store'])->middleware(['auth:api','role:user|admin','verified','isActive']);
     Route::get('/statistics', [UserController::class, 'getUserStatistics'])->middleware(['auth:api','verified','isActive']);

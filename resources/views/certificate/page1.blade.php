@@ -1,4 +1,10 @@
 @extends('certificate.layout')
+<style>  .bold-title {
+  
+font-weight: 900;
+  }
+</style>
+
 <div class="pageWithCertificate">
       <div class="page-content">
             <br />
@@ -17,15 +23,17 @@
                   <strong>مستوى الكتاب: {{$level}} </strong>
             </p>
             <p>
-                  <strong><span style="font-weight: bolder;"> </span></strong>
+                  <strong><span style="font-size: 13px"> </span></strong>
             </p>
             <p>
                   تثبت هذه الوثيقة من مشروع صناعة القرّاء (أصبوحة 180) بأن 
-                  <strong><span style="color: white; background-color:#1d753b"> {{$name}}</span></strong>
+                                <u> <span class='bold-title'>{{$name}}</span></u>
+
 
                   قد حصل عليها بموجب المعايير المتبعة
                   قد طبق معايير القراءة المنهجية من خلال إنجازه قراءة كتاب
-                  <strong> {{$book}}</strong>
+                                    <strong><span style="font-weight: bolder;"> {{$book}}</span></strong>
+
 
                   . ويثمن المشروع جهوده المبذولة وسعيه
                   الحثيث في زيادة حصيلته المعرفية، ورغبته باستمرارية التعلم عبر

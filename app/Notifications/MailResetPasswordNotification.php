@@ -50,7 +50,7 @@ class MailResetPasswordNotification extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-        ->from('->from('no-replay@osboha180.com', 'Osboha 180')', 'Example')
+        ->from('no-replay@osboha180.com', 'Osboha 180')
         ->subject('أصبوحة || تغيير كلمة المرور')
         ->line('من المهم أن تحفظ كلمة المرور الخاصة بك، لأنها سبيل الوصول إلى وثائقك.')
         ->line('لقد استلمنا طلب تغيير كلمة السر على الموقع.')

@@ -29,7 +29,7 @@ class AuthServiceProvider extends ServiceProvider
 
         VerifyEmail::toMailUsing(function ($notifiable, $url) {
             return (new MailMessage)
-            ->from('no-replay@osboha180.com', 'Osboha 180')
+                ->from('no-replay@osboha180.com', 'Osboha 180')
                 ->subject('تأكيد البريد الالكتروني')
                 ->line('لطفا، قم بالضغط على الزر أدناه، وذلك لتأكيد تسجيلك في موقع توثيق القراءة - أصبوحة 180.')
                 ->action('تأكيد البريد الالكتروني', $url);

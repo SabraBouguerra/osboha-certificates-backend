@@ -120,14 +120,7 @@ class CertificatesController extends BaseController
 
     public function fullCertificate($user_book_id)
     {
-        $fullCertificate=UserBook::where('id',$user_book_id)->with('thesises', function ($query) {
-            $query->where('status','=','audited');
-        })->with('generalInformation', function ($query) {
-            $query->where('status','=','audited');
-        })->with('questions', function ($query) {
-            $query->where('status','=','audited');
-        })->get();
-        
+        $fullCertificate=UserBook::where('id',$user_book_id)->with('questions')->with('generalInformation')->get();
         $all_avareges = UserBook::
         join('general_informations', 'user_book.id', '=', 'general_informations.user_book_id')
         ->join('questions', 'user_book.id', '=', 'questions.user_book_id')

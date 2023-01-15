@@ -17,35 +17,29 @@ class UserBook extends Model
 
     protected $table = 'user_book';
 
-    protected $with = array('thesises', 'user', 'book');
+    protected $with = array('thesises','user','book');
 
 
-    public function user()
-    {
-        return $this->belongsTo(User::class, 'user_id');
+    public function user(){
+        return $this->belongsTo(User::class,'user_id');
     }
 
-    public function book()
-    {
-        return $this->belongsTo(Book::class, 'book_id');
+    public function book(){
+        return $this->belongsTo(Book::class,'book_id');
     }
 
-    public function certificates()
-    {
+    public function certificates(){
         return $this->hasMany(Certificates::class);
     }
 
-    public function thesises()
-    {
+    public function thesises(){
         return $this->hasMany(Thesis::class);
     }
 
-    public function questions()
-    {
+    public function questions(){
         return $this->hasMany(Question::class);
     }
-    public function generalInformation()
-    {
+    public function generalInformation(){
         return $this->hasOne(GeneralInformations::class);
     }
 
@@ -67,4 +61,7 @@ class UserBook extends Model
             });
         });
     }
+
 }
+
+

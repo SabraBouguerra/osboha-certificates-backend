@@ -1,11 +1,12 @@
 <?php
 namespace App\Traits;
 use App\Models\Photos;
-
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
-
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+
+
 Trait MediaTraits{
 
     function createThesisMedia($media, $id){
@@ -25,14 +26,15 @@ Trait MediaTraits{
     }
 
     function createUserPhoto($media, $user){
-
-        $path = Storage::put('image/saas.webp', $media);
-        $user->picture = 'image/sass.webp';
+ 
+        $randomString = Str::random(10);
+        $path = Storage::putFile(`image/$randomString.webp`, $media);
+        $user->picture = $path;
         $user->save();
         return $user;
 
-    }                                      
- 
+    }
+
     function updateMedia($media, $media_id){
         //get current media
         $currentMedia= Photos::find($media_id);

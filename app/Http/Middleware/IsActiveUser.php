@@ -21,7 +21,7 @@ class IsActiveUser
         $user = $request->user('api');
 
 
-        if($user->is_active == 0 ){
+            if($user->is_active == 0 ){
             $response  = [
                 'success' => false,
                 'data' => 'Please wait until getting active'

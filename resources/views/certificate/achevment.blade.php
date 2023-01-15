@@ -19,7 +19,7 @@
             {{ $achevmentText}}
         </p>
         <p class="break-space">&nbsp;</p>
-        @if(isset($quotes))
+@if(isset($quotes))
         <p class="sub-header">الاقتباسات</p>
         <p class="break-space">&nbsp;</p>
             @foreach($quotes as $quote)
@@ -29,5 +29,6 @@
             @endforeach
 
         @endif
+
     </div>
 </div>

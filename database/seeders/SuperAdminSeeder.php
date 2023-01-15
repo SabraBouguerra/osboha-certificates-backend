@@ -24,7 +24,7 @@ class SuperAdminSeeder extends Seeder
             "name" => "admin",
             "email" => "admin@gmail.com",
             "password" => $password,
-
+		"fb_name" => "admin"
         ]);
         $user->assignRole($role);
 

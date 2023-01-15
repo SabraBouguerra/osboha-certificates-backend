@@ -41,7 +41,7 @@ class RejectAchievement extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage)
-        ->from('->from('no-replay@osboha180.com', 'Osboha 180')', 'Example')
+        ->from('no-replay@osboha180.com', 'Osboha 180')
         ->subject('أصبوحة || تعديل حالة انجازك')
         ->line('تحية طيبة لحضرتك،
         لقد قام فريق المراجعة والتقييم برفض جواب أو أكثر من الأجوبة التي تم تقديمها في طلبكم لتوثيق القراءة مع أصبوحة 180 وذلك لمخالفاتها للشروط.')

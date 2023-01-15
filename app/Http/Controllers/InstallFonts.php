@@ -9,7 +9,7 @@ use TCPDF_FONTS;
 class InstallFonts extends BaseController
 {
 
-    public function istall()
+    public function index()
     {
 
         $path = '/var/www/html/osboha-certificates-backend/vendor/tecnickcom/tcpdf/fonts/arial.ttf';

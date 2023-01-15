@@ -42,7 +42,7 @@ class Certificate extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->from('->from('no-replay@osboha180.com', 'Osboha 180')', 'Example')
+            ->from('no-replay@osboha180.com', 'Osboha 180')
             ->subject('أصبوحة || شهادة توثيق الكتاب')
             ->line('تحية طيبة لحضرتك،
 

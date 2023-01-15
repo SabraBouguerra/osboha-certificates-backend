@@ -203,7 +203,6 @@ class QuestionController extends BaseController
                     $userBook->status=$request->status;
                     $userBook->reviews=$request->reviews;
                     $userBook->save();
-
                     $user->notify(
                         (new \App\Notifications\RejectAchievement())->delay(now()->addMinutes(2))
                     );

@@ -63,13 +63,22 @@ class UserController extends BaseController
 
 
     public function updateInfo(Request $request){
-      
       try{
+	 $validator = Validator::make($request->all(), [
+            "image" => "required|image|mimes:png,jpg,jpeg,gif,svg",
+        ]);
+
+        if ($validator->fails()) {
+            return $this->sendError($validator->errors());
+        }
+
+
         $user=User::where('id',Auth::id())->update(['name'=>$request->name,'fb_name'=>$request->fb_name,'is_active'=>0]); 
         $user=User::where('id',Auth::id())->first();
         $this->createUserPhoto($request->file('image'), $user);
+
         }catch(\Error $e){
-        return $this->sendError($e); 
+        return $this->sendError($e);
       }
 
     }

@@ -23,9 +23,9 @@ class RejectUserEmail extends Notification implements ShouldQueue
      * @return void
      */
     public function __construct($rejectNote)
-    {
-        $this->pageUrl = 'https://www.eligible.osboha180.com/auth/signup';
-        $this->rejectNote=$rejectNote;
+    {        $this->rejectNote=$rejectNote;
+
+        $this->pageUrl = 'https://www.eligible.osboha180.com/user/update-info';
     }
 
     /**
@@ -48,8 +48,8 @@ class RejectUserEmail extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage)
-        ->from('->from('no-replay@osboha180.com', 'Osboha 180')', 'Example')
-        ->subject('أصبوحة || رفض التسجيل')
+        ->from('no-replay@osboha180.com', 'Osboha 180')
+                ->subject('أصبوحة || رفض التسجيل')
         ->line('مرحبا
         تحية طيبة لحضرتك،
         للأسف لم يتم قبول تسجيلك في موقع توثيق القراءة - أصبوحة 180 بسبب عدم تطابق المعلومات مع الشروط. الرجاء تحديث بياناتك ومراعاة تقديم معلوماتك التي تطابق الوثائق الرسمية.')
