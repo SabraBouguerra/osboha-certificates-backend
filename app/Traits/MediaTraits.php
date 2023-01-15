@@ -28,12 +28,12 @@ Trait MediaTraits{
     function createUserPhoto($media, $user){
  
         $randomString = Str::random(10);
-        $path = Storage::putFile(`image/$randomString.webp`, $media);
+        $path =Storage::put("image/{$randomString}.webp", $media);
         $user->picture = $path;
         $user->save();
-        return $user;
+        return $user;      
 
-    }
+    }      
 
     function updateMedia($media, $media_id){
         //get current media
