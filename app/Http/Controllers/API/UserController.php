@@ -21,6 +21,8 @@ class UserController extends BaseController
 {
 
     use MediaTraits;
+
+  
     public function index(){
 
        $users = User::all();
@@ -67,7 +69,7 @@ class UserController extends BaseController
         $user=User::where('id',Auth::id())->first();
         $this->createUserPhoto($request->file('image'), $user);
         }catch(\Error $e){
-        return $this->sendError($e);
+        return $this->sendError($e); 
       }
 
     }
@@ -267,5 +269,6 @@ class UserController extends BaseController
         ];
         return $this->sendResponse($response , 'Statistics');
     }
+    
 
 }

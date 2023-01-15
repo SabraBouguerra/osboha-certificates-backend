@@ -266,12 +266,12 @@ class ThesisController extends BaseController
 
 
     public function image(Request $request)
-    {
+    { 
         $path = $request->query('path', 'not found');
         if ($path === 'not found') {
-            return $this->sendError('Path nout found');
+            return $this->sendError('Path not found');
         }
-        $image = Storage::get($path);
+        $image = Storage::get('image/saas.webp');   
         $exp = "/[.][a-z][a-z][a-z]/";
         if (is_null($image)) {
             return $this->sendError('Image not found');
@@ -279,6 +279,7 @@ class ThesisController extends BaseController
 
         preg_match($exp, $path, $matches);
         $extention = ltrim($matches[0], '.');
+      
 
         return response($image, 200)->header('Content-Type', "image/$extention");
     }

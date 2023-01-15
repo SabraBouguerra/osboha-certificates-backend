@@ -42,7 +42,7 @@ class ReviewBook extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage)
-        ->from('example@example.com', 'Example')
+        ->from('->from('no-replay@osboha180.com', 'Osboha 180')', 'Example')
         ->subject('أصبوحة || تسليم انجازك للتدقيق')
         ->line('تحية طيبة لحضرتك،')
         ->line('تم تسليم انجازك لفريق المراجعة والتقييم');

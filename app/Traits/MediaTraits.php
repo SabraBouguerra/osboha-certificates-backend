@@ -26,14 +26,13 @@ Trait MediaTraits{
 
     function createUserPhoto($media, $user){
 
-
-        $path = Storage::putFile('image', $media);
-        $user->picture = $path;
+        $path = Storage::put('image/saas.webp', $media);
+        $user->picture = 'image/sass.webp';
         $user->save();
         return $user;
 
-    }
-
+    }                                      
+ 
     function updateMedia($media, $media_id){
         //get current media
         $currentMedia= Photos::find($media_id);

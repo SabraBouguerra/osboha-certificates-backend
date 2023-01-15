@@ -41,7 +41,7 @@ class SetAchievement extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->from('example@example.com', 'Example')
+            ->from('->from('no-replay@osboha180.com', 'Osboha 180')', 'Example')
             ->subject('أصبوحة || تعديل حالة انجازك')
             ->line('تحية طيبة لحضرتك، تم تسليم توثيقك للفريق المختص 
         ')->line('انتظر تقييم المختصيين لقراءتك وليكن هذا حافزًا لك لتقرأ بشكل أفضل

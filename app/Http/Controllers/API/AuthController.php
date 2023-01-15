@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Password;
 use Illuminate\Auth\Events\PasswordReset;
 use App\Traits\MediaTraits;
 use Illuminate\Auth\Events\Registered;
-
+use Intervention\Image\Facades\Image;
 
 class AuthController extends BaseController
 {
@@ -56,7 +56,8 @@ class AuthController extends BaseController
             $user = User::create($input);
             $role = Role::where('name', 'user')->first();
             $user->assignRole($role);
-            $this->createUserPhoto($request->file('image'), $user);
+            $webpImage = \Image::make($request->file('image'))->stream("webp", 100);
+            $this->createUserPhoto($webpImage, $user);
             event(new Registered($user));
         } catch (\Illuminate\Database\QueryException $e) {
             $errorCode = $e->errorInfo[1];
