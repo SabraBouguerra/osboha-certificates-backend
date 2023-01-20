@@ -1,48 +1,51 @@
 <?php
+
 namespace App\Traits;
+
 use App\Models\Photos;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 
 
-Trait MediaTraits{
+trait MediaTraits
+{
 
-    function createThesisMedia($media, $id){
-
-
+    function createThesisMedia($media, $id)
+    {
         $path = Storage::putFile('image', $media);
 
-        try{
-            $media = Photos::create(['path' => $path,"thesis_id" => $id]);
-
-        }catch(\Illuminate\Database\QueryException $e){
-          echo($e);
+        try {
+            $media = Photos::create(['path' => $path, "thesis_id" => $id]);
+        } catch (\Illuminate\Database\QueryException $e) {
+            echo ($e);
         }
 
 
         return $media;
     }
 
-    function createUserPhoto($media, $user){
- 
+    function createUserPhoto($media, $user)
+    {
+
         $randomString = Str::random(10);
         $path = Storage::putFile(`image/$randomString.webp`, $media);
         $user->picture = $path;
         $user->save();
         return $user;
-
     }
 
-    function updateMedia($media, $media_id){
+    function updateMedia($media, $media_id)
+    {
         //get current media
-        $currentMedia= Photos::find($media_id);
+        $currentMedia = Photos::find($media_id);
         //delete current media
-        File::delete(public_path('assets/images/'.$currentMedia->media));
+        File::delete(public_path('assets/images/' . $currentMedia->media));
 
         // upload new media
-        $imageName = time().'.'. $media->extension();
+        $imageName = time() . '.' . $media->extension();
         $media->move(public_path('assets/images'), $imageName);
 
         // update current media
@@ -51,21 +54,24 @@ Trait MediaTraits{
     }
 
 
-    function deleteMedia($media_id){
-        $currentMedia= Photos::find($media_id);
-         //delete current media
-        File::delete(public_path('assets/images/'.$currentMedia->path));
+    function deleteMedia($media_id)
+    {
+        $currentMedia = Photos::find($media_id);
+        //delete current media
+        File::delete(public_path('assets/images/' . $currentMedia->path));
         $currentMedia->delete();
     }
 
 
-    function deleteUserPicture($path){
+    function deleteUserPicture($path)
+    {
         Storage::delete($path);
     }
 
 
 
-      function updateThesisMedia($media, $oldPath){
+    function updateThesisMedia($media, $oldPath)
+    {
 
 
         $path = Storage::putFile('image', $media);
@@ -76,16 +82,29 @@ Trait MediaTraits{
     }
 
 
-    function deleteThesisMedia($path){
+    function deleteThesisMedia($path)
+    {
 
 
 
         Storage::delete($path);
-
-
-
     }
 
+    function createMedia($media){
+        $imageName = uniqid('osboha_').'.'. $media->extension();
+        $media->move(public_path('asset/images/temMedia'), $imageName);
+        // return media name
+        return $imageName;
+    }
+    function deleteTempMedia($id)
+    {
+        $user = User::find($id);
+        //delete current media    
+        File::delete('asset/images/temMedia/' . $user->picture);
+        $user->picture=null;
+        $user->save();
+    }
+    
 
 
 }
