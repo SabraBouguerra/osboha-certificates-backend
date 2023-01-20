@@ -95,7 +95,7 @@ Route::group(['prefix' => 'users'], function () {
     Route::get('/', [UserController::class, 'index']);
     Route::post('/', [UserController::class, 'store'])->middleware(['auth:api','role:user|admin','verified','isActive']);
     Route::get('/statistics', [UserController::class, 'getUserStatistics'])->middleware(['auth:api','verified','isActive']);
-    Route::get('/image', [ThesisController::class, 'image']);
+    Route::get('/image', [UserController::class, 'image']);
     Route::get('/{id}', [UserController::class, 'show'])->middleware(['auth:api','verified','isActive']);
      Route::patch('/activate/{id}',[UserController::class, 'activeUser'])->middleware(['auth:api','role:admin|reviewer']);
     Route::patch('/{id}', [UserController::class, 'update'])->middleware(['auth:api','role:user|admin']);

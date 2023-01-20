@@ -218,21 +218,14 @@ class UserController extends BaseController
 
   public function image(Request $request)
   {
-    $path = $request->query('path', 'not found');
-    if ($path === 'not found') {
-      return $this->sendError('Path nout found');
-    }
-    $image = Storage::get($path);
-    echo ($image);
-    $exp = "/[.][a-z][a-z][a-z]/";
-    if (is_null($image)) {
-      return $this->sendError('Image not found');
-    }
 
-    preg_match($exp, $path, $matches);
-    $extention = ltrim($matches[0], '.');
-
-    return response($image, 200)->header('Content-Type', "image/$extention");
+    if( isset($_GET['fileName'])){
+      $path = public_path().'/asset/images/temMedia/'.$_GET['fileName'];
+      return response()->download($path, $_GET['fileName']);        
+    }
+    else{
+      return $this->sendError('file nout found');
+    }
   }
 
 

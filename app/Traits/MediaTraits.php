@@ -104,6 +104,7 @@ trait MediaTraits
         $user->picture=null;
         $user->save();
     }
+    
 
 
 }
