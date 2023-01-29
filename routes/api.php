@@ -68,6 +68,7 @@ Route::group(['prefix' => 'level'], function () {
         Route::patch('/{id}', [UserBookController::class, 'update'])->middleware(['auth:api']);
         Route::delete('/{id}', [UserBookController::class, 'destroy'])->middleware(['auth:api']);
         Route::post('/review',[UserBookController::class,"review"])->middleware(['auth:api','verified','isActive']);
+        Route::get('/ready/to',[UserBookController::class,"readyToAudit"])->middleware(['auth:api','verified','isActive']);
 
     });
 
