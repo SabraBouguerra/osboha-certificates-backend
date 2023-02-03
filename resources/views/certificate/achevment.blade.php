@@ -20,7 +20,7 @@
         </p>
         <p class="break-space">&nbsp;</p>
 @if(isset($quotes))
-        <p class="sub-header">الاقتباسات</p>
+        <p class="sub-header">إجابة السؤال</p>
         <p class="break-space">&nbsp;</p>
             @foreach($quotes as $quote)
                 <p class="quote" dir="rtl" style="font-size: 12pt; margin-right:2rem">
