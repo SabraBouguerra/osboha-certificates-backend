@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use App\Models\User;
 
 
 Trait MediaTraits{
@@ -28,7 +29,7 @@ Trait MediaTraits{
     function createUserPhoto($media, $user){
  
         $randomString = Str::random(10);
-        $path = Storage::putFile(`image/$randomString.webp`, $media);
+	$path =Storage::put("/var/www/html/osboha-certificates-backend/storage/app/image", $media);
         $user->picture = $path;
         $user->save();
         return $user;
@@ -86,6 +87,20 @@ Trait MediaTraits{
 
     }
 
+    function createMedia($media){
+        $imageName = uniqid('osboha_').'.'. $media->extension();
+        $media->move(public_path('asset/images/temMedia'), $imageName);
+        // return media name
+        return $imageName;
+    }
+    function deleteTempMedia($id)
+    {
+        $user = User::find($id);
+        //delete current media    
+        File::delete('asset/images/temMedia/' . $user->picture);
+        $user->picture=null;
+        $user->save();
+    }
 
 
 }

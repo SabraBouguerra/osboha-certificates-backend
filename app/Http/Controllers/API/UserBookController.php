@@ -263,6 +263,13 @@ class UserBookController extends BaseController
         return $this->sendResponse($status , 'Status' );
     }
 
+    public function readyToAudit()
+    {
+
+        $readyToAudit['theses'] = DB::select("SELECT user_book_id FROM(SELECT COUNT(id) AS totalThesis, user_book_id FROM thesis WHERE STATUS = 'accept' GROUP BY user_book_id) AS b WHERE b.totalThesis>=8");
+        $readyToAudit['questions'] = DB::select("SELECT user_book_id FROM(SELECT COUNT(id) AS totalQuestions, user_book_id FROM questions WHERE STATUS = 'accept' GROUP BY user_book_id) AS b WHERE b.totalQuestions >=5");
+        return $this->sendResponse($readyToAudit, 'readyToAudit');
+    }
 
 
     public function getStatistics($id){

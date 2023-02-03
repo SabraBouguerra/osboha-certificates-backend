@@ -56,8 +56,12 @@ class AuthController extends BaseController
             $user = User::create($input);
             $role = Role::where('name', 'user')->first();
             $user->assignRole($role);
-            $webpImage = \Image::make($request->file('image'))->stream("webp", 100);
-            $this->createUserPhoto($webpImage, $user);
+           // $webpImage = \Image::make($request->file('image'))->stream("webp", 100);
+ //             $this->createUserPhoto($request->file('image'), $user);
+            $userImage=$this->createMedia($request->file('image'));
+          $user->picture=$userImage;
+           $user->save();
+
             event(new Registered($user));
         } catch (\Illuminate\Database\QueryException $e) {
             $errorCode = $e->errorInfo[1];

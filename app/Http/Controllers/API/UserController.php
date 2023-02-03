@@ -75,7 +75,10 @@ class UserController extends BaseController
 
         $user=User::where('id',Auth::id())->update(['name'=>$request->name,'fb_name'=>$request->fb_name,'is_active'=>0]); 
         $user=User::where('id',Auth::id())->first();
-        $this->createUserPhoto($request->file('image'), $user);
+       // $this->createUserPhoto($request->file('image'), $user);
+   	 $userImage = $this->createMedia($request->file('image'));
+  	 $user->picture = $userImage;
+	 $user->save();
 
         }catch(\Error $e){
         return $this->sendError($e);
@@ -206,21 +209,14 @@ class UserController extends BaseController
 
     public function image(Request $request)
     {
-        $path = $request->query('path', 'not found');
-        if ($path === 'not found') {
-            return $this->sendError('Path nout found');
-        }
-        $image = Storage::get($path);
-        echo($image);
-        $exp = "/[.][a-z][a-z][a-z]/";
-        if (is_null($image)) {
-            return $this->sendError('Image not found');
-        }
 
-        preg_match($exp, $path, $matches);
-        $extention = ltrim($matches[0], '.');
-
-        return response($image, 200)->header('Content-Type', "image/$extention");
+if( isset($_GET['fileName'])){
+      $path = public_path().'/asset/images/temMedia/'.$_GET['fileName'];
+      return response()->download($path, $_GET['fileName']);        
+    }
+    else{
+      return $this->sendError('file nout found');
+    }
     }
 
 

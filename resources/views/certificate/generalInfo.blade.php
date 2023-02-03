@@ -16,7 +16,7 @@
   </p>
   <p class="sub-header" style="line-height: 300%;">التلخيص العام</p>
   <p style="font-size: 14pt;">
-      {{ $certificate->summary }}
+      {{ $summary }}
     </p>
   </div>
 </div>
