@@ -29,6 +29,7 @@ class AuthController extends BaseController
             $success['name'] = $user->name;
             $success['role'] = $user->getRoleNames();
             $success['id'] = $user->id;
+            $success['active'] = $user->isActive;
             return $this->sendResponse($success, 'User Login Successfully!');
         } else {
             return $this->sendError('Unauthorised', ['error', 'Unauthorised']);
@@ -41,8 +42,7 @@ class AuthController extends BaseController
             "name" => "required",
             "email" => "required|email",
             "password" => 'required',
-            'fb_name' => 'required',
-            "image" => 'required'
+            'fb_name' => 'required' 
         ]);
 
 
@@ -51,14 +51,14 @@ class AuthController extends BaseController
         }
         $input = $request->all();
         $input['password'] = Hash::make($request->password);
-
+        $input['is_active'] = 2;
         try {
             $user = User::create($input);
             $role = Role::where('name', 'user')->first();
             $user->assignRole($role);
-            $webpImage = \Image::make($request->file('image'))->stream("webp", 100);
-            $userImage=$this->createMedia($request->file('image'));
-            $user->picture=$userImage;
+            // $webpImage = \Image::make($request->file('image'))->stream("webp", 100);
+            // $userImage=$this->createMedia($request->file('image'));
+            // $user->picture=$userImage;
             $user->save();
             event(new Registered($user));
         } catch (\Illuminate\Database\QueryException $e) {

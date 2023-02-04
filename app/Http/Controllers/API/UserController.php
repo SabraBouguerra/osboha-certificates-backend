@@ -76,7 +76,7 @@ class UserController extends BaseController
       }
 
 
-      $user = User::where('id', Auth::id())->update(['name' => $request->name, 'fb_name' => $request->fb_name, 'is_active' => 0]);
+      $user = User::where('id', Auth::id())->update(['name' => $request->name,'is_active' => 0]);
       $user = User::where('id', Auth::id())->first();
       $userImage = $this->createMedia($request->file('image'));
       $user->picture = $userImage;
