@@ -272,7 +272,8 @@ class ThesisController extends BaseController
             return $this->sendError('Path nout found');
         }
         $image = Storage::get($path);
-        $exp = "/[.][a-z][a-z][a-z]/";
+       	
+	 $exp = "/[.][a-z][a-z][a-z]/";
         if (is_null($image)) {
             return $this->sendError('Image not found');
         }

@@ -216,17 +216,7 @@ class UserController extends BaseController
     return $this->sendResponse($user, 'user activated!');
   }
 
-  public function image(Request $request)
-  {
-
-    if( isset($_GET['fileName'])){
-      $path = public_path().'/asset/images/temMedia/'.$_GET['fileName'];
-      return response()->download($path, $_GET['fileName']);        
-    }
-    else{
-      return $this->sendError('file nout found');
-    }
-  }
+  
 
 
   public function registerAdmin(Request $request)
@@ -258,13 +248,25 @@ class UserController extends BaseController
         return $this->sendError('User already exist');
       }
     }
-    $success['token'] = $user->createToken('random key')->accessToken;
-    $success['name'] = $user->name;
-    $success['role'] = $user->getRoleNames();;
-    $success['id'] = $user->id;
-    return $this->sendResponse($success, "User created");
-  }
+    }
 
+ 
+
+      
+
+    public function image(Request $request)
+    {
+
+if( isset($_GET['fileName'])){
+      $path = public_path().'/asset/images/temMedia/'.$_GET['fileName'];
+      return response()->download($path, $_GET['fileName']);        
+    }
+    else{
+      return $this->sendError('file nout found');
+    }
+    }
+
+ 
 
 
   public function getUserStatistics()
