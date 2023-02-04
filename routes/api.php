@@ -67,13 +67,8 @@ Route::group(['prefix' => 'level'], function () {
         Route::get('/{id}', [UserBookController::class, 'show'])->middleware(['auth:api','verified' ]);
         Route::patch('/{id}', [UserBookController::class, 'update'])->middleware(['auth:api']);
         Route::delete('/{id}', [UserBookController::class, 'destroy'])->middleware(['auth:api']);
-<<<<<<< HEAD
         Route::post('/review',[UserBookController::class,"review"])->middleware(['auth:api','verified' ]);
         Route::get('/ready/to',[UserBookController::class,"readyToAudit"])->middleware(['auth:api','verified' ]);
-=======
-        Route::post('/review',[UserBookController::class,"review"])->middleware(['auth:api','verified','isActive']);
-        Route::get('/ready/to',[UserBookController::class,"readyToAudit"])->middleware(['auth:api','verified','isActive']);
->>>>>>> 2d83ee8a9b1e266f95abf1584ea8677c870b8a8b
 
     });
 
@@ -99,17 +94,10 @@ Route::group(['prefix' => 'books'], function () {
 
 Route::group(['prefix' => 'users'], function () { 
     Route::get('/', [UserController::class, 'index']);
-<<<<<<< HEAD
     Route::post('/', [UserController::class, 'store'])->middleware(['auth:api','role:user|admin','verified' ]);
     Route::get('/statistics', [UserController::class, 'getUserStatistics'])->middleware(['auth:api','verified' ]);
     Route::get('/image', [UserController::class, 'image']);
     Route::get('/{id}', [UserController::class, 'show'])->middleware(['auth:api','verified' ]);
-=======
-    Route::post('/', [UserController::class, 'store'])->middleware(['auth:api','role:user|admin','verified','isActive']);
-    Route::get('/statistics', [UserController::class, 'getUserStatistics'])->middleware(['auth:api','verified','isActive']);
-    Route::get('/image', [UserController::class, 'image']);
-    Route::get('/{id}', [UserController::class, 'show'])->middleware(['auth:api','verified','isActive']);
->>>>>>> 2d83ee8a9b1e266f95abf1584ea8677c870b8a8b
      Route::patch('/activate/{id}',[UserController::class, 'activeUser'])->middleware(['auth:api','role:admin|reviewer']);
     Route::patch('/{id}', [UserController::class, 'update'])->middleware(['auth:api','role:user|admin']);
     // Route::delete('/{id}', [UserController::class, 'destroy'])->middleware(['auth:api' ]);
