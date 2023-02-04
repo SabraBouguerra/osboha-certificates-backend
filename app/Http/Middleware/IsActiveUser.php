@@ -20,18 +20,10 @@ class IsActiveUser
     {
         $user = $request->user('api');
 
-
-            if($user->is_active == 0 ){
+         if($user->is_active == 0 ){
             $response  = [
                 'success' => false,
                 'data' => 'Please wait until getting active'
-            ];
-            return response()->json($response,400);
-        }
-        else if($user->is_active == 2 ){
-            $response  = [
-                'success' => false,
-                'data' => 'Please update your info'
             ];
             return response()->json($response,400);
         }

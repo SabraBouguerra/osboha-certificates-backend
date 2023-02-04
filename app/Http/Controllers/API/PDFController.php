@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\API\BaseController;
@@ -17,7 +16,7 @@ class PDFController extends BaseController
     public function generatePDF($user_book_id)
     {
 
-
+        
         ######### START GET USER ACHEVMENTS #########
         $fullCertificate = UserBook::where('id', $user_book_id)->with('thesises', function ($query) {
             $query->where('status', '=', 'audited');
@@ -50,7 +49,7 @@ class PDFController extends BaseController
 
         // set document information
         PDF::SetAuthor('OSBOHA 180');
-        $title = $fullCertificate[0]->user->name  . ' || ' . $fullCertificate[0]->book->book_name;
+        $title= $fullCertificate[0]->user->name  . ' || ' . $fullCertificate[0]->book->book_name;
         PDF::SetTitle($title);
         PDF::SetSubject('توثيق انجاز كتاب');
         PDF::SetKeywords('Osboha, PDF, توثيق, كتاب, كتب, أصبوحة , اصبوحة, 180');
@@ -102,7 +101,7 @@ class PDFController extends BaseController
         PDF::SetAutoPageBreak(false, 0);
 
         // set bacground image
-        $img_file = 'https://scontent.fruh4-4.fna.fbcdn.net/v/t1.15752-9/321018891_998203714472901_2917387006404159496_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=ae9488&_nc_ohc=KIL9lvH3NKQAX-dNPoA&_nc_ht=scontent.fruh4-4.fna&oh=03_AdSn-xPaJkybQcyAbeOEQvZw8mZib2OuMQ-d_wuCdD2XMg&oe=63D7AE31';
+                $img_file = '/var/www/html/osboha-certificates-backend/public/asset/images/certTempWthiSign.jpg';
         // Image($file, $x='', $y='', $w=0, $h=0, $type='', $link='', $align='', $resize=false, $dpi=300, $palign='', $ismask=false, $imgmask=false, $border=0, $fitbox=false, $hidden=false, $fitonpage=false)
         PDF::Image($img_file, 0, 0, 210, 297, '', '', '', false, 300, '', false, false, 0);
 
@@ -110,7 +109,7 @@ class PDFController extends BaseController
         PDF::SetAutoPageBreak($auto_page_break, $bMargin);
         // set the starting point for the page content
         PDF::setPageMark();
-        PDF::writeHTML(view('certificate.page1', ['name' => $fullCertificate[0]->user->name, 'book' => $fullCertificate[0]->book->book_name, 'level' => $fullCertificate[0]->book->level->name, 'date' => \Carbon\Carbon::parse($fullCertificate[0]->updated_at)->format('d/m/Y')])->render(), true, false, true, false, '');
+        PDF::writeHTML(view('certificate.page1', ['name' => $fullCertificate[0]->user->name , 'book'=>$fullCertificate[0]->book->book_name ,'level'=>$fullCertificate[0]->book->level->name , 'date'=>\Carbon\Carbon::parse($fullCertificate[0]->updated_at)->format('d/m/Y')])->render(), true, false, true, false, '');
 
         // ###################### END PAGE 1 ###################### //
 
@@ -126,60 +125,55 @@ class PDFController extends BaseController
 
 
         ###################### START GRNRRAL INFORMATION ###################### 
-
-        $this->addPage();
         foreach ($fullCertificate as $part) {
-            PDF::writeHTML(view('certificate.generalInfo', ['summary'=>$part['generalInformation']->summary,'certificate' => $part['generalInformation'] , 'textDegree'=>$this->textDegree($part['generalInformation']->degree)])->render(), true, false, true, false, '');
-        }
-
-        // foreach ($fullCertificate as $part) {
-        //     if (strlen($part['generalInformation']->summary) > 1700) {
-        //         $summaryWords = explode(' ', $part['generalInformation']->summary);
-        //         $pages = floor(count($summaryWords) / 300);
-        //         $summary = implode(" ",array_slice($summaryWords,0,200));
-        //         $this->addPage();
-        //         PDF::writeHTML(view('certificate.generalInfo', ['summary' => $summary, 'certificate' => $part['generalInformation'], 'textDegree' => $this->textDegree($part['generalInformation']->degree)])->render(), true, false, true, false, '');
-
-        //         $start =200;
-        //         $length = 350;
-
-        //         for ($i = 2; $i <= $pages+1; $i++) {
-        //             $summary = implode(" ",array_slice($summaryWords,$start,$length));
-
-        //             $this->addPage();
-        //             PDF::writeHTML(view('certificate.generalSummary', ['summary' => $summary])->render(), true, false, true, false, '');
-        //             $start = $start + 350;
-        //         }
-        //     }
-        // }
-        // ###################### END GRNRRAL INFORMATION ###################### 
-
-
-        ###################### START THESIS ###################### 
-        foreach ($fullCertificate as $key => $part) {
-            foreach ($part['thesises'] as $key => $thesis) {
-
+            if (strlen($part['generalInformation']->summary) > 1700) {
+                $summaryWords = explode(' ', $part['generalInformation']->summary);
+                $pages = floor(count($summaryWords) / 300);
+                $summary = implode(" ",array_slice($summaryWords,0,200));
                 $this->addPage();
-                PDF::writeHTML(view('certificate.achevment', ['mainTitle' => 'الأطروحات', 'subTitle' => 'أطروحة', 'index' => $key + 1, 'achevmentText' => $thesis->thesis_text, 'textDegree' => $this->textDegree($thesis->degree)])->render(), true, false, true, false, '');
+                PDF::writeHTML(view('certificate.generalInfo', ['summary' => $summary, 'certificate' => $part['generalInformation'], 'textDegree' => $this->textDegree($part['generalInformation']->degree)])->render(), true, false, true, false, '');
+
+                $start =200;
+                $length = 350;
+
+                for ($i = 2; $i <= $pages+1; $i++) {
+                    $summary = implode(" ",array_slice($summaryWords,$start,$length));
+
+                    $this->addPage();
+                    PDF::writeHTML(view('certificate.generalSummary', ['summary' => $summary])->render(), true, false, true, false, '');
+                    $start = $start + 350;
+                }
             }
         }
+        ###################### END GRNRRAL INFORMATION ###################### 
 
-        ###################### END THESIS ###################### 
 
-        ###################### START THESIS ###################### 
-        foreach ($fullCertificate as $key => $part) {
-            foreach ($part['questions'] as $key => $question) {
-                $this->addPage();
-                PDF::writeHTML(view('certificate.achevment', ['mainTitle' => 'الأسئلة المعرفية', 'subTitle' => 'سؤال', 'index' => $key + 1, 'achevmentText' => $question->question, 'textDegree' => $this->textDegree($question->degree), 'quotes' => $question->quotation])->render(), true, false, true, false, '');
+
+                ###################### START THESIS ###################### 
+                foreach ($fullCertificate as $key=>$part) {
+                    foreach ($part['thesises'] as $key=>$thesis) {
+                       
+                        $this->addPage();
+                        PDF::writeHTML(view('certificate.achevment', ['mainTitle' => 'الأطروحات' , 'subTitle'=>'أطروحة', 'index'=> $key+1, 'achevmentText' => $thesis->thesis_text , 'textDegree'=>$this->textDegree($thesis->degree)])->render(), true, false, true, false, '');
+                      
+}            }
+
+                ###################### END THESIS ###################### 
+        
+                ###################### START THESIS ###################### 
+                foreach ($fullCertificate as $key=>$part) {
+                    foreach ($part['questions'] as $key=>$question) {
+                        $this->addPage();
+                        PDF::writeHTML(view('certificate.achevment', ['mainTitle' => 'الأسئلة المعرفية' , 'subTitle'=>'سؤال', 'index'=> $key+1, 'achevmentText' => $question->question , 'textDegree'=>$this->textDegree($question->degree), 'quotes' =>$question->quotation ])->render(), true, false, true, false, '');
+                }
             }
-        }
-        ###################### END THESIS ###################### 
-
+                ###################### END THESIS ###################### 
+        
 
         //        $pdf->lastPage();
 
         //Close and output PDF document
-        PDF::Output($title . '.pdf', 'I');
+        PDF::Output($title.'.pdf', 'I');
 
 
         ######### END GENERATING PDF #########
@@ -193,12 +187,12 @@ class PDFController extends BaseController
         $auto_page_break = PDF::getAutoPageBreak();
         PDF::SetAutoPageBreak(false, 0);
 
-        $img_file = 'https://scontent.fruh4-4.fna.fbcdn.net/v/t1.15752-9/321305767_682741096665260_3089836325661716829_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=ae9488&_nc_ohc=8CPY4uwPowYAX-OPJK3&_nc_ht=scontent.fruh4-4.fna&oh=03_AdTMYsSrdcOpkQX8-PT1-QkB8UB8mnXJi-DZmMGZHscEjw&oe=63D7BEBE';
+                $img_file = '/var/www/html/osboha-certificates-backend/public/asset/images/certTemp.jpg';
 
         PDF::Image($img_file, 0, 0, 210, 297, '', '', '', false, 300, '', false, false, 0);
 
-        //        PDF::SetAutoPageBreak($auto_page_break, $bMargin);
-        //      PDF::setPageMark();
+//        PDF::SetAutoPageBreak($auto_page_break, $bMargin);
+  //      PDF::setPageMark();
     }
 
     public function textDegree($degree)

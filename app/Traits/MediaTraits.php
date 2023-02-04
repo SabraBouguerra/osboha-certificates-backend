@@ -7,7 +7,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Storage; 
 
 
 trait MediaTraits
@@ -31,7 +31,7 @@ trait MediaTraits
     {
 
         $randomString = Str::random(10);
-        $path = Storage::putFile(`image/$randomString.webp`, $media);
+	$path =Storage::put("/var/www/html/osboha-certificates-backend/storage/app/image", $media);
         $user->picture = $path;
         $user->save();
         return $user;
@@ -104,7 +104,6 @@ trait MediaTraits
         $user->picture=null;
         $user->save();
     }
-    
 
 
 }
